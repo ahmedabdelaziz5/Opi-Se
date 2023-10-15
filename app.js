@@ -15,12 +15,13 @@ require("dotenv").config();
 const {databaseConnection} = require("./config/db.config");
 databaseConnection();
 
+app.use(require("./routes/user.route"));
 
 const http = require("http");
 const server = http.createServer(app);
 
 app.get("/", (req, res) => {
-    res.send("WE ARE LIVE HERE !");
+    res.send("انا صحيت يا كسمك ");
 })
 
 server.listen(process.env.PORT || 3000, process.env.LOCAL_HOST || "0.0.0.0", () => {
