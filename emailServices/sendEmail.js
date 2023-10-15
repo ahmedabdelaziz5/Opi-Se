@@ -46,7 +46,7 @@ const sendEmails = async (mailOptions) => {
   };
   transporter.sendMail(mailOptions, function (error, info) {
     if (error) {
-        success : false,
+      success : false,
       obj.statusCode = 400,
       obj.message = "could not send your email"
     }
