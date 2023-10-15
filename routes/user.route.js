@@ -4,7 +4,8 @@ const {
     signUp,
     login,
     verifyAccount,
-    forgetPasswrod,
+    forgetPassword,
+    submitNewPassword,
     changePassword,
     editProfile,
     uploadProfileImage,
@@ -14,7 +15,8 @@ const {
 const {
     signUpValid,
     loginValid,
-    forgetPasswrodValid,
+    submitNewPasswordValid,
+    forgetPasswordValid,
     changePasswordValid,
     editProfileValid,
 } = require('../validation/user.validation');
@@ -26,8 +28,9 @@ const { decodeToken } = require('../Auth/decodeToken');
 app.get('/verifyAccount', verifyAccount);
 app.post('/signUp', validator(signUpValid), signUp);
 app.post('/login', validator(loginValid), login);
-app.post('/forgetPasswrod', forgetPasswrod);
-app.post('/changePassword', changePassword);
+app.post('/forgetPassword', validator(forgetPasswordValid), forgetPassword);
+app.post('/submitNewPassword', validator(submitNewPasswordValid), submitNewPassword);
+app.post('/changePassword', decodeToken(), validator(changePasswordValid), changePassword);
 app.patch('/editProfile', editProfile);
 app.patch('/uploadProfileImage', uploadProfileImage);
 app.patch('/changeProfileImage', changeProfileImage);

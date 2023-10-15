@@ -1,6 +1,6 @@
 const userModel = require('../user/user.model');
 const bcrypt = require('bcrypt');
-const saltRounds = 7
+const saltRounds = 7;
 
 exports.isExist = async (filter, select) => {
     try {
@@ -40,7 +40,6 @@ exports.createUser = async (data) => {
         const newPassword = await bcrypt.hash(data.password, saltRounds);
         data.password = newPassword;
         let user = new userModel(data);
-        console.log(user);
         let isAdded = await user.save();
         if (!isAdded) {
             return {
@@ -62,4 +61,30 @@ exports.createUser = async (data) => {
             message: err.message
         }
     }
-}   
+}
+
+exports.updateUser = async (filter, edit) => {
+    try {
+        let user = await userModel.findOneAndUpdate(filter, edit);
+        if (!user) {
+            return {
+                success: false,
+                statusCode: 400,
+                message: "user not exist , please sign up first !",
+            }
+
+        }
+        return {
+            success: true,
+            statusCode: 201,
+            message: "success"
+        }
+    }
+    catch (err) {
+        return {
+            success: false,
+            statusCode: 500,
+            message: err.message
+        }
+    }
+}

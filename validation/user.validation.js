@@ -77,32 +77,54 @@ module.exports = {
         }),
     },
 
-    forgetPasswrodValid: {
+    forgetPasswordValid: {
 
         body: joi.object().required().keys({
 
-            noteId: joi.string().required().messages({
-                "string.empty": "you should send noteId !"
+            email: joi.string().email().required().messages({
+                "string.empty": "email can't be empty",
+                "string.required": "email is required",
+
             }),
 
-            noteAbstract: joi.string().optional().messages({
-                "string.empty": "you should enter a note !"
-            })
-
         }),
+    },
+
+    submitNewPasswordValid: {
+            
+            body: joi.object().required().keys({
+    
+                password: joi.string().required().messages({
+                    "string.empty": "password can't be empty",
+                    "any.required": "password is required"
+                }),
+    
+                confirmPassword: joi.string().required().messages({
+                    "string.empty": "confirm password can't be empty",
+                    "any.required": "confirm password is required"
+                }),
+    
+            }),
     },
 
     changePasswordValid: {
 
         body: joi.object().required().keys({
 
-            noteId: joi.string().required().messages({
-                "string.empty": "you should send noteId !"
+            oldPassword: joi.string().required().messages({
+                "string.empty": "old password can't be empty",
+                "any.required": "old password is required"
             }),
 
-            noteAbstract: joi.string().optional().messages({
-                "string.empty": "you should enter a note !"
-            })
+            newPassword: joi.string().required().messages({
+                "string.empty": "password can't be empty",
+                "any.required": "password is required"
+            }),
+
+            confirmNewPassword: joi.string().required().messages({
+                "string.empty": "confirm password can't be empty",
+                "any.required": "confirm password is required"
+            }),
 
         }),
     },
