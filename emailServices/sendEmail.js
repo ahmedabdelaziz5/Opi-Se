@@ -13,15 +13,14 @@ exports.setUpMails = async (emailType, emailCredentials) => {
     let token = jwt.sign({ email: emailCredentials.email }, process.env.SECRET_JWT, { expiresIn: `1d` });
     mailOptions['subject'] = "verify your account";
     mailOptions['text'] = "please click the verify button to verify your account";
-    mailOptions['html'] = `<b> <a href= 'http://localhost:2345/verifyAccount?token=${token}' target= '_blank'>verify</b>`;
-//https://graduation-project-j6gl.onrender.com/
+    mailOptions['html'] = `<b> <a href= https://graduation-project-j6gl.onrender.com/verifyAccount?token=${token}' target= '_blank'>verify</b>`;
   }
 
   else if (emailType === "forgetPasswrodEmail") {
     let token = jwt.sign({ email: emailCredentials.email }, process.env.SECRET_JWT, { expiresIn: `1d` });
     mailOptions['subject'] = "forget passowrd access";
     mailOptions['text'] = "please click the button to reset your account password";
-    mailOptions['html'] = `<b> <a href= 'http://localhost:2345/forgetPassword?token=${token}' target= '_blank'>reset password</b>`;
+    mailOptions['html'] = `<b> <a href= 'https://graduation-project-j6gl.onrender.com/forgetPassword?token=${token}' target= '_blank'>reset password</b>`;
   }
 
   let result = await sendEmails(mailOptions);
