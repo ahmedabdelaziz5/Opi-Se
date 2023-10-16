@@ -101,7 +101,7 @@ exports.forgetPassword = async (req, res) => {
             error: err.message
         });
     }
-}
+} 
 
 exports.submitNewPassword = async (req, res) => {
     try {
