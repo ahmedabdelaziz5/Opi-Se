@@ -1,6 +1,7 @@
 const userModel = require('../user/user.model');
 const bcrypt = require('bcrypt');
 const saltRounds = 7;
+const cloudinary = require("../../config/cloud.config");
 
 exports.isExist = async (filter, select) => {
     try {
@@ -65,6 +66,27 @@ exports.createUser = async (data) => {
 
 exports.updateUser = async (filter, edit) => {
     try {
+
+        if (edit.email || edit.userName) {
+            let match = await userModel.findOne({ $or: [{ email: edit.email }, { userName: edit.userName }] });
+            if (match) {
+                if (match.email === edit.email) {
+                    return {
+                        success: false,
+                        statusCode: 400,
+                        message: "email is already exist !"
+                    }
+                }
+                else if (match.userName === edit.userName) {
+                    return {
+                        success: false,
+                        statusCode: 400,
+                        message: "user name is already taken !"
+                    }
+                }
+            }
+        }
+
         let user = await userModel.findOneAndUpdate(filter, edit);
         if (!user) {
             return {
@@ -87,4 +109,37 @@ exports.updateUser = async (filter, edit) => {
             message: err.message
         }
     }
+}
+
+exports.uploadImage = async (file, publicId) => {
+    try {
+        const result = await cloudinary.v2.uploader.upload(file, {
+            folder: "users images",
+            public_id: publicId,
+            overwrite: true,
+        },
+            function (error, result) {
+                if (error) {
+                    return {
+                        success: false,
+                        statusCode: 500,
+                        message: error.message
+                    }
+                };
+        });
+        return {
+            success: true,
+            statusCode: 201,
+            message: "success",
+            data: result.url
+        }
+    }
+    catch (err) {
+        return {
+            success: false,
+            statusCode: 500,
+            message: err.message
+        }
+    }
+
 }

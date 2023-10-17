@@ -133,13 +133,20 @@ module.exports = {
 
         body: joi.object().required().keys({
 
-            noteId: joi.string().required().messages({
-                "string.empty": "you should send noteId !"
-            }),
+            userName: joi.string() ,
 
-            noteAbstract: joi.string().optional().messages({
-                "string.empty": "you should enter a note !"
-            })
+            email: joi.string().email(),
+
+            languages: joi.array().items(
+                joi.object({
+                    languageName: joi.string().required().messages({
+                        "string.empty": "language name is required",
+                    }),
+                    level: joi.number().required().messages({
+                        "string.empty": "level is required",
+                    }),
+                })
+            ),
 
         }),
     },

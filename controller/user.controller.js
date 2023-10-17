@@ -2,7 +2,7 @@ const bcrypt = require('bcrypt');
 const saltRounds = 7;
 const jwt = require('jsonwebtoken');
 const userRepo = require('../models/user/user.repo');
-const { setUpMails } = require('../emailServices/sendEmail');
+const { setUpMails } = require('../helpers/sendEmail');
 
 exports.signUp = async (req, res) => {
     try {
@@ -101,7 +101,7 @@ exports.forgetPassword = async (req, res) => {
             error: err.message
         });
     }
-} 
+}
 
 exports.submitNewPassword = async (req, res) => {
     try {
@@ -168,15 +168,43 @@ exports.changePassword = async (req, res) => {
 }
 
 exports.editProfile = async (req, res) => {
-
-}
-
-exports.uploadProfileImage = async (req, res) => {
-
+    try {
+        const userData = req.body;
+        const userId = req.user.id;
+        const user = await userRepo.updateUser({ _id: userId }, userData);
+        return res.status(user.statusCode).json({
+            message: user.message,
+        });
+    }
+    catch (err) {
+        return res.status(500).json({
+            message: "error",
+            error: err.message
+        })
+    }
 }
 
 exports.changeProfileImage = async (req, res) => {
-
+    try {
+        const type  = "destroy";
+        const result = await userRepo.uploadImage(req.file.path, req.user.id,);
+        if(!result.success){
+            return res.status(result.statusCode).json({
+                message: result.message,
+            });
+        }
+        const url = result.data ;
+        const user = await userRepo.updateUser({ _id: req.user.id }, {profileImage:url});
+        return res.status(user.statusCode).json({
+            message: user.message,
+        });
+    }
+    catch (err) {
+        return res.status(500).json({
+            message: "error",
+            error: err.message
+        })
+    }
 }
 
 
