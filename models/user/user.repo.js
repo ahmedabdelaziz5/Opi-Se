@@ -9,7 +9,7 @@ exports.isExist = async (filter, select) => {
         if (user) {
             return {
                 success: true,
-                statusCode: 201,
+                statusCode: 409,
                 message: "user already exist !",
                 data: user
             }
@@ -73,7 +73,7 @@ exports.updateUser = async (filter, edit) => {
                 if (match.email === edit.email) {
                     return {
                         success: false,
-                        statusCode: 400,
+                        statusCode: 409,
                         message: "email is already exist !"
                     }
                 }
