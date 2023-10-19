@@ -1,7 +1,7 @@
 const multer = require("multer");
 
 function fileFilter(req,file,cb){
-    if(file.mimetype=="image/png" || file.mimetype=="image/jpg") {
+    if(file.mimetype=="image/png" || file.mimetype=="image/jpeg") {
         cb(null,true);
     }
     else {

@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt');
 const saltRounds = 7;
 const jwt = require('jsonwebtoken');
 const userRepo = require('../models/user/user.repo');
+const { removeImageFromCloudinary, uploadImageToCloudinary } = require('../services/uploadImageToCloudinary');
 const { setUpMails } = require('../helpers/sendEmail');
 
 exports.signUp = async (req, res) => {
@@ -186,15 +187,35 @@ exports.editProfile = async (req, res) => {
 
 exports.changeProfileImage = async (req, res) => {
     try {
-        const type  = "destroy";
-        const result = await userRepo.uploadImage(req.file.path, req.user.id,);
-        if(!result.success){
+        const type = req.body.type;
+        let result;
+        if (type === "upload") {
+            result = await uploadImageToCloudinary(req.file.path, req.user.id, "users images");
+        }
+        else if (type === "remove") {
+            result = await removeImageFromCloudinary(req.user.id);
+        }
+        else {
+            return res.status(400).json({
+                message: "Not Authorized !"
+            })
+        }
+        if (!result.success) {
             return res.status(result.statusCode).json({
                 message: result.message,
             });
         }
-        const url = result.data ;
-        const user = await userRepo.updateUser({ _id: req.user.id }, {profileImage:url});
+
+        let user;
+
+        if (type === "upload") {
+            const url = result.data;
+            user = await userRepo.updateUser({ _id: req.user.id }, { profileImage: url });
+        }
+        else if (type === "remove") {
+            user = await userRepo.updateUser({ _id: req.user.id }, { profileImage: "default.png" });
+        }
+
         return res.status(user.statusCode).json({
             message: user.message,
         });
