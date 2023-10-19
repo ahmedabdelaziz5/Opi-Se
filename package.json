@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --timeout 9000",
+    "test": "mocha --timeout 5000",
     "start": "nodemon app"
   },
   "author": "",
@@ -12,6 +12,8 @@
   "dependencies": {
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
+    "chai": "^4.3.10",
+    "chai-http": "^4.4.0",
     "cloudinary": "^1.41.0",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
@@ -20,7 +22,7 @@
     "joi": "^17.11.0",
     "joi-objectid": "^4.0.2",
     "jsonwebtoken": "^9.0.2",
-    "moca": "^0.4.3",
+    "mocha": "^10.2.0",
     "mongoose": "^7.6.1",
     "multer": "^1.4.5-lts.1",
     "multer-storage-cloudinary": "^4.0.0",
