@@ -91,6 +91,12 @@ exports.verifyAccount = async (req, res) => {
 exports.forgetPassword = async (req, res) => {
     try {
         const { email } = req.body;
+        let userMatch = await userRepo.isExist({ email });
+        if (!userMatch.success) {
+            return res.status(userMatch.statusCode).json({
+                message: userMatch.message,
+            });
+        }
         const sendEmail = await setUpMails("forgetPasswrodEmail", { email });
         return res.status(sendEmail.statusCode).json({
             message: sendEmail.message,
@@ -114,12 +120,6 @@ exports.submitNewPassword = async (req, res) => {
             });
         }
         let decodedToken = jwt.verify(token, process.env.SECRET_JWT);
-        let userMatch = await userRepo.isExist({ email: decodedToken.email });
-        if (!userMatch.success) {
-            return res.status(userMatch.statusCode).json({
-                message: userMatch.message,
-            });
-        }
         let newPassword = await bcrypt.hash(password, saltRounds);
         let user = await userRepo.updateUser({ email: decodedToken.email }, { password: newPassword });
         return res.status(user.statusCode).json({

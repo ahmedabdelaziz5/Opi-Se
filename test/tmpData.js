@@ -1,3 +1,5 @@
+// This file contains the data that will be used in the tests
+
 exports.signUpObj = {
     userName : "ahmed", 
     email : "ahmedabdelaziz6018@gmail.com", 
@@ -21,5 +23,14 @@ exports.signUpObj = {
 
 exports.loginObj = {
     userName : "ahmed",
-    password : "1235"
+    password : "123"
+}
+
+exports.forgetPasswordObj = {
+    email : "ahmedabdelaziz6019@gmail.com"
+}
+
+exports.submitNewPasswordObj = {
+    password : "123",
+    confirmPassword : "123"
 }

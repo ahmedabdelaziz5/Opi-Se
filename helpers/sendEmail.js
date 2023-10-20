@@ -29,27 +29,37 @@ exports.setUpMails = async (emailType, emailCredentials) => {
 }
 
 const sendEmails = async (mailOptions) => {
+  try {
+    let transporter = nodemailer.createTranspor({
+      service: 'gmail',
+      auth: {
+        user: `${process.env.MAIL}`,
+        pass: `${process.env.PASS}`
+      },
+    });
 
-  let transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: `${process.env.MAIL}`,
-      pass: `${process.env.PASS}`
-    },
-  });
+    let obj = {
+      success: true,
+      statusCode: 200,
+      message: "success and your email was sent !"
+    };
+    transporter.sendMail(mailOptions, function (error, info) {
+      if (error) {
+        success: false,
+        obj.statusCode = 400,
+        obj.message = "could not send your email"
+      }
+    })
 
-  let obj = {
-    success: true,
-    statusCode: 200,
-    message: "success and your email was sent !"
-  };
-  transporter.sendMail(mailOptions, function (error, info) {
-    if (error) {
-      success : false,
-      obj.statusCode = 400,
-      obj.message = "could not send your email"
+    return obj;
+  }
+  catch (err) {
+    return {
+      success: false,
+      statusCode: 500,
+      message: "unexpected error"
+
     }
-  })
 
-  return obj;
+  }
 }
