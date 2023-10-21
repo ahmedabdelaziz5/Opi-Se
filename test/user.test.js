@@ -1,13 +1,13 @@
+const chai = require('chai');
 const app = require('../app');
 const mocha = require('mocha');
-const chai = require('chai');
+const data = require('./tmpData');
 const chaiHttp = require('chai-http');
 chai.use(chaiHttp);
-const data = require('./tmpData');
+
 let token;
 const jwt = require('jsonwebtoken');
-token = jwt.sign({email : "ahmedabdelaziz50@gmai.com"}, process.env.SECRET_JWT);
-
+token = jwt.sign({email: "ahmedabdelaziz123@gmail.com" }, process.env.SECRET_JWT);
 
 
 describe('__________signUp__________', () => {
@@ -77,7 +77,7 @@ describe('__________signUp__________', () => {
             });
     });
 
-})
+});
 
 describe('__________login__________', () => {
 
@@ -91,7 +91,7 @@ describe('__________login__________', () => {
                 chai.expect(res.body.message).to.equal("success");
                 chai.expect(res.body.token).to.be.a('string');
                 chai.expect(200);
-                // token = res.body.token;
+                token = res.body.token;
                 done();
             });
     });
@@ -135,7 +135,7 @@ describe('__________login__________', () => {
             });
     });
 
-})
+});
 
 describe('__________forgetPassword__________', () => {
 
@@ -191,7 +191,7 @@ describe('__________forgetPassword__________', () => {
             });
     });
 
-})
+});
 
 describe('__________submitNewPassword__________', () => {
 
@@ -237,5 +237,211 @@ describe('__________submitNewPassword__________', () => {
             });
     });
 
-})
+});
+
+describe('__________changePassword__________', () => {
+
+    it('should return status 201 if can password changed', (done) => {
+        chai
+            .request(app)
+            .post('/changePassword')
+            .send(data.changePasswordObj)
+            .set('Authorization', `Bearer ${token}`)
+            .end((err, res) => {
+                chai.expect(err).to.equal(null);
+                chai.expect(res.body.message).to.equal("success");
+                chai.expect(201);
+                done();
+            });
+    });
+
+    it('should return status 400 if pass and cPass do not match', (done) => {
+        chai
+            .request(app)
+            .post('/changePassword')
+            .send(data.changePasswordObj)
+            .set('Authorization', `Bearer ${token}`)
+            .end((err, res) => {
+                chai.expect(err).to.equal(null);
+                chai.expect(res.body.message).to.equal("new password and confirm new password not match !")
+                chai.expect(400);
+                done();
+            });
+    });
+
+    it('should return status 400 if user not exist', (done) => {
+        chai
+            .request(app)
+            .post('/changePassword')
+            .send(data.changePasswordObj)
+            .set('Authorization', `Bearer ${token}`)
+            .end((err, res) => {
+                chai.expect(err).to.equal(null);
+                chai.expect(res.body.message).to.equal("user not exist , please sign up first !");
+                chai.expect(400);
+                done();
+            });
+    });
+
+    it('should return status 400 if password was not correct', (done) => {
+        chai
+            .request(app)
+            .post('/changePassword')
+            .send(data.changePasswordObj)
+            .set('Authorization', `Bearer ${token}`)
+            .end((err, res) => {
+                chai.expect(err).to.equal(null);
+                chai.expect(res.body.message).to.equal("wrong password !");
+                chai.expect(400);
+                done();
+            });
+    });
+
+});
+
+describe('__________editProfile__________', () => {
+
+    it('should return status 201 if can edit profile', (done) => {
+        chai
+            .request(app)
+            .patch('/editProfile')
+            .send(data.editProfileObj)
+            .set('Authorization', `Bearer ${token}`)
+            .end((err, res) => {
+                chai.expect(err).to.equal(null);
+                chai.expect(res.body.message).to.equal("success");
+                chai.expect(201);
+                done();
+            });
+    });
+
+    it('should return status 400 if user not exist', (done) => {
+        chai
+            .request(app)
+            .patch('/editProfile')
+            .send(data.editProfileObj)
+            .set('Authorization', `Bearer ${token}`)
+            .end((err, res) => {
+                chai.expect(err).to.equal(null);
+                chai.expect(res.body.message).to.equal("user not exist , please sign up first !");
+                chai.expect(400);
+                done();
+            });
+    });
+
+    it('should return status 409 if email was already taken', (done) => {
+        chai
+            .request(app)
+            .patch('/editProfile')
+            .send(data.editProfileObj)
+            .set('Authorization', `Bearer ${token}`)
+            .end((err, res) => {
+                chai.expect(err).to.equal(null);
+                chai.expect(res.body.message).to.equal("email is already exist !");
+                chai.expect(409);
+                done();
+            });
+    });
+
+    it('should return status 400 if userName was already taken', (done) => {
+        chai
+            .request(app)
+            .patch('/editProfile')
+            .send(data.editProfileObj)
+            .set('Authorization', `Bearer ${token}`)
+            .end((err, res) => {
+                chai.expect(err).to.equal(null);
+                chai.expect(res.body.message).to.equal("user name is already taken !");
+                chai.expect(400);
+                done();
+            });
+    });
+
+});
+
+describe('__________changeProfileImage__________', () => {
+
+    it('should return status 200 if profile image was edited', (done) => {
+        chai
+            .request(app)
+            .post('/changeProfileImage')
+            .set({
+                'Authorization' : `Bearer ${token}`,
+                'Content-Type' : 'multipart/form-data'
+            })
+            .attach('userImage', './jok.jpg')
+            .field('type', 'remove')
+            .end((err, res) => {
+                chai.expect(err).to.equal(null);
+                chai.expect(res.body.message).to.equal("success");
+                chai.expect(200);
+                done();
+            });
+    });
+
+    it('should return status 400 if type is !remove and !upload', (done) => {
+        chai
+            .request(app)
+            .post('/changeProfileImage')
+            .set({
+                'Authorization' : `Bearer ${token}`,
+                'Content-Type' : 'multipart/form-data'
+            })
+            .attach('userImage', './jok.jpg')
+            .field('type', '')
+            .end((err, res) => {
+                chai.expect(err).to.equal(null);
+                chai.expect(res.body.message).to.equal("Not Authorized !");
+                chai.expect(400);
+                done();
+            });
+    });
+
+    it('should return status 500 if can not change photo', (done) => {
+        chai
+            .request(app)
+            .post('/changeProfileImage')
+            .set({
+                'Authorization' : `Bearer ${token}`,
+                'Content-Type' : 'multipart/form-data'
+            })
+            .attach('userImage', './jok.jpg')
+            .field('type', 'upload')
+            .end((err, res) => {
+                chai.expect(err).to.equal(null);
+                chai.expect(res.body.message).to.equal("something went wrong !");
+                chai.expect(500);
+                done();
+            });
+    });
+
+});
+
+describe('__________verifyAccount__________', () => {
+
+    it('should return status 201 if profile was verified successfully', (done) => {
+        chai
+            .request(app)
+            .get('/verifyAccount')
+            .query({ token })
+            .end((err, res) => {
+                chai.expect(err).to.equal(null);
+                chai.expect(200);
+                done();
+            });
+    });
+
+    it.only('should return status 400 if user not exist', (done) => {
+        chai
+            .request(app)
+            .get('/verifyAccount')
+            .query({ token })
+            .end((err, res) => {
+                chai.expect(err).to.equal(null);
+                chai.expect(400);
+                done();
+            });
+    });
+
+});
 

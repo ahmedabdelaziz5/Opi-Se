@@ -79,13 +79,24 @@ exports.login = async (req, res) => {
 }
 
 exports.verifyAccount = async (req, res) => {
-    let { token } = req.query;
-    let decodedToken = jwt.verify(token, process.env.SECRET_JWT);
-    let user = await userRepo.updateUser({ email: decodedToken.email }, { isVerified: true });
-    if (!user.success) {
-        return res.send('there is no such email , please register first');
+    try {
+        let { token } = req.query;
+        let decodedToken = jwt.verify(token, process.env.SECRET_JWT);
+        let user = await userRepo.updateUser({ email: decodedToken.email }, { isVerified: true });
+        if (!user.success) {
+            return res.status(400).send('there is no such email , please register first');
+        }
+        console.log(decodedToken.email);
+        return res.status(200).send("your account was verified successfully !")
     }
-    return res.send("your account was verified successfully !")
+    catch (err) {
+        console.log(err.message);
+        return res.status(500).json({
+            message: "error",
+            error: err.message
+        });
+    }
+
 }
 
 exports.forgetPassword = async (req, res) => {

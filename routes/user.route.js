@@ -31,8 +31,8 @@ app.post('/login', validator(loginValid), login);
 app.post('/forgetPassword', validator(forgetPasswordValid), forgetPassword);
 app.post('/submitNewPassword', validator(submitNewPasswordValid), submitNewPassword);
 app.post('/changePassword', decodeToken(), validator(changePasswordValid), changePassword);
-app.patch('/editProfile', decodeToken(), validator(editProfileValid), editProfile);
 app.post('/changeProfileImage', decodeToken(), upload.single('userImage'), changeProfileImage);
+app.patch('/editProfile', decodeToken(), validator(editProfileValid), editProfile);
 
 
 module.exports = app;  
