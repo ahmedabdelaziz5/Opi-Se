@@ -46,7 +46,7 @@ exports.signUp = async (req, res) => {
 exports.login = async (req, res) => {
     try {
         const userData = req.body;
-        let user = await userRepo.isExist({ userName: userData.userName });
+        let user = await userRepo.updateUser({ userName: userData.userName }, { $push: { deviceTokens :  userData.deviceToken} } );
         if (!user.success) {
             return res.status(user.statusCode).json({
                 message: user.message,
@@ -238,16 +238,3 @@ exports.changeProfileImage = async (req, res) => {
         })
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

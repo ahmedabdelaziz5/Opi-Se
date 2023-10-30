@@ -15,7 +15,11 @@ require("dotenv").config();
 const {databaseConnection} = require("./config/db.config");
 databaseConnection();
 
+const {connectToFireBase} = require('./config/fireBase.config');
+connectToFireBase();
+
 app.use(require("./routes/user.route"));
+app.use(require("./routes/match.route"));
 
 const http = require("http");
 const server = http.createServer(app);

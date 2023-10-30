@@ -74,6 +74,11 @@ module.exports = {
                 "any.required": "password is required"
             }),
 
+            deviceToken: joi.string().required().messages({
+                "string.empty": "device token can't be empty",
+                "any.required": "device token is required"
+            }),
+
         }),
     },
 

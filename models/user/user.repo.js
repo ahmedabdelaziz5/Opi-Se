@@ -87,7 +87,7 @@ exports.updateUser = async (filter, edit) => {
             }
         }
 
-        let user = await userModel.findOneAndUpdate(filter, edit);
+        let user = await userModel.findOneAndUpdate(filter, edit , {new: true});
         if (!user) {
             return {
                 success: false,
@@ -99,7 +99,8 @@ exports.updateUser = async (filter, edit) => {
         return {
             success: true,
             statusCode: 201,
-            message: "success"
+            message: "success",
+            data : user 
         }
     }
     catch (err) {

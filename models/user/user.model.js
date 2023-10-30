@@ -13,9 +13,15 @@ const userSchema = new mongoose.Schema({
     numOfReports: { type: Number, default: 0 },
     partnerId: { type: String, default: null },
     matchId: { type: String, default: null },
+    isAvailable : {type : Boolean, default : true},
+    deviceTokens: [{ type: String, required: true }],
     languages: [{
         languageName: { type: String, required: true },
         level: { type: Number, required: true, default: 3 }
+    }],
+    partnerRequests: [{
+        partnerId: { type: mongoose.Types.ObjectId, required: true },
+        partnerUserName: { type: String, required: true },
     }],
 });
 

@@ -34,5 +34,4 @@ app.post('/changePassword', decodeToken(), validator(changePasswordValid), chang
 app.post('/changeProfileImage', decodeToken(), upload.single('userImage'), changeProfileImage);
 app.patch('/editProfile', decodeToken(), validator(editProfileValid), editProfile);
 
-
 module.exports = app;  
