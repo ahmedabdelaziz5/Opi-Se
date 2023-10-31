@@ -1,9 +1,25 @@
-const userRepo = require("../models/user/user.repo");
 const mongoose = require('mongoose');
+const userRepo = require("../models/user/user.repo");
 const { sendNotification } = require('../services/sendPushNotification');
+const { recommendationModel } = require("../recommentations/getPartnerRecommendation");
 
 exports.getMatchRequest = async (req, res) => {
     try {
+
+        const userId = req.user.id;
+
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            return res.status(401).json({
+                message: "Not Authorized !"
+            })
+        }
+
+        const requests = await userRepo.isExist({ _id: userId }, 'partnerRequests');
+
+        return res.status(requests.statusCode).json({
+            message: requests.message,
+            data: requests.data
+        })
 
     }
     catch (err) {
@@ -53,9 +69,15 @@ exports.sendPartnerRequest = async (req, res) => {
     };
 }
 
+// demo 
 exports.getPartnerRecommendation = async (req, res) => {
     try {
-
+        const nationalId = req.user.nationalId;
+        const recommendation = await recommendationModel(nationalId)
+        res.status(recommendation.statusCode).json({
+            message : recommendation.message,
+            data : recommendation.data
+        });
     }
     catch (err) {
         return res.status(500).json({
@@ -89,3 +111,14 @@ exports.disMatchWithPartner = async (req, res) => {
     }
 }
 
+exports.searchForSpecificPartner = async (req, res) => {
+    try {
+
+    }
+    catch (err) {
+        return res.status(500).json({
+            message: "error",
+            error: err.message
+        })
+    }
+}

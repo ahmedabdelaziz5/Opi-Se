@@ -63,7 +63,7 @@ exports.login = async (req, res) => {
                 message: "wrong password !",
             });
         }
-        let token = jwt.sign({ id: user.data._id, userName: user.data.userName, email: user.data.email }, process.env.SECRET_JWT);
+        let token = jwt.sign({ id: user.data._id, userName: user.data.userName, email: user.data.email, nationalId : user.data.nationalId }, process.env.SECRET_JWT);
         return res.status(200).json({
             message: "success",
             token: token,

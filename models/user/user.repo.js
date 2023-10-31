@@ -1,11 +1,10 @@
 const userModel = require('../user/user.model');
 const bcrypt = require('bcrypt');
 const saltRounds = 7;
-const cloudinary = require("../../config/cloud.config");
 
 exports.isExist = async (filter, select) => {
     try {
-        const user = await userModel.findOne(filter).select(select);
+        const user = await userModel.findOne(filter).select(select).select('-password').lean();
         if (user) {
             return {
                 success: true,
@@ -87,7 +86,7 @@ exports.updateUser = async (filter, edit) => {
             }
         }
 
-        let user = await userModel.findOneAndUpdate(filter, edit , {new: true});
+        let user = await userModel.findOneAndUpdate(filter, edit , {new: true}).lean();
         if (!user) {
             return {
                 success: false,
@@ -110,37 +109,4 @@ exports.updateUser = async (filter, edit) => {
             message: err.message
         }
     }
-}
-
-exports.uploadImage = async (file, publicId) => {
-    try {
-        const result = await cloudinary.v2.uploader.upload(file, {
-            folder: "users images",
-            public_id: publicId,
-            overwrite: true,
-        },
-            function (error, result) {
-                if (error) {
-                    return {
-                        success: false,
-                        statusCode: 500,
-                        message: error.message
-                    }
-                };
-        });
-        return {
-            success: true,
-            statusCode: 201,
-            message: "success",
-            data: result.url
-        }
-    }
-    catch (err) {
-        return {
-            success: false,
-            statusCode: 500,
-            message: err.message
-        }
-    }
-
 }
