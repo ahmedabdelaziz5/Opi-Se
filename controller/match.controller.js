@@ -143,7 +143,6 @@ exports.acceptMatchRequest = async (req, res) => {
     }
 }
 
-// validation , rest of logic 
 exports.declineMatchRequest = async (req, res) => {
     try {
         const { id } = req.user;
@@ -158,7 +157,7 @@ exports.declineMatchRequest = async (req, res) => {
                 error: result[0].error || result[1].error || result[2].error
             })
         }
-        const notifyUser = await sendNotification(deviceTokens.data.deviceTokens, type = "rejectMatchRequest");
+        const notifyUser = await sendNotification(result[2].data.deviceTokens, type = "rejectMatchRequest");
         return res.status(notifyUser.statusCode).json({
             message: notifyUser.message
         })
@@ -173,7 +172,7 @@ exports.declineMatchRequest = async (req, res) => {
 
 exports.disMatchWithPartner = async (req, res) => {
     try {
-
+        
     }
     catch (err) {
         return res.status(500).json({
@@ -181,4 +180,4 @@ exports.disMatchWithPartner = async (req, res) => {
             error: err.message
         })
     }
-}
+} 

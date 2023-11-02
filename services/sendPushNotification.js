@@ -37,7 +37,7 @@ exports.sendNotification = async (deviceToken, type) => {
         if (result.successCount != 1) {
             return {
                 success: false,
-                statusCode: 500,
+                statusCode: 417,
                 message: "unable to send notification !",
             }
         }
