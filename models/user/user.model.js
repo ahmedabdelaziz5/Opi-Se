@@ -12,9 +12,11 @@ const userSchema = new mongoose.Schema({
     isVerified: { type: Boolean, default: false },
     numOfReports: { type: Number, default: 0 },
     partnerId: { type: String, default: null },
-    matchId: { type: String, default: null },
-    isAvailable : {type : Boolean, default : true},
-    deviceTokens: [{ type: String, required: true }],
+    matchId: { type: String, default: null, ref: 'user' },
+    isAvailable: { type: Boolean, default: true },
+    deviceTokens: [{
+        type: String, required: true,
+    }],
     languages: [{
         languageName: { type: String, required: true },
         level: { type: Number, required: true, default: 3 }
@@ -22,6 +24,8 @@ const userSchema = new mongoose.Schema({
     partnerRequests: [{
         partnerId: { type: mongoose.Types.ObjectId, required: true },
         partnerUserName: { type: String, required: true },
+        requestStatus: { type: String, default: "pending" },
+        email : {type : String, required : true},
     }],
 });
 

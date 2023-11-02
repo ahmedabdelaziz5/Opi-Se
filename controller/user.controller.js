@@ -64,6 +64,8 @@ exports.login = async (req, res) => {
             });
         }
         let token = jwt.sign({ id: user.data._id, userName: user.data.userName, email: user.data.email, nationalId : user.data.nationalId }, process.env.SECRET_JWT);
+        delete user.data.deviceTokens;
+        delete user.data.password;
         return res.status(200).json({
             message: "success",
             token: token,

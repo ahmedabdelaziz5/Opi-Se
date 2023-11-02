@@ -99,7 +99,7 @@ exports.updateUser = async (filter, edit) => {
             success: true,
             statusCode: 201,
             message: "success",
-            data : user 
+            data : user
         }
     }
     catch (err) {

@@ -2,14 +2,34 @@ const { firebaseAdmin } = require("../config/fireBase.config");
 const messaging = firebaseAdmin.messaging();
 
 
-exports.sendNotification = async (deviceToken) => {
+const checkType = (type) => {
+    if (type === "newPartnerRequest") {
+        return {
+            message: "You have a new partner request !"
+        }
+    }
+    else if (type === "acceptMatchRequest") {
+        return {
+            message: "Congratulations, you have a new partner !"
+        }
+    }
+    else if (type === "rejectMatchRequest") {
+        return {
+            message: "unfortunately, your partner request has been rejected !, try another recommendation !"
+        }
+    }
+
+}
+
+
+exports.sendNotification = async (deviceToken, type) => {
 
     try {
 
+        let body = checkType(type);
+
         const message = {
-            data: {
-                message: 'you have a new partner request !',
-            },
+            data: body,
             tokens: deviceToken
         };
         const result = await messaging.sendMulticast(message);
@@ -35,6 +55,7 @@ exports.sendNotification = async (deviceToken) => {
             success: false,
             statusCode: 500,
             message: "unexpected error !",
+            error : err.message
         }
     }
 }

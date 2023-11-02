@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 exports.setUpMails = async (emailType, emailCredentials) => {
 
   let mailOptions = {
-    from: 'Souls Team',
+    from: 'Opi Se Team',
     to: `${emailCredentials.email}`,
   };
 
@@ -23,6 +23,18 @@ exports.setUpMails = async (emailType, emailCredentials) => {
     mailOptions['html'] = `<b> <a href= https://graduation-project-j6gl.onrender.com/forgetPassword?token=${token} target= '_blank'>reset password</b>`;
   }
 
+  else if (emailType === "rejectionEmail") {
+    mailOptions['subject'] = "partner request status update";
+    mailOptions['text'] = `Dear learner,
+
+we are very sorry to inform you that your partner request has been rejected by the other learner.
+
+your chance doesn't end here, we believe that you will find your best match jsut hit the button and get more recommendations :)
+
+regards ... Opi Se Team
+  `;
+  }
+
   let result = await sendEmails(mailOptions);
   return result;
 
@@ -30,7 +42,7 @@ exports.setUpMails = async (emailType, emailCredentials) => {
 
 const sendEmails = async (mailOptions) => {
   try {
-    let transporter = nodemailer.createTranspor({
+    let transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
         user: `${process.env.MAIL}`,
@@ -45,15 +57,16 @@ const sendEmails = async (mailOptions) => {
     };
     transporter.sendMail(mailOptions, function (error, info) {
       if (error) {
-        success: false,
-        obj.statusCode = 400,
-        obj.message = "could not send your email"
+        obj.success = false,
+          obj.statusCode = 400,
+          obj.message = "could not send your email"
       }
     })
 
     return obj;
   }
   catch (err) {
+    console.log(err);
     return {
       success: false,
       statusCode: 500,
