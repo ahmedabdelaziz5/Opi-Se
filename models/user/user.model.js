@@ -27,6 +27,9 @@ const userSchema = new mongoose.Schema({
         requestStatus: { type: String, default: "pending" },
         email : {type : String, required : true},
     }],
+    history : [{
+        matchId : {type : String, required : true, ref : 'relationship'},
+    }]
 });
 
 

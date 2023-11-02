@@ -10,7 +10,11 @@ const relationshipSchema = new mongoose.Schema({
         messageType: { type: String, required: true, default: "text" },
         messageContent: { type: String, },
         messageQuestion: { type: String, },
-        messageOptions: [{ type: String, }],
+        messageOptions: [{ 
+            optionNumber: { type: Number, required: true },
+            optionContent: { type: String, required: true },
+            isChoosen: { type: Boolean, default: false },
+        }],
     }],
     progressPoints: { type: Number, required: true, default: 0 },
     matchBadges: [{ type: String, required: true, default: "badge.png" }],

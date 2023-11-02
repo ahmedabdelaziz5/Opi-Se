@@ -30,7 +30,7 @@ exports.getMatchRequest = async (req, res) => {
             error: err.message
         })
     }
-}
+};
 
 exports.searchForSpecificPartner = async (req, res) => {
     try {
@@ -52,7 +52,7 @@ exports.searchForSpecificPartner = async (req, res) => {
             error: err.message
         })
     }
-}
+};
 
 // demo 
 exports.getPartnerRecommendation = async (req, res) => {
@@ -70,7 +70,7 @@ exports.getPartnerRecommendation = async (req, res) => {
             error: err.message
         })
     }
-}
+};
 
 exports.sendPartnerRequest = async (req, res) => {
     try {
@@ -109,7 +109,7 @@ exports.sendPartnerRequest = async (req, res) => {
             error: err.message
         });
     };
-}
+};
 
 exports.acceptMatchRequest = async (req, res) => {
     try {
@@ -141,7 +141,7 @@ exports.acceptMatchRequest = async (req, res) => {
             error: err.message
         })
     }
-}
+};
 
 exports.declineMatchRequest = async (req, res) => {
     try {
@@ -168,7 +168,7 @@ exports.declineMatchRequest = async (req, res) => {
             error: err.message
         })
     }
-}
+};
 
 exports.disMatchWithPartner = async (req, res) => {
     try {
@@ -180,4 +180,4 @@ exports.disMatchWithPartner = async (req, res) => {
             error: err.message
         })
     }
-} 
+};
