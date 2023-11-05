@@ -14,6 +14,8 @@ const userSchema = new mongoose.Schema({
     partnerId: { type: String, default: null },
     matchId: { type: String, default: null, ref: 'user' },
     isAvailable: { type: Boolean, default: true },
+    joinedAt: { type: Date, default: Date.now() },
+    loginFrequency: { type: Number, default: 0 },
     deviceTokens: [{
         type: String, required: true,
     }],
@@ -25,10 +27,10 @@ const userSchema = new mongoose.Schema({
         partnerId: { type: mongoose.Types.ObjectId, required: true },
         partnerUserName: { type: String, required: true },
         requestStatus: { type: String, default: "pending" },
-        email : {type : String, required : true},
+        email: { type: String, required: true },
     }],
-    history : [{
-        matchId : {type : String, required : true, ref : 'relationship'},
+    history: [{
+        matchId: { type: String, required: true, ref: 'relationship' },
     }]
 });
 

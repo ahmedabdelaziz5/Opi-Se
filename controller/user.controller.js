@@ -2,8 +2,8 @@ const bcrypt = require('bcrypt');
 const saltRounds = 7;
 const jwt = require('jsonwebtoken');
 const userRepo = require('../models/user/user.repo');
-const { removeImageFromCloudinary, uploadImageToCloudinary } = require('../services/uploadImageToCloudinary');
 const { setUpMails } = require('../helpers/sendEmail');
+const { removeImageFromCloudinary, uploadImageToCloudinary } = require('../services/uploadImageToCloudinary');
 
 exports.signUp = async (req, res) => {
     try {
@@ -16,22 +16,16 @@ exports.signUp = async (req, res) => {
         }
         let addUserPromis = await userRepo.createUser(userData);
         let verificationMailPromis = await setUpMails("verificationMail", { email: userData.email });
-        let [addUser, verificationMail] = await Promise.all([addUserPromis, verificationMailPromis]);
+        let result = await Promise.all([addUserPromis, verificationMailPromis]);
 
-        if (!addUser.success) {
-            return res.status(addUser.statusCode).json({
-                message: addUser.message,
+        if (!result[0].success || !result[1].success) {
+            return res.status(417).json({
+                message: "unexpected error !"
             });
         }
 
-        if (!verificationMail.success) {
-            return res.status(verificationMail.statusCode).json({
-                message: verificationMail.message,
-            });
-        }
-
-        return res.status(addUser.statusCode).json({
-            message: addUser.message,
+        return res.status(200).json({
+            message: "success"
         });
 
     }
@@ -46,7 +40,7 @@ exports.signUp = async (req, res) => {
 exports.login = async (req, res) => {
     try {
         const userData = req.body;
-        let user = await userRepo.updateUser({ userName: userData.userName }, { $push: { deviceTokens :  userData.deviceToken} } );
+        let user = await userRepo.updateUser({ userName: userData.userName }, { $push: { deviceTokens: userData.deviceToken }, $inc : {loginFrequency : 1} });
         if (!user.success) {
             return res.status(user.statusCode).json({
                 message: user.message,
@@ -63,13 +57,16 @@ exports.login = async (req, res) => {
                 message: "wrong password !",
             });
         }
-        let token = jwt.sign({ id: user.data._id, userName: user.data.userName, email: user.data.email, nationalId : user.data.nationalId }, process.env.SECRET_JWT);
+        let token = jwt.sign({ id: user.data._id, userName: user.data.userName, email: user.data.email, nationalId: user.data.nationalId }, process.env.SECRET_JWT);
         delete user.data.deviceTokens;
         delete user.data.password;
+        let firstTime = user.data.loginFrequency === 1 ? true : false;
+        delete user.data.loginFrequency;
         return res.status(200).json({
             message: "success",
             token: token,
-            data: user.data
+            data: user.data,
+            firstTime : firstTime
         });
     }
     catch (err) {

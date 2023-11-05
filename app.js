@@ -20,6 +20,8 @@ connectToFireBase();
 
 app.use(require("./routes/user.route"));
 app.use(require("./routes/match.route"));
+app.use(require("./routes/recommendation.route"));
+
 
 const http = require("http");
 const server = http.createServer(app);

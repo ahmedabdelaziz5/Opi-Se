@@ -1,9 +1,8 @@
 const mongoose = require('mongoose');
+const { setUpMails } = require('../helpers/sendEmail');
 const userRepo = require("../models/user/user.repo");
 const { sendNotification } = require('../services/sendPushNotification');
-const { recommendationModel } = require("../recommentations/getPartnerRecommendation");
 const relationshipRepo = require("../models/relationship/relationship.repo");
-const { setUpMails } = require('../helpers/sendEmail');
 
 exports.getMatchRequest = async (req, res) => {
     try {
@@ -35,34 +34,21 @@ exports.getMatchRequest = async (req, res) => {
 exports.searchForSpecificPartner = async (req, res) => {
     try {
         const { userId } = req.query;
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            return res.status(401).json({
+                message: "Not Authorized !"
+            })
+        }
         const result = await userRepo.isExist({ _id: userId }, '-password');
         if (!result.success) {
             return res.status(result.statusCode).json({
-                message: result.message
+                message: "partner not found !"
             })
         }
         return res.status(200).json({
             message: "success",
             data: result.data
         })
-    }
-    catch (err) {
-        return res.status(500).json({
-            message: "error",
-            error: err.message
-        })
-    }
-};
-
-// demo 
-exports.getPartnerRecommendation = async (req, res) => {
-    try {
-        const nationalId = req.user.nationalId;
-        const recommendation = await recommendationModel(nationalId)
-        res.status(recommendation.statusCode).json({
-            message: recommendation.message,
-            data: recommendation.data
-        });
     }
     catch (err) {
         return res.status(500).json({
@@ -147,6 +133,11 @@ exports.declineMatchRequest = async (req, res) => {
     try {
         const { id } = req.user;
         const { rejectedUserId, email } = req.body;
+        if (!mongoose.Types.ObjectId.isValid(rejectedUserId)) {
+            return res.status(401).json({
+                message: "Not Authorized !"
+            })
+        }
         const user = userRepo.updateUser({ _id: id }, { partnerRequests: [] });
         const deliverEmail = setUpMails("rejectionEmail", { email: email });
         const deviceTokens = userRepo.isExist({ _id: rejectedUserId }, 'deviceTokens');
@@ -172,7 +163,7 @@ exports.declineMatchRequest = async (req, res) => {
 
 exports.disMatchWithPartner = async (req, res) => {
     try {
-        
+
     }
     catch (err) {
         return res.status(500).json({

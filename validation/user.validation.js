@@ -96,20 +96,20 @@ module.exports = {
     },
 
     submitNewPasswordValid: {
-            
-            body: joi.object().required().keys({
-    
-                password: joi.string().required().messages({
-                    "string.empty": "password can't be empty",
-                    "any.required": "password is required"
-                }),
-    
-                confirmPassword: joi.string().required().messages({
-                    "string.empty": "confirm password can't be empty",
-                    "any.required": "confirm password is required"
-                }),
-    
+
+        body: joi.object().required().keys({
+
+            password: joi.string().required().messages({
+                "string.empty": "password can't be empty",
+                "any.required": "password is required"
             }),
+
+            confirmPassword: joi.string().required().messages({
+                "string.empty": "confirm password can't be empty",
+                "any.required": "confirm password is required"
+            }),
+
+        }),
     },
 
     changePasswordValid: {
@@ -138,7 +138,7 @@ module.exports = {
 
         body: joi.object().required().keys({
 
-            userName: joi.string() ,
+            userName: joi.string(),
 
             email: joi.string().email(),
 
