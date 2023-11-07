@@ -5,11 +5,6 @@ module.exports = {
     submitUserPrefersValid: {
         body: joi.object().required().keys({
 
-            nationalId: joi.string().required().messages({
-                "string.empty": "national ID can't be empty",
-                "any.required": "national ID is required"
-            }),
-
             fieldOfStudy: joi.string().required().messages({
                 "string.empty": "fieldOfStudy can't be empty",
                 "any.required": "fieldOfStudy is required"

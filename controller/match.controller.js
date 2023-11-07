@@ -3,6 +3,7 @@ const { setUpMails } = require('../helpers/sendEmail');
 const userRepo = require("../models/user/user.repo");
 const { sendNotification } = require('../services/sendPushNotification');
 const relationshipRepo = require("../models/relationship/relationship.repo");
+const recommendationRepo = require("../models/recommendation/recomendation.repo");
 
 exports.getMatchRequest = async (req, res) => {
     try {
@@ -61,7 +62,7 @@ exports.searchForSpecificPartner = async (req, res) => {
 exports.sendPartnerRequest = async (req, res) => {
     try {
 
-        const { userId } = req.query;
+        const { userId, nationalId } = req.query;
 
         if (!mongoose.Types.ObjectId.isValid(userId)) {
             return res.status(401).json({
@@ -71,11 +72,11 @@ exports.sendPartnerRequest = async (req, res) => {
 
         newRequest = {
             partnerId: req.user.id,
+            nationalId: nationalId,
             partnerUserName: req.user.userName
         };
 
         const deviceTokens = await userRepo.updateUser({ _id: userId }, { $push: { partnerRequests: newRequest }, isAvailable: false });
-
         if (!deviceTokens.success) {
             return res.status(deviceTokens.statusCode).json({
                 message: deviceTokens.message
@@ -95,38 +96,6 @@ exports.sendPartnerRequest = async (req, res) => {
             error: err.message
         });
     };
-};
-
-exports.acceptMatchRequest = async (req, res) => {
-    try {
-        const { partner2Id } = req.query;
-        const partner1Id = req.user.id;
-
-        if (!mongoose.Types.ObjectId.isValid(partner2Id)) {
-            return res.status(401).json({
-                message: "Not Authorized !"
-            })
-        }
-        const matchId = `M${partner1Id}${partner2Id}`
-        const updatePartner1 = userRepo.updateUser({ _id: partner1Id }, { matchId: matchId, partnerId: partner2Id, isAvailable: false });
-        const updatePartner2 = userRepo.updateUser({ _id: partner2Id }, { matchId: matchId, partnerId: partner1Id, isAvailable: false });
-        const createRelationship = relationshipRepo.createRelationship({ firstPartnerId: partner1Id, secondPartnerId: partner2Id, matchId: matchId, matchDate: Date.now() });
-        const result = await Promise.all([updatePartner1, updatePartner2, createRelationship]);
-        if (!result[0].success || !result[1].success || !result[2].success) {
-            return res.status(500).json({
-                message: "error",
-                error: "Something went wrong"
-            })
-        }
-        const notifyPartner2 = await sendNotification(result[1].data.deviceTokens, type = "acceptMatchRequest");
-        return res.status(notifyPartner2.statusCode).json({ message: notifyPartner2.message })
-    }
-    catch (err) {
-        return res.status(500).json({
-            message: "error",
-            error: err.message
-        })
-    }
 };
 
 exports.declineMatchRequest = async (req, res) => {
@@ -161,9 +130,36 @@ exports.declineMatchRequest = async (req, res) => {
     }
 };
 
-exports.disMatchWithPartner = async (req, res) => {
+exports.acceptMatchRequest = async (req, res) => {
     try {
+        const { partner2Id, nationalId } = req.query;
+        const partner1Id = req.user.id;
 
+        if (!mongoose.Types.ObjectId.isValid(partner2Id)) {
+            return res.status(401).json({
+                message: "Not Authorized !"
+            })
+        }
+        const matchId = `M${partner1Id}${partner2Id}`
+        const updatePartner1 = userRepo.updateUser({ _id: partner1Id }, { matchId: matchId, partnerId: partner2Id, isAvailable: false });
+        const updatePartner2 = userRepo.updateUser({ _id: partner2Id }, { matchId: matchId, partnerId: partner1Id, isAvailable: false });
+        const createRelationship = relationshipRepo.createRelationship({
+            firstPartnerId: partner1Id,
+            secondPartnerId: partner2Id,
+            firstNationalId: req.user.nationalId,
+            secondNationalId: nationalId,
+            matchId: matchId,
+            matchDate: Date.now()
+        });
+        const result = await Promise.all([updatePartner1, updatePartner2, createRelationship]);
+        if (!result[0].success || !result[1].success || !result[2].success) {
+            return res.status(500).json({
+                message: "error",
+                error: result[0].error || result[1].error || result[2].error
+            })
+        }
+        const notifyPartner2 = await sendNotification(result[1].data.deviceTokens, type = "acceptMatchRequest");
+        return res.status(notifyPartner2.statusCode).json({ message: notifyPartner2.message })
     }
     catch (err) {
         return res.status(500).json({
@@ -172,3 +168,37 @@ exports.disMatchWithPartner = async (req, res) => {
         })
     }
 };
+
+exports.disMatchWithPartner = async (req, res) => {
+    try {
+        const rate = req.body;
+        let relationshipId = req.query.relationshipId;
+        let relationship = await relationshipRepo.isExist({ matchId: relationshipId });
+        if (!relationship.success) {
+            return res.status(relationship.statusCode).json({
+                message: relationship.message
+            })
+        }
+        const updateUsersProgress = userRepo.updateManyUsers(
+            { _id: { $in: [relationship.data.firstPartnerId, relationship.data.secondPartnerId] } },
+            { isAvailable: true, matchId: null, partnerId: null, $inc: { points: relationship.data.progressPoints }, history: { matchId: relationshipId } }
+        )
+        const updateRate = recommendationRepo.updateData({ nationalId: req.user.nationalId }, { $push: { partnerRate: rate } })
+        const result = await Promise.all([updateUsersProgress, updateRate]);
+        if (!result[0].success || !result[1].success) {
+            return res.status(500).json({
+                message: "error",
+                error: result[0].error || result[1].error
+            })
+        }
+        return res.status(200).json({
+            message: "success"
+        })
+    }
+    catch (err) {
+        return res.status(500).json({
+            message: "error",
+            error: err.message
+        })
+    }
+}; 

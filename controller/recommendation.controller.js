@@ -48,6 +48,7 @@ exports.getOnlineRecommendation = async (req, res) => {
 exports.submitUserPrefers = async (req, res) => {
     try {
         const userData = req.body;
+        userData['nationalId'] = req.user.nationalId ; 
         let result = await recommendationRepo.replicateDataForModels(userData);
         return res.status(result.statusCode).json({
             message: result.message,

@@ -63,7 +63,7 @@ exports.createUser = async (data) => {
     }
 }
 
-exports.updateUser = async (filter, edit) => {
+exports.updateUser = async (filter, edit, select) => {
     try {
 
         if (edit.email || edit.userName) {
@@ -86,7 +86,7 @@ exports.updateUser = async (filter, edit) => {
             }
         }
 
-        let user = await userModel.findOneAndUpdate(filter, edit , {new: true}).lean();
+        let user = await userModel.findOneAndUpdate(filter, edit, { new: true }).select(select).lean();
         if (!user) {
             return {
                 success: false,
@@ -99,7 +99,33 @@ exports.updateUser = async (filter, edit) => {
             success: true,
             statusCode: 201,
             message: "success",
-            data : user
+            data: user
+        }
+    }
+    catch (err) {
+        return {
+            success: false,
+            statusCode: 500,
+            message: err.message
+        }
+    }
+}
+
+exports.updateManyUsers = async (filter, edit) => {
+    try {
+        let user = await userModel.updateMany(filter, edit);
+        if (!user) {
+            return {
+                success: false,
+                statusCode: 400,
+                message: "user not exist , please sign up first !",
+            }
+        }
+        return {
+            success: true,
+            statusCode: 201,
+            message: "success",
+            data: user
         }
     }
     catch (err) {

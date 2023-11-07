@@ -89,3 +89,28 @@ exports.replicateDataForModels = async (data) => {
         }
     }
 }
+
+exports.updateData = async (filter, update) => {
+    try {
+        const result = await recommendationModel.updateOne(filter, update);
+        if(!result){
+            return {
+                success: false,
+                statusCode: 417,
+                message: "could not update data !"
+            }
+        }
+        return {
+            success: true,
+            statusCode: 201,
+            message: "success",
+        }
+    }
+    catch (err) {
+        return {
+            success: false,
+            statusCode: 500,
+            message: err.message
+        }
+    }
+} 

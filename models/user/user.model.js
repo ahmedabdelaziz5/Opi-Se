@@ -16,6 +16,11 @@ const userSchema = new mongoose.Schema({
     isAvailable: { type: Boolean, default: true },
     joinedAt: { type: Date, default: Date.now() },
     loginFrequency: { type: Number, default: 0 },
+    points: { type: Number, default: 0 },
+    notifications: [{
+        message: { type: String, required: true },
+        date: { type: Date, required: true, default: Date.now() },
+    }],
     deviceTokens: [{
         type: String, required: true,
     }],
@@ -25,6 +30,7 @@ const userSchema = new mongoose.Schema({
     }],
     partnerRequests: [{
         partnerId: { type: mongoose.Types.ObjectId, required: true },
+        nationalId: { type: String, required: true },
         partnerUserName: { type: String, required: true },
         requestStatus: { type: String, default: "pending" },
         email: { type: String, required: true },

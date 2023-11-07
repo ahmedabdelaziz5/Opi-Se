@@ -18,6 +18,11 @@ const checkType = (type) => {
             message: "unfortunately, your partner request has been rejected !, try another recommendation !"
         }
     }
+    else if (type === "disMatchWithPartner") {
+        return {
+            message: "unfortunately, your partner ended the connection but it is not the end we can find your best match !"
+        }
+    }
 
 }
 
@@ -51,6 +56,7 @@ exports.sendNotification = async (deviceToken, type) => {
 
     }
     catch (err) {
+        console.log(err);
         return {
             success: false,
             statusCode: 500,

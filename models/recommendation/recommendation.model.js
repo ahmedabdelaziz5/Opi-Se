@@ -15,12 +15,18 @@ const recommendationSchema = new mongoose.Schema({
         question: { type: String, required: true },
         answer: { type: String, required: true },
     }],
-    userSkills : [{
-        skillName : {type : String, required : true},
-        skillRate : {type : Number, required : true, default : 0}
+    userSkills: [{
+        skillName: { type: String, required: true },
+        skillRate: { type: Number, required: true, default: 0 }
     }]
 });
 
 const recommendationModel = mongoose.model('recommendation', recommendationSchema);
 
 module.exports = recommendationModel;
+
+
+
+[
+    
+]

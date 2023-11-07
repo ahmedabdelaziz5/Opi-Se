@@ -40,7 +40,8 @@ exports.signUp = async (req, res) => {
 exports.login = async (req, res) => {
     try {
         const userData = req.body;
-        let user = await userRepo.updateUser({ userName: userData.userName }, { $push: { deviceTokens: userData.deviceToken }, $inc : {loginFrequency : 1} });
+        const select = '-deviceTokens -history'
+        let user = await userRepo.updateUser({ userName: userData.userName }, { $push: { deviceTokens: userData.deviceToken }, $inc : {loginFrequency : 1} }, select);
         if (!user.success) {
             return res.status(user.statusCode).json({
                 message: user.message,
@@ -58,10 +59,8 @@ exports.login = async (req, res) => {
             });
         }
         let token = jwt.sign({ id: user.data._id, userName: user.data.userName, email: user.data.email, nationalId: user.data.nationalId }, process.env.SECRET_JWT);
-        delete user.data.deviceTokens;
-        delete user.data.password;
         let firstTime = user.data.loginFrequency === 1 ? true : false;
-        delete user.data.loginFrequency;
+        delete user.data.password;
         return res.status(200).json({
             message: "success",
             token: token,
