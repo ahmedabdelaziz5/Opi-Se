@@ -5,6 +5,7 @@ const { sendNotification } = require('../services/sendPushNotification');
 const relationshipRepo = require("../models/relationship/relationship.repo");
 const recommendationRepo = require("../models/recommendation/recomendation.repo");
 
+
 exports.getMatchRequest = async (req, res) => {
     try {
 
@@ -70,6 +71,17 @@ exports.sendPartnerRequest = async (req, res) => {
             })
         }
 
+        const savePartnerNotification = await userRepo.updateUser(
+            { _id: userId },
+            { $push: { notifications: { message: "you have a new partner request check it out !" } } },
+        )
+
+        if (!savePartnerNotification.success) {
+            return res.status(partner.statusCode).json({
+                message: partner.message
+            })
+        }
+
         newRequest = {
             partnerId: req.user.id,
             nationalId: nationalId,
@@ -101,17 +113,21 @@ exports.sendPartnerRequest = async (req, res) => {
 exports.declineMatchRequest = async (req, res) => {
     try {
         const { id } = req.user;
-        const { rejectedUserId, email } = req.body;
+        const { rejectedUserId, email, requestId } = req.body;
         if (!mongoose.Types.ObjectId.isValid(rejectedUserId)) {
             return res.status(401).json({
                 message: "Not Authorized !"
             })
         }
-        const user = userRepo.updateUser({ _id: id }, { partnerRequests: [] });
+        const user = userRepo.updateUser({ _id: id }, { $pull: { partnerRequests: { _id: requestId } } });
         const deliverEmail = setUpMails("rejectionEmail", { email: email });
         const deviceTokens = userRepo.isExist({ _id: rejectedUserId }, 'deviceTokens');
-        const result = await Promise.all([deliverEmail, user, deviceTokens]);
-        if (!result[0].success || !result[1].success || !result[2].success) {
+        const savePartnerNotification = userRepo.updateUser(
+            { _id: rejectedUserId },
+            { $push: { notifications: { message: "unfortunately, your partner request was rejected, but it's not the end you still can find your another partner :) " } } },
+        )
+        const result = await Promise.all([deliverEmail, user, deviceTokens, savePartnerNotification]);
+        if (!result[0].success || !result[1].success || !result[2].success || !result[3].success) {
             return res.status(500).json({
                 message: "error",
                 error: result[0].error || result[1].error || result[2].error
@@ -141,8 +157,14 @@ exports.acceptMatchRequest = async (req, res) => {
             })
         }
         const matchId = `M${partner1Id}${partner2Id}`
-        const updatePartner1 = userRepo.updateUser({ _id: partner1Id }, { matchId: matchId, partnerId: partner2Id, isAvailable: false });
-        const updatePartner2 = userRepo.updateUser({ _id: partner2Id }, { matchId: matchId, partnerId: partner1Id, isAvailable: false });
+        const updatePartner1 = userRepo.updateUser(
+            { _id: partner1Id },
+            { matchId: matchId, partnerId: partner2Id, isAvailable: false, partnerRequests: [] }
+        );
+        const updatePartner2 = userRepo.updateUser(
+            { _id: partner2Id },
+            { matchId: matchId, partnerId: partner1Id, isAvailable: false, partnerRequests: [], $push: { notifications: { message: "you a new partner with a new chance don't miss this !" } } }
+        );
         const createRelationship = relationshipRepo.createRelationship({
             firstPartnerId: partner1Id,
             secondPartnerId: partner2Id,
@@ -172,8 +194,8 @@ exports.acceptMatchRequest = async (req, res) => {
 exports.disMatchWithPartner = async (req, res) => {
     try {
         const rate = req.body;
-        let relationshipId = req.query.relationshipId;
-        let relationship = await relationshipRepo.isExist({ matchId: relationshipId });
+        let { matchId } = req.query;
+        let relationship = await relationshipRepo.isExist({ matchId: matchId });
         if (!relationship.success) {
             return res.status(relationship.statusCode).json({
                 message: relationship.message
@@ -181,7 +203,10 @@ exports.disMatchWithPartner = async (req, res) => {
         }
         const updateUsersProgress = userRepo.updateManyUsers(
             { _id: { $in: [relationship.data.firstPartnerId, relationship.data.secondPartnerId] } },
-            { isAvailable: true, matchId: null, partnerId: null, $inc: { points: relationship.data.progressPoints }, history: { matchId: relationshipId } }
+            {
+                isAvailable: true, matchId: null, partnerId: null, $inc: { points: relationship.data.progressPoints }, history: { matchId: matchId },
+                $push: { notifications: { message: "it seems like your partner wasn't your best match, but the chance is not over yet. you can look for a better partner" } }
+            }
         )
         const updateRate = recommendationRepo.updateData({ nationalId: req.user.nationalId }, { $push: { partnerRate: rate } })
         const result = await Promise.all([updateUsersProgress, updateRate]);

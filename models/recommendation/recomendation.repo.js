@@ -2,12 +2,10 @@ const recommendationModel = require('./recommendation.model');
 const userModel = require('../user/user.model');
 const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 
-
+// when user login for the first time we will get his recommendation array 
 exports.getFirstRecommendation = async (nationalId) => {
     try {
-        //https://recommendation?nationalId=${nationalId}
-        // https://api.nationalize.io?name=nathaniel
-        const recommendation = await fetch(``);
+        const recommendation = await fetch(`https://cbr-api-gdfd.onrender.com/nationalId=${nationalId}`);
         const data = await recommendation.json();
         if (recommendation.status !== 200) {
             return {
@@ -21,7 +19,6 @@ exports.getFirstRecommendation = async (nationalId) => {
             success: true,
             statusCode: 200,
             message: "success",
-            data: data
         }
     }
     catch (err) {
@@ -32,8 +29,9 @@ exports.getFirstRecommendation = async (nationalId) => {
             error: err.message
         }
     }
-}
+};
 
+// whenever the user ask for partner recommendation we will get his recommendation array
 exports.getUserRecommendations = async (nationalId, page, select) => {
     try {
         const limit = 5;
@@ -43,11 +41,13 @@ exports.getUserRecommendations = async (nationalId, page, select) => {
         const users = await userModel.find({ nationalId: { $in: recommendation }, isAvailable: true }).select(select);
         if (users.length === 0) {
             return {
+                hasRecommendation: false,
                 statusCode: 200,
                 message: "there is no recommendations yet !",
             }
         }
         return {
+            hasRecommendation: true,
             statusCode: 200,
             message: "success",
             totalNumOfItems: users.length,
@@ -63,11 +63,12 @@ exports.getUserRecommendations = async (nationalId, page, select) => {
             message: err.message
         }
     }
-}
+};
 
+// replicate data for ML model ( recommendation collection )
 exports.replicateDataForModels = async (data) => {
     try {
-        let result = await recommendationModel.create(data);
+        let result = await recommendationModel.findOneAndUpdate({nationalId : data.nationalId}, data, { upsert: true, new: true });
         if (!result) {
             return {
                 success: false,
@@ -88,12 +89,13 @@ exports.replicateDataForModels = async (data) => {
             message: err.message
         }
     }
-}
+};
 
+// update data for ML model ( update rate when user dismatch in recommendation collection )
 exports.updateData = async (filter, update) => {
     try {
         const result = await recommendationModel.updateOne(filter, update);
-        if(!result){
+        if (!result) {
             return {
                 success: false,
                 statusCode: 417,
@@ -113,4 +115,4 @@ exports.updateData = async (filter, update) => {
             message: err.message
         }
     }
-} 
+};
