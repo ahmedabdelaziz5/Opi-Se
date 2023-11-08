@@ -41,7 +41,7 @@ exports.login = async (req, res) => {
     try {
         const userData = req.body;
         const select = '-deviceTokens -history'
-        let user = await userRepo.updateUser({ userName: userData.userName }, { $push: { deviceTokens: userData.deviceToken }, $inc : {loginFrequency : 1} }, select);
+        let user = await userRepo.updateUser({ userName: userData.userName }, { $push: { deviceTokens: userData.deviceToken }, $inc: { loginFrequency: 1 } }, select);
         if (!user.success) {
             return res.status(user.statusCode).json({
                 message: user.message,
@@ -65,7 +65,7 @@ exports.login = async (req, res) => {
             message: "success",
             token: token,
             data: user.data,
-            firstTime : firstTime
+            firstTime: firstTime
         });
     }
     catch (err) {
@@ -95,6 +95,22 @@ exports.verifyAccount = async (req, res) => {
         });
     }
 
+}
+
+exports.resendVerificationEmail = async(req,res)=>{
+    try{
+        const {email} = req.query;
+        let emailUser = await setUpMails("verificationMail", {email : email});
+        return res.status(emailUser.statusCode).json({
+            message : emailUser.message
+        })
+    }
+    catch(err){
+        return res.status(500).json({
+            message : "error",
+            error : err.message 
+        })
+    }
 }
 
 exports.forgetPassword = async (req, res) => {
@@ -146,6 +162,11 @@ exports.submitNewPassword = async (req, res) => {
 exports.changePassword = async (req, res) => {
     try {
         const { oldPassword, newPassword, confirmNewPassword } = req.body;
+        if (oldPassword === newPassword) {
+            return res.status(400).json({
+                message: "new password must be different from old password"
+            })
+        }
         if (newPassword != confirmNewPassword) {
             return res.status(400).json({
                 message: "new password and confirm new password not match !"
@@ -235,4 +256,4 @@ exports.changeProfileImage = async (req, res) => {
             error: err.message
         })
     }
-}
+} 

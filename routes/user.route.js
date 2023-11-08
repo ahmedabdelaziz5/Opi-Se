@@ -9,6 +9,7 @@ const {
     changePassword,
     editProfile,
     changeProfileImage,
+    resendVerificationEmail
 } = require('../controller/user.controller');
 
 const {
@@ -26,6 +27,7 @@ const { decodeToken } = require('../Auth/decodeToken');
 const upload = require('../helpers/mediaUpload');
 
 app.get('/verifyAccount', verifyAccount);
+app.get('/resendVerificationEmail', resendVerificationEmail);
 app.post('/signUp', validator(signUpValid), signUp);
 app.post('/login', validator(loginValid), login);
 app.post('/forgetPassword', validator(forgetPasswordValid), forgetPassword);
@@ -33,5 +35,6 @@ app.post('/submitNewPassword', validator(submitNewPasswordValid), submitNewPassw
 app.post('/changePassword', decodeToken(), validator(changePasswordValid), changePassword);
 app.post('/changeProfileImage', decodeToken(), upload.single('userImage'), changeProfileImage);
 app.patch('/editProfile', decodeToken(), validator(editProfileValid), editProfile);
+
 
 module.exports = app;  
