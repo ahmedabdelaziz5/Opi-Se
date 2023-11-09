@@ -174,6 +174,7 @@ exports.acceptMatchRequest = async (req, res) => {
             matchDate: Date.now()
         });
         const result = await Promise.all([updatePartner1, updatePartner2, createRelationship]);
+        console.log(result);
         if (!result[0].success || !result[1].success || !result[2].success) {
             return res.status(500).json({
                 message: "error",
@@ -181,7 +182,12 @@ exports.acceptMatchRequest = async (req, res) => {
             })
         }
         const notifyPartner2 = await sendNotification(result[1].data.deviceTokens, type = "acceptMatchRequest");
-        return res.status(notifyPartner2.statusCode).json({ message: notifyPartner2.message })
+        return res.status(notifyPartner2.statusCode).json({
+            message: "success",
+            acceptedPartner: partner1Id,
+            notifiedPartner: partner2Id,
+            matchId: matchId
+        })
     }
     catch (err) {
         return res.status(500).json({

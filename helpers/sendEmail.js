@@ -20,7 +20,7 @@ exports.setUpMails = async (emailType, emailCredentials) => {
     let token = jwt.sign({ email: emailCredentials.email }, process.env.SECRET_JWT, { expiresIn: `1d` });
     mailOptions['subject'] = "forget passowrd access";
     mailOptions['text'] = "please click the button to reset your account password";
-    mailOptions['html'] = `<b> <a href= https://graduation-project-j6gl.onrender.com/forgetPassword?token=${token} target= '_blank'>reset password</b>`;
+    mailOptions['html'] = `<b> <a href= https://opi-se.vercel.app/reset-password?token=${token} target= '_blank'>reset password</b>`;
   }
 
   else if (emailType === "rejectionEmail") {

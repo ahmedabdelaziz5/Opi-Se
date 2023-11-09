@@ -1,3 +1,4 @@
+const { boolean } = require('joi');
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
@@ -11,11 +12,11 @@ const userSchema = new mongoose.Schema({
     profileImage: { type: String, required: true, default: "default.png" },
     isVerified: { type: Boolean, default: false },
     numOfReports: { type: Number, default: 0 },
-    partnerId: { type: String, default: null },
+    partnerId: { type: String, default: null, ref : 'user' },
     matchId: { type: String, default: null, ref: 'user' },
     isAvailable: { type: Boolean, default: true },
     joinedAt: { type: Date, default: Date.now() },
-    loginFrequency: { type: Number, default: 0 },
+    getUserPrefers: { type: Boolean, default: true },
     points: { type: Number, default: 0 },
     notifications: [{
         message: { type: String, required: true },

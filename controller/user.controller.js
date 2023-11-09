@@ -5,6 +5,7 @@ const userRepo = require('../models/user/user.repo');
 const { setUpMails } = require('../helpers/sendEmail');
 const { removeImageFromCloudinary, uploadImageToCloudinary } = require('../services/uploadImageToCloudinary');
 
+
 exports.signUp = async (req, res) => {
     try {
         const userData = req.body;
@@ -41,7 +42,7 @@ exports.login = async (req, res) => {
     try {
         const userData = req.body;
         const select = '-deviceTokens -history'
-        let user = await userRepo.updateUser({ userName: userData.userName }, { $push: { deviceTokens: userData.deviceToken }, $inc: { loginFrequency: 1 } }, select);
+        let user = await userRepo.updateUser({ userName: userData.userName }, { $push: { deviceTokens: userData.deviceToken } }, { path: 'partnerId', select: 'userName profileImage' }, select);
         if (!user.success) {
             return res.status(user.statusCode).json({
                 message: user.message,
@@ -59,13 +60,11 @@ exports.login = async (req, res) => {
             });
         }
         let token = jwt.sign({ id: user.data._id, userName: user.data.userName, email: user.data.email, nationalId: user.data.nationalId }, process.env.SECRET_JWT);
-        let firstTime = user.data.loginFrequency === 1 ? true : false;
         delete user.data.password;
         return res.status(200).json({
             message: "success",
             token: token,
             data: user.data,
-            firstTime: firstTime
         });
     }
     catch (err) {
@@ -97,18 +96,18 @@ exports.verifyAccount = async (req, res) => {
 
 }
 
-exports.resendVerificationEmail = async(req,res)=>{
-    try{
-        const {email} = req.query;
-        let emailUser = await setUpMails("verificationMail", {email : email});
+exports.resendVerificationEmail = async (req, res) => {
+    try {
+        const { email } = req.query;
+        let emailUser = await setUpMails("verificationMail", { email: email });
         return res.status(emailUser.statusCode).json({
-            message : emailUser.message
+            message: emailUser.message
         })
     }
-    catch(err){
+    catch (err) {
         return res.status(500).json({
-            message : "error",
-            error : err.message 
+            message: "error",
+            error: err.message
         })
     }
 }

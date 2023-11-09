@@ -1,4 +1,5 @@
 const recommendationRepo = require('../models/recommendation/recomendation.repo');
+const userRepo = require('../models/user/user.repo');
 
 // get recommendation array for user ( patch recomendation )
 exports.getPartnerRecommendation = async (req, res) => {
@@ -35,11 +36,12 @@ exports.submitUserPrefers = async (req, res) => {
         userData['nationalId'] = nationalId;
         let replicatDataPromis = recommendationRepo.replicateDataForModels(userData);
         let getRecommendationPromis = recommendationRepo.getFirstRecommendation(nationalId);
-        const result = await Promise.all([replicatDataPromis, getRecommendationPromis]);
-        if (!result[0].success || !result[1].success) {
+        let updateUserPromis = userRepo.updateUser({ nationalId: nationalId }, { getUserPrefers: false });
+        const result = await Promise.all([replicatDataPromis, getRecommendationPromis, updateUserPromis]);
+        if (!result[0].success || !result[1].success || !result[2].success) {
             return res.status(417).json({
                 message: "error",
-                error: result[0].error || result[1].error
+                error: result[0].error || result[1].error || result[2].error
             })
         }
         return res.status(201).json({
@@ -53,3 +55,4 @@ exports.submitUserPrefers = async (req, res) => {
         })
     }
 };
+ 

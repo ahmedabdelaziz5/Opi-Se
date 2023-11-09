@@ -63,7 +63,7 @@ exports.createUser = async (data) => {
     }
 }
 
-exports.updateUser = async (filter, edit, select) => {
+exports.updateUser = async (filter, edit, populate, select) => {
     try {
 
         if (edit.email || edit.userName) {
@@ -86,7 +86,7 @@ exports.updateUser = async (filter, edit, select) => {
             }
         }
 
-        let user = await userModel.findOneAndUpdate(filter, edit, { new: true }).select(select).lean();
+        let user = await userModel.findOneAndUpdate(filter, edit, { new: true }).populate(populate).select(select).lean();
         if (!user) {
             return {
                 success: false,
