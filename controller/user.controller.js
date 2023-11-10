@@ -51,7 +51,7 @@ exports.login = async (req, res) => {
         if (!user.data.isVerified) {
             return res.status(400).json({
                 message: "please verify your account first !",
-                data : user.data.email
+                data : { email: user.data.email }
             });
         }
         let passwordMatch = await bcrypt.compare(userData.password, user.data.password);
