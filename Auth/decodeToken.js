@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 
+// function to decode the token and make sure that the token has a valid signature
 exports.decodeToken = () => {
     return async (req, res, next) => {
         try {
