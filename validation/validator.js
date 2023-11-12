@@ -1,3 +1,4 @@
+// function to validate Joi validation schema 
 exports.validator = (schema)=>{
     return (req,res,next) =>{
         var validation = []

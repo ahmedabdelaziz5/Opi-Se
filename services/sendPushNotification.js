@@ -1,7 +1,7 @@
 const { firebaseAdmin } = require("../config/fireBase.config");
 const messaging = firebaseAdmin.messaging();
 
-
+// function that checks the type of the notification and return the message of the notification
 const checkType = (type) => {
     if (type === "newPartnerRequest") {
         return {
@@ -24,9 +24,9 @@ const checkType = (type) => {
         }
     }
 
-}
+};
 
-
+// function that sends the push notifications using firebase
 exports.sendNotification = async (deviceToken, type) => {
 
     try {
@@ -64,4 +64,4 @@ exports.sendNotification = async (deviceToken, type) => {
             error : err.message
         }
     }
-}
+};

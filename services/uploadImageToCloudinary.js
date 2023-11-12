@@ -1,5 +1,6 @@
 const cloudinary = require('../config/cloud.config');
 
+// function that uploads/overwrites image to cloudinary
 exports.uploadImageToCloudinary = async (file, publicId, path) => {
     try {
         const result = await cloudinary.v2.uploader.upload(file, {
@@ -30,8 +31,9 @@ exports.uploadImageToCloudinary = async (file, publicId, path) => {
             message: err.message
         }
     }
-}
+};
 
+// function that removes image from cloudinary
 exports.removeImageFromCloudinary = async (publicId) => {
     try {
         const assetId = "users images/" + publicId;
@@ -56,4 +58,4 @@ exports.removeImageFromCloudinary = async (publicId) => {
             message: error.message
         };
     }
-}
+};

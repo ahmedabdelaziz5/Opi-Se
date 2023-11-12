@@ -3,8 +3,8 @@ const mongoose = require('mongoose');
 const relationshipSchema = new mongoose.Schema({
     firstPartnerId: { type: mongoose.Types.ObjectId, required: true, ref: 'user' },
     secondPartnerId: { type: mongoose.Types.ObjectId, required: true, ref: 'user' },
-    firstNationalId : {type : String , required : true , ref : 'user'},
-    secondNationalId : {type : String , required : true , ref : 'user'},
+    firstNationalId: { type: String, required: true, ref: 'user' },
+    secondNationalId: { type: String, required: true, ref: 'user' },
     matchId: { type: String, required: true, },
     matchDate: { type: Date, required: true, default: Date.now() },
     chat: [{
@@ -12,7 +12,7 @@ const relationshipSchema = new mongoose.Schema({
         messageType: { type: String, required: true, default: "text" },
         messageContent: { type: String, },
         messageQuestion: { type: String, },
-        messageOptions: [{ 
+        messageOptions: [{
             optionNumber: { type: Number, required: true },
             optionContent: { type: String, required: true },
             isChoosen: { type: Boolean, default: false },

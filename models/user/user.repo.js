@@ -2,6 +2,7 @@ const userModel = require('../user/user.model');
 const bcrypt = require('bcrypt');
 const saltRounds = 7;
 
+// check if the user is exist in the database
 exports.isExist = async (filter, select) => {
     try {
         const user = await userModel.findOne(filter).select(select).select('-password').lean();
@@ -26,8 +27,9 @@ exports.isExist = async (filter, select) => {
             message: err.message
         }
     }
-}
+};
 
+// creates the user in the database + password validation logic 
 exports.createUser = async (data) => {
     try {
         if (data.password != data.confirmPassword) {
@@ -61,8 +63,9 @@ exports.createUser = async (data) => {
             message: err.message
         }
     }
-}
+};
 
+// update user data in database + email and userName validation logic 
 exports.updateUser = async (filter, edit, populate, select) => {
     try {
 
@@ -109,8 +112,9 @@ exports.updateUser = async (filter, edit, populate, select) => {
             message: err.message
         }
     }
-}
+};
 
+// when the users dismatch it update the users data in one query 
 exports.updateManyUsers = async (filter, edit) => {
     try {
         let user = await userModel.updateMany(filter, edit);
@@ -135,4 +139,4 @@ exports.updateManyUsers = async (filter, edit) => {
             message: err.message
         }
     }
-}
+};

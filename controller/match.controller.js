@@ -5,7 +5,7 @@ const { sendNotification } = require('../services/sendPushNotification');
 const relationshipRepo = require("../models/relationship/relationship.repo");
 const recommendationRepo = require("../models/recommendation/recomendation.repo");
 
-
+// function that allows user to get his partner requests 
 exports.getMatchRequest = async (req, res) => {
     try {
 
@@ -33,6 +33,7 @@ exports.getMatchRequest = async (req, res) => {
     }
 };
 
+// function that allows user to search for a specific partner with his partnerId 
 exports.searchForSpecificPartner = async (req, res) => {
     try {
         const { userId } = req.query;
@@ -60,6 +61,7 @@ exports.searchForSpecificPartner = async (req, res) => {
     }
 };
 
+// function that performs the database and push notification logic for sending partner request
 exports.sendPartnerRequest = async (req, res) => {
     try {
 
@@ -110,6 +112,7 @@ exports.sendPartnerRequest = async (req, res) => {
     };
 };
 
+// function that performs the database and push notification logic for decline partner request
 exports.declineMatchRequest = async (req, res) => {
     try {
         const { id } = req.user;
@@ -146,6 +149,7 @@ exports.declineMatchRequest = async (req, res) => {
     }
 };
 
+// function that performs the database and push notification logic for accepting partner request
 exports.acceptMatchRequest = async (req, res) => {
     try {
         const { partner2Id, nationalId } = req.query;
@@ -197,6 +201,7 @@ exports.acceptMatchRequest = async (req, res) => {
     }
 };
 
+// function that performs the database logic for dismatch with partner 
 exports.disMatchWithPartner = async (req, res) => {
     try {
         const rate = req.body;

@@ -12,7 +12,7 @@ const userSchema = new mongoose.Schema({
     profileImage: { type: String, required: true, default: "default.png" },
     isVerified: { type: Boolean, default: false },
     numOfReports: { type: Number, default: 0 },
-    partnerId: { type: String, default: null, ref : 'user' },
+    partnerId: { type: String, default: null, ref: 'user' },
     matchId: { type: String, default: null, ref: 'user' },
     isAvailable: { type: Boolean, default: true },
     joinedAt: { type: Date, default: Date.now() },

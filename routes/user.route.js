@@ -1,5 +1,6 @@
 const app = require('express').Router();
 
+// user module controller functions
 const {
     signUp,
     login,
@@ -12,6 +13,7 @@ const {
     resendVerificationEmail
 } = require('../controller/user.controller');
 
+// validation schema 
 const {
     signUpValid,
     loginValid,
@@ -21,11 +23,16 @@ const {
     editProfileValid,
 } = require('../validation/user.validation');
 
+// function that validates validation schema
 const { validator } = require('../validation/validator');
 
+// import decodeToken function from Auth folder
 const { decodeToken } = require('../Auth/decodeToken');
+
+// import upload middleware from mediaUpload folder
 const upload = require('../helpers/mediaUpload');
 
+// user module routes
 app.get('/verifyAccount', verifyAccount);
 app.get('/resendVerificationEmail', resendVerificationEmail);
 app.post('/signUp', validator(signUpValid), signUp);

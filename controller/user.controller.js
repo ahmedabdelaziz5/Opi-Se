@@ -5,7 +5,7 @@ const userRepo = require('../models/user/user.repo');
 const { setUpMails } = require('../helpers/sendEmail');
 const { removeImageFromCloudinary, uploadImageToCloudinary } = require('../services/uploadImageToCloudinary');
 
-
+// function that allows user to sign up
 exports.signUp = async (req, res) => {
     try {
         const userData = req.body;
@@ -36,8 +36,9 @@ exports.signUp = async (req, res) => {
             error: err.message
         });
     }
-}
+};
 
+// function that allows user to login
 exports.login = async (req, res) => {
     try {
         const userData = req.body;
@@ -51,7 +52,7 @@ exports.login = async (req, res) => {
         if (!user.data.isVerified) {
             return res.status(400).json({
                 message: "please verify your account first !",
-                data : { email: user.data.email }
+                data: { email: user.data.email }
             });
         }
         let passwordMatch = await bcrypt.compare(userData.password, user.data.password);
@@ -74,8 +75,9 @@ exports.login = async (req, res) => {
             error: err.message
         });
     }
-}
+};
 
+// blackBox function that allows make user verified
 exports.verifyAccount = async (req, res) => {
     try {
         let { token } = req.query;
@@ -95,8 +97,9 @@ exports.verifyAccount = async (req, res) => {
         });
     }
 
-}
+};
 
+// function that resends a verification email
 exports.resendVerificationEmail = async (req, res) => {
     try {
         const { email } = req.query;
@@ -111,8 +114,9 @@ exports.resendVerificationEmail = async (req, res) => {
             error: err.message
         })
     }
-}
+};
 
+// function that allows user to reset his password
 exports.forgetPassword = async (req, res) => {
     try {
         const { email } = req.body;
@@ -133,8 +137,9 @@ exports.forgetPassword = async (req, res) => {
             error: err.message
         });
     }
-}
+};
 
+// function that allows user to submit his new password from forget password email
 exports.submitNewPassword = async (req, res) => {
     try {
         const { token } = req.query;
@@ -157,8 +162,9 @@ exports.submitNewPassword = async (req, res) => {
             error: err.message
         });
     }
-}
+};
 
+// function that allows user to change his password inside the app
 exports.changePassword = async (req, res) => {
     try {
         const { oldPassword, newPassword, confirmNewPassword } = req.body;
@@ -196,8 +202,9 @@ exports.changePassword = async (req, res) => {
             error: err.message
         });
     }
-}
+};
 
+// function that allows user to edit his profile data 
 exports.editProfile = async (req, res) => {
     try {
         const userData = req.body;
@@ -213,8 +220,9 @@ exports.editProfile = async (req, res) => {
             error: err.message
         })
     }
-}
+};
 
+// function that allows user to change his profile image ( takes the type of operation upload/remove )
 exports.changeProfileImage = async (req, res) => {
     try {
         const type = req.body.type;
@@ -256,4 +264,4 @@ exports.changeProfileImage = async (req, res) => {
             error: err.message
         })
     }
-} 
+};

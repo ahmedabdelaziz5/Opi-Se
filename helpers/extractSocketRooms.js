@@ -1,4 +1,5 @@
 
+// function takes a map of socekts and returns an array of rooms
 const extractMapRooms = (map) => {
     const iter = map.entries();
     let result = iter.next();
@@ -9,6 +10,6 @@ const extractMapRooms = (map) => {
         result = iter.next();
     }
     return rooms;
-}
+};
 
 module.exports = extractMapRooms ;

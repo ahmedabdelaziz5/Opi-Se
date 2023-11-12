@@ -1,7 +1,7 @@
 const userModule = require('./modules/user.sockets');
 const matchModule = require('./modules/match.scokets');
 
-
+//base socket connection with server
 exports.establishSocketConnections = (io) => {
 
     io.on('connection', (socket) => {

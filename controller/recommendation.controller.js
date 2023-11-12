@@ -28,7 +28,7 @@ exports.getPartnerRecommendation = async (req, res) => {
     }
 };
 
-// submit ML model data and get recommendation for new users
+// submit ML model data and get online recommendation for new users
 exports.submitUserPrefers = async (req, res) => {
     try {
         const userData = req.body;
@@ -55,4 +55,3 @@ exports.submitUserPrefers = async (req, res) => {
         })
     }
 };
- 

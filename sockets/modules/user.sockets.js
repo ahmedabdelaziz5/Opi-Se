@@ -1,5 +1,6 @@
 // events related to user module 
 
+// event to make user his room which has his id 
 exports.joinUserRoom = async (socket, data, ack) => {
     try {
         const userId = socket.handshake.query.userId;
@@ -16,5 +17,5 @@ exports.joinUserRoom = async (socket, data, ack) => {
             message: `error while joining user room !`,
         })
     }
-}
+};
 

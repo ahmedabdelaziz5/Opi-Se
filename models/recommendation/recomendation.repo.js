@@ -68,7 +68,7 @@ exports.getUserRecommendations = async (nationalId, page, select) => {
 // replicate data for ML model ( recommendation collection )
 exports.replicateDataForModels = async (data) => {
     try {
-        let result = await recommendationModel.findOneAndUpdate({nationalId : data.nationalId}, data, { upsert: true, new: true });
+        let result = await recommendationModel.findOneAndUpdate({ nationalId: data.nationalId }, data, { upsert: true, new: true });
         if (!result) {
             return {
                 success: false,

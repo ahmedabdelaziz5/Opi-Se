@@ -2,6 +2,7 @@
 const nodemailer = require('nodemailer');
 const jwt = require('jsonwebtoken');
 
+// function to detect email type, set up the email options and content 
 exports.setUpMails = async (emailType, emailCredentials) => {
 
   let mailOptions = {
@@ -38,8 +39,9 @@ regards ... Opi Se Team
   let result = await sendEmails(mailOptions);
   return result;
 
-}
+};
 
+// function to send emails using node mailer
 const sendEmails = async (mailOptions) => {
   try {
     let transporter = nodemailer.createTransport({
@@ -75,4 +77,4 @@ const sendEmails = async (mailOptions) => {
     }
 
   }
-}
+};

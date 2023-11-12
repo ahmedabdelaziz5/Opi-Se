@@ -1,9 +1,10 @@
 const relationshipModel = require('./relationship.model');
 
+// when the 2 users are matched it creates the relationship in the database 
 exports.createRelationship = async (relationshipInfo) => {
     try {
         const relationship = await relationshipModel.create(relationshipInfo);
-        if(!relationship){
+        if (!relationship) {
             return {
                 success: false,
                 statusCode: 404,
@@ -28,10 +29,11 @@ exports.createRelationship = async (relationshipInfo) => {
     }
 };
 
+// check if the relationship is exist in the database
 exports.isExist = async (relationshipId) => {
     try {
         const relationship = await relationshipModel.findOne(relationshipId);
-        if(!relationship){
+        if (!relationship) {
             return {
                 success: false,
                 statusCode: 404,
