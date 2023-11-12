@@ -8,7 +8,7 @@ exports.establishSocketConnections = (io) => {
 
         socket.on('joinUserRoom', (data, ack) => userModule.joinUserRoom(socket, data, ack));
 
-        socket.on('notifyUserRoom', (data, ack) => matchModule.notifyUserRoom(socket, data, ack));
+        socket.on('notifyUserRoom', (data, ack) => userModule.notifyUserRoom(socket, data, ack));
 
         socket.on('acceptPartnerRequest', (data, ack) => matchModule.acceptPartnerRequest(socket, data, ack));
 

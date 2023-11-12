@@ -1,24 +1,4 @@
 // events related to match module
-const userRepo = require('../../models/user/user.repo');
-
-// event is used to notify user when send/decline partner request in his room
-exports.notifyUserRoom = async (socket, data, ack) => {
-    try {
-        const roomId = socket.handshake.query.roomId;
-        socket.to(roomId).emit('showNotificationMark', { notification: true });
-        return ack({
-            success: true,
-            message: `user was notified successfully !`,
-        })
-    }
-    catch (err) {
-        console.log(err.message)
-        return ack({
-            success: false,
-            message: `error while notifying user !`,
-        })
-    }
-};
 
 // event is used to join the user to match room , emit another event to the partner to join the match room, notify the user and update friends list in the client side
 exports.acceptPartnerRequest = async (socket, data, ack) => {
@@ -43,7 +23,7 @@ exports.acceptPartnerRequest = async (socket, data, ack) => {
 // event is used to close chat and update friends list when dismatch 
 exports.disMatch = async (io, socket, data, ack) => {
     try {
-        const { matchId } = data;
+        const matchId = socket.handshake.query.matchId;
         io.to(matchId).emit('leaveRoom', { closeChat: true, updateFriendsList: true });
         io.sockets.adapter.rooms.delete(matchId);
         ack({
@@ -63,7 +43,7 @@ exports.disMatch = async (io, socket, data, ack) => {
 // event is used to join the new match room after accepting partner request
 exports.joinMatchRoom = async (socket, data, ack) => {
     try {
-        const { matchId } = data;
+        const matchId = socket.handshake.query.matchId;
         socket.join(matchId);
         return ack({
             success: true,

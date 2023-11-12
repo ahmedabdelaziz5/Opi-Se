@@ -100,7 +100,8 @@ exports.sendPartnerRequest = async (req, res) => {
         const notification = await sendNotification(deviceTokens.data.deviceTokens, type = "newPartnerRequest");
 
         return res.status(notification.statusCode).json({
-            message: notification.message
+            message: notification.message,
+            data: { notifiedPartner: userId }
         });
 
     }

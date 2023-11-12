@@ -19,3 +19,21 @@ exports.joinUserRoom = async (socket, data, ack) => {
     }
 };
 
+// event is used to notify user when send/decline partner request in his room
+exports.notifyUserRoom = async (socket, data, ack) => {
+    try {
+        const roomId = socket.handshake.query.roomId;
+        socket.to(roomId).emit('showNotificationMark', { notification: true });
+        return ack({
+            success: true,
+            message: `user was notified successfully !`,
+        })
+    }
+    catch (err) {
+        console.log(err.message)
+        return ack({
+            success: false,
+            message: `error while notifying user !`,
+        })
+    }
+};
