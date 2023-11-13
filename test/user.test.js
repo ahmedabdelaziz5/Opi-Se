@@ -7,7 +7,7 @@ chai.use(chaiHttp);
 
 let token;
 const jwt = require('jsonwebtoken');
-token = jwt.sign({email: "ahmedabdelaziz123@gmail.com" }, process.env.SECRET_JWT);
+token = jwt.sign({ email: "ahmedabdelaziz123@gmail.com" }, process.env.SECRET_JWT);
 
 
 describe('__________signUp__________', () => {
@@ -366,8 +366,8 @@ describe('__________changeProfileImage__________', () => {
             .request(app)
             .post('/changeProfileImage')
             .set({
-                'Authorization' : `Bearer ${token}`,
-                'Content-Type' : 'multipart/form-data'
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'multipart/form-data'
             })
             .attach('userImage', './jok.jpg')
             .field('type', 'remove')
@@ -384,8 +384,8 @@ describe('__________changeProfileImage__________', () => {
             .request(app)
             .post('/changeProfileImage')
             .set({
-                'Authorization' : `Bearer ${token}`,
-                'Content-Type' : 'multipart/form-data'
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'multipart/form-data'
             })
             .attach('userImage', './jok.jpg')
             .field('type', '')
@@ -402,8 +402,8 @@ describe('__________changeProfileImage__________', () => {
             .request(app)
             .post('/changeProfileImage')
             .set({
-                'Authorization' : `Bearer ${token}`,
-                'Content-Type' : 'multipart/form-data'
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'multipart/form-data'
             })
             .attach('userImage', './jok.jpg')
             .field('type', 'upload')
@@ -431,7 +431,7 @@ describe('__________verifyAccount__________', () => {
             });
     });
 
-    it.only('should return status 400 if user not exist', (done) => {
+    it('should return status 400 if user not exist', (done) => {
         chai
             .request(app)
             .get('/verifyAccount')

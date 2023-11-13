@@ -41,12 +41,14 @@ exports.getUserRecommendations = async (nationalId, page, select) => {
         const users = await userModel.find({ nationalId: { $in: recommendation }, isAvailable: true }).select(select);
         if (users.length === 0) {
             return {
+                success : true,
                 hasRecommendation: false,
                 statusCode: 200,
                 message: "there is no recommendations yet !",
             }
         }
         return {
+            success : true,
             hasRecommendation: true,
             statusCode: 200,
             message: "success",

@@ -51,11 +51,42 @@ exports.editProfileObj = {
             level: 5
         }
     ]
-}
+};
 
 exports.changeProfileImage = {
-    type : "upload",
-}   
+    type: "upload",
+};
 
+exports.submitUserPrefersObj = {
+    fieldOfStudy: "math",
+    specialization: "math",
+    userQuestions: [
+        {
+            question: "x",
+            answer: "y"
+        },
+        {
+            question: "a",
+            answer: "b"
+        }
+    ],
+    userSkills: [
+        {
+            skillName: "math",
+            skillRate: 5
+        },
+        {
+            skillName: "english",
+            skillRate: 4
+        }
+    ]
+};
 
+const payload = {
+    nationalId: 1
+}
+
+const jwt = require('jsonwebtoken');
+const token = jwt.sign(payload, process.env.SECRET_JWT);
+exports.token = token;
 
