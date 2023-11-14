@@ -61,7 +61,7 @@ exports.sendNotification = async (deviceToken, type) => {
             success: false,
             statusCode: 500,
             message: "unexpected error !",
-            error : err.message
+            error: err.message
         }
     }
 };

@@ -3,9 +3,9 @@ const bcrypt = require('bcrypt');
 const saltRounds = 7;
 
 // check if the user is exist in the database
-exports.isExist = async (filter, select) => {
+exports.isExist = async (filter, select, populate) => {
     try {
-        const user = await userModel.findOne(filter).select(select).select('-password').lean();
+        const user = await userModel.findOne(filter).populate(populate).select(select).select('-password').lean();
         if (user) {
             return {
                 success: true,

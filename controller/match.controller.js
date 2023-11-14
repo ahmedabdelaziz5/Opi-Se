@@ -19,8 +19,14 @@ exports.getMatchRequest = async (req, res) => {
 
         const requests = await userRepo.isExist({ _id: userId }, 'partnerRequests');
 
-        return res.status(requests.statusCode).json({
-            message: requests.message,
+        if (!requests.success) {
+            return res.status(requests.statusCode).json({
+                message: requests.message
+            })
+        }
+
+        return res.status(200).json({
+            message: 'success',
             data: requests.data
         })
 
@@ -65,7 +71,7 @@ exports.searchForSpecificPartner = async (req, res) => {
 exports.sendPartnerRequest = async (req, res) => {
     try {
 
-        const { userId, nationalId } = req.query;
+        const { userId } = req.query;
 
         if (!mongoose.Types.ObjectId.isValid(userId)) {
             return res.status(401).json({
@@ -73,31 +79,30 @@ exports.sendPartnerRequest = async (req, res) => {
             })
         }
 
-        const savePartnerNotification = await userRepo.updateUser(
-            { _id: userId },
-            { $push: { notifications: { message: "you have a new partner request check it out !" } } },
-        )
-
-        if (!savePartnerNotification.success) {
-            return res.status(partner.statusCode).json({
-                message: partner.message
-            })
-        }
-
         newRequest = {
             partnerId: req.user.id,
-            nationalId: nationalId,
+            nationalId: req.user.nationalId,
             partnerUserName: req.user.userName
         };
 
-        const deviceTokens = await userRepo.updateUser({ _id: userId }, { $push: { partnerRequests: newRequest }, isAvailable: false });
-        if (!deviceTokens.success) {
-            return res.status(deviceTokens.statusCode).json({
-                message: deviceTokens.message
-            })
-        }
+        const updateUserData = await userRepo.updateUser(
+            { _id: userId },
+            {
+                $push: {
+                    notifications: { message: "you have a new partner request check it out !" },
+                    partnerRequests: newRequest
+                },
+                isAvailable: false
+            },
+        );
 
-        const notification = await sendNotification(deviceTokens.data.deviceTokens, type = "newPartnerRequest");
+        if (!updateUserData.success) {
+            return res.status(updateUserData.statusCode).json({
+                message: updateUserData.message
+            })
+        };
+
+        const notification = await sendNotification(updateUserData.data.deviceTokens, type = "newPartnerRequest");
 
         return res.status(notification.statusCode).json({
             message: notification.message,
@@ -125,13 +130,13 @@ exports.declineMatchRequest = async (req, res) => {
         }
         const user = userRepo.updateUser({ _id: id }, { $pull: { partnerRequests: { _id: requestId } } });
         const deliverEmail = setUpMails("rejectionEmail", { email: email });
-        const deviceTokens = userRepo.isExist({ _id: rejectedUserId }, 'deviceTokens');
-        const savePartnerNotification = userRepo.updateUser(
+        const updateUserData = userRepo.updateUser(
             { _id: rejectedUserId },
             { $push: { notifications: { message: "unfortunately, your partner request was rejected, but it's not the end you still can find your another partner :) " } } },
+            'deviceTokens'
         )
-        const result = await Promise.all([deliverEmail, user, deviceTokens, savePartnerNotification]);
-        if (!result[0].success || !result[1].success || !result[2].success || !result[3].success) {
+        const result = await Promise.all([deliverEmail, user, updateUserData]);
+        if (!result[0].success || !result[1].success || !result[2].success) {
             return res.status(500).json({
                 message: "error",
                 error: result[0].error || result[1].error || result[2].error
@@ -179,7 +184,7 @@ exports.acceptMatchRequest = async (req, res) => {
             matchDate: Date.now()
         });
         const result = await Promise.all([updatePartner1, updatePartner2, createRelationship]);
-        console.log(result);
+
         if (!result[0].success || !result[1].success || !result[2].success) {
             return res.status(500).json({
                 message: "error",
@@ -188,7 +193,7 @@ exports.acceptMatchRequest = async (req, res) => {
         }
         const notifyPartner2 = await sendNotification(result[1].data.deviceTokens, type = "acceptMatchRequest");
         return res.status(notifyPartner2.statusCode).json({
-            message: "success",
+            message: notifyPartner2.message,
             acceptedPartner: partner1Id,
             notifiedPartner: partner2Id,
             matchId: matchId
@@ -210,7 +215,7 @@ exports.disMatchWithPartner = async (req, res) => {
         let relationship = await relationshipRepo.isExist({ matchId: matchId });
         if (!relationship.success) {
             return res.status(relationship.statusCode).json({
-                message: relationship.message
+                message: relationship.error
             })
         }
         const updateUsersProgress = userRepo.updateManyUsers(

@@ -1,5 +1,20 @@
 // This file contains the data that will be used in the tests
 
+exports.userId = "654d182623b904234537672a";
+exports.nationalId = "1";
+exports.partner2Id = "654d1d977d894fb32745af13"
+exports.matchId = "M6547efb83e23dc3a0296970a6547efc53e23dc3a029697f"
+
+const payload = {
+    nationalId: 1,
+    id : "654d182623b904234537672a"
+}
+
+const jwt = require('jsonwebtoken');
+const token = jwt.sign(payload, process.env.SECRET_JWT);
+exports.token = token;
+
+
 
 exports.signUpObj = {
     userName: "ahmed",
@@ -82,11 +97,13 @@ exports.submitUserPrefersObj = {
     ]
 };
 
-const payload = {
-    nationalId: 1
-}
+exports.declineMatchRequestObj = {
+    rejectedUserId: "654d182623b904234537672a",
+    email: "ahmedabdelaziz5014@gmail.com",
+    requestId: "654d182623b904234537672a"
+};
 
-const jwt = require('jsonwebtoken');
-const token = jwt.sign(payload, process.env.SECRET_JWT);
-exports.token = token;
+exports.disMatchWithPartnerObj = {
+    rate : 8
+};
 
