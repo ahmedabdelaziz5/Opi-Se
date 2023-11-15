@@ -5,7 +5,7 @@ const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fet
 // when user login for the first time we will get his recommendation array 
 exports.getFirstRecommendation = async (nationalId) => {
     try {
-        const recommendation = await fetch(`https://cbr-api-gdfd.onrender.com/nationalId=${nationalId}`);
+        const recommendation = await fetch(`https://ml-api-giqx.onrender.com/nationalId=${nationalId}`);
         const data = await recommendation.json();
         if (recommendation.status !== 200) {
             return {
