@@ -44,6 +44,7 @@ exports.submitUserPrefers = async (req, res) => {
         let getRecommendationPromis = recommendationRepo.getFirstRecommendation(nationalId);
         let updateUserPromis = userRepo.updateUser({ nationalId: nationalId }, { getUserPrefers: false });
         const result = await Promise.all([replicatDataPromis, getRecommendationPromis, updateUserPromis]);
+        console.log(result);
         if (!result[0].success || !result[1].success || !result[2].success) {
             return res.status(417).json({
                 message: "error",
