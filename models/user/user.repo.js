@@ -140,3 +140,29 @@ exports.updateManyUsers = async (filter, edit) => {
         }
     }
 };
+
+// updae users data using bulk write
+exports.bulkUpdate = async (filter, edit) => {
+    try {
+        const updatePartners = await userModel.bulkWrite(filter);
+        if(!updatePartners){
+            return {
+                success: false,
+                statusCode: 417,
+                message: "error updating users data after match",
+            }
+        }
+       return {
+            success: true,
+            statusCode: 201,
+            message: "success",
+        }
+    }
+    catch (err) {
+        return {
+            success: false,
+            statusCode: 500,
+            message: err.message
+        }
+    }
+};

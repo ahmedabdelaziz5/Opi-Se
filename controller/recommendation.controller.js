@@ -10,7 +10,7 @@ exports.getPartnerRecommendation = async (req, res) => {
         if (!result.success) {
             return res.status(result.statusCode).json({
                 message: result.message,
-                error: result.error
+                error: result.error.message
             })
         }
         if (!result.hasRecommendation) {
@@ -47,7 +47,7 @@ exports.submitUserPrefers = async (req, res) => {
         if (!result[0].success || !result[1].success || !result[2].success) {
             return res.status(417).json({
                 message: "error",
-                error: result[0].error || result[1].error || result[2].error
+                error: result[0].error.message || result[1].error.message || result[2].error.message
             })
         }
         return res.status(201).json({

@@ -139,7 +139,7 @@ exports.declineMatchRequest = async (req, res) => {
         if (!result[0].success || !result[1].success || !result[2].success) {
             return res.status(500).json({
                 message: "error",
-                error: result[0].error || result[1].error || result[2].error
+                error: result[0].error.message.message || result[1].error.message.message || result[2].error.message.message
             })
         }
         const notifyUser = await sendNotification(result[2].data.deviceTokens, type = "rejectMatchRequest");
@@ -167,14 +167,37 @@ exports.acceptMatchRequest = async (req, res) => {
             })
         }
         const matchId = `M${partner1Id}${partner2Id}`
-        const updatePartner1 = userRepo.updateUser(
-            { _id: partner1Id },
-            { matchId: matchId, partnerId: partner2Id, isAvailable: false, partnerRequests: [] }
-        );
-        const updatePartner2 = userRepo.updateUser(
-            { _id: partner2Id },
-            { matchId: matchId, partnerId: partner1Id, isAvailable: false, partnerRequests: [], $push: { notifications: { message: "you a new partner with a new chance don't miss this !" } } }
-        );
+        const bulkUpdate = await userRepo.bulkUpdate([
+            {
+                updateOne: {
+                    filter: { _id: partner1Id },
+                    update: {
+                        $set: {
+                            matchId: matchId,
+                            partnerId: partner2Id,
+                            isAvailable: false,
+                            partnerRequests: []
+                        }
+                    }
+                }
+            },
+            {
+                updateOne: {
+                    filter: { _id: partner2Id },
+                    update: {
+                        $set: {
+                            matchId: matchId,
+                            partnerId: partner1Id,
+                            isAvailable: false,
+                            partnerRequests: []
+                        },
+                        $push: {
+                            notifications: { message: "you have a new partner with a new chance don't miss this !" }
+                        }
+                    }
+                }
+            }
+        ])
         const createRelationship = relationshipRepo.createRelationship({
             firstPartnerId: partner1Id,
             secondPartnerId: partner2Id,
@@ -183,12 +206,11 @@ exports.acceptMatchRequest = async (req, res) => {
             matchId: matchId,
             matchDate: Date.now()
         });
-        const result = await Promise.all([updatePartner1, updatePartner2, createRelationship]);
-
-        if (!result[0].success || !result[1].success || !result[2].success) {
+        const result = await Promise.all([bulkUpdate, createRelationship]);
+        if (!result[0].success || !result[1].success) {
             return res.status(500).json({
                 message: "error",
-                error: result[0].error || result[1].error || result[2].error
+                error: result[0].error.message || result[1].error.message
             })
         }
         const notifyPartner2 = await sendNotification(result[1].data.deviceTokens, type = "acceptMatchRequest");
@@ -230,7 +252,7 @@ exports.disMatchWithPartner = async (req, res) => {
         if (!result[0].success || !result[1].success) {
             return res.status(500).json({
                 message: "error",
-                error: result[0].error || result[1].error
+                error: result[0].error.message || result[1].error.message
             })
         }
         return res.status(200).json({
