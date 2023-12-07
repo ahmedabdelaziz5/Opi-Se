@@ -139,7 +139,7 @@ exports.declineMatchRequest = async (req, res) => {
         if (!result[0].success || !result[1].success || !result[2].success) {
             return res.status(500).json({
                 message: "error",
-                error: result[0].error.message.message || result[1].error.message.message || result[2].error.message.message
+                error: "error when declining partner request"
             })
         }
         const notifyUser = await sendNotification(result[2].data.deviceTokens, type = "rejectMatchRequest");
@@ -210,7 +210,7 @@ exports.acceptMatchRequest = async (req, res) => {
         if (!result[0].success || !result[1].success) {
             return res.status(500).json({
                 message: "error",
-                error: result[0].error.message || result[1].error.message
+                error: "error when accepting partner request"
             })
         }
         const notifyPartner2 = await sendNotification(result[1].data.deviceTokens, type = "acceptMatchRequest");
@@ -252,7 +252,7 @@ exports.disMatchWithPartner = async (req, res) => {
         if (!result[0].success || !result[1].success) {
             return res.status(500).json({
                 message: "error",
-                error: result[0].error.message || result[1].error.message
+                error: "error when dismatch with partner"
             })
         }
         return res.status(200).json({

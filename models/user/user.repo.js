@@ -90,13 +90,13 @@ exports.updateUser = async (filter, edit, populate, select) => {
         }
 
         let user = await userModel.findOneAndUpdate(filter, edit, { new: true }).populate(populate).select(select).lean();
+        console.log(user);
         if (!user) {
             return {
                 success: false,
                 statusCode: 400,
                 message: "user not exist , please sign up first !",
             }
-
         }
         return {
             success: true,
@@ -142,7 +142,7 @@ exports.updateManyUsers = async (filter, edit) => {
 };
 
 // updae users data using bulk write
-exports.bulkUpdate = async (filter, edit) => {
+exports.bulkUpdate = async (filter) => {
     try {
         const updatePartners = await userModel.bulkWrite(filter);
         if(!updatePartners){

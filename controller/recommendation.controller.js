@@ -44,11 +44,10 @@ exports.submitUserPrefers = async (req, res) => {
         let getRecommendationPromis = recommendationRepo.getFirstRecommendation(nationalId);
         let updateUserPromis = userRepo.updateUser({ nationalId: nationalId }, { getUserPrefers: false });
         const result = await Promise.all([replicatDataPromis, getRecommendationPromis, updateUserPromis]);
-        console.log(result);
         if (!result[0].success || !result[1].success || !result[2].success) {
             return res.status(417).json({
                 message: "error",
-                error: result[0].error.message || result[1].error.message || result[2].error.message
+                error: "error submiting user prefers"
             })
         }
         return res.status(201).json({
