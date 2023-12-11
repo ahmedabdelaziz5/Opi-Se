@@ -12,6 +12,18 @@ exports.getPartnerChat = async (req, res) => {
     }
 };
 
+exports.getChatMedia = async (req, res) => {
+    try {
+
+    }
+    catch (err) {
+        return res.status(500).json({
+            message: "error",
+            error: err.message
+        })
+    }
+};
+
 exports.deletePartnerChat = async (req, res) => {
     try {
 

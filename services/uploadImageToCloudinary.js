@@ -7,16 +7,7 @@ exports.uploadImageToCloudinary = async (file, publicId, path) => {
             folder: path,
             public_id: publicId,
             overwrite: true,
-        },
-            function (error, result) {
-                if (error) {
-                    return {
-                        success: false,
-                        statusCode: 500,
-                        message: "something went wrong !"
-                    }
-                };
-            });
+        });
         return {
             success: true,
             statusCode: 201,

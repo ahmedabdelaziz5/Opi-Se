@@ -20,6 +20,7 @@ exports.createRelationship = async (relationshipInfo) => {
         }
     }
     catch (err) {
+        console.log(err);
         return {
             success: false,
             statusCode: 500,
@@ -30,9 +31,9 @@ exports.createRelationship = async (relationshipInfo) => {
 };
 
 // check if the relationship is exist in the database
-exports.isExist = async (relationshipId) => {
+exports.isExist = async (filter) => {
     try {
-        const relationship = await relationshipModel.findOne(relationshipId);
+        const relationship = await relationshipModel.findOne(filter);
         if (!relationship) {
             return {
                 success: false,
@@ -49,11 +50,37 @@ exports.isExist = async (relationshipId) => {
         }
     }
     catch (err) {
+        console.log(err);
         return {
             success: false,
             statusCode: 500,
             message: "error",
             error: err.message
+        }
+    }
+};
+
+// update relationship details
+exports.updateRelationship = async (filter, query) => {
+    try {
+        const updatedRelationship = await relationshipModel.findOneAndUpdate(filter, query, { new: true });
+        if (!updatedRelationship) {
+            return {
+                success: false,
+                message: "relationship not found !",
+            }
+        }
+        return {
+            success: true,
+            message: "relationship updated successfully !",
+        }
+    }
+    catch (err) {
+        console.log(err);
+        return {
+            success: false,
+            statusCode: 500,
+            message: err.message
         }
     }
 };

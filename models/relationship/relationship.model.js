@@ -12,8 +12,9 @@ const relationshipSchema = new mongoose.Schema({
     matchBadges: [{ type: String, required: true, default: "badge.png" }],
     sessionsHistory: [{
         sessionDate: { type: Date, required: true, default: Date.now() },
-        sessionDuration: { type: Number, required: true, default: 0 },
-        sessionTopics: { type: String, required: true, default: "General" },
+        sessionStartDate: { type: Date, required: true },
+        sessionEndDate: { type: Date, default: Date.now() },
+        sessionTopic: { type: String, required: true, default: "General" },
         sessionPoints: { type: Number, required: true, default: 0 },
     }]
 });
