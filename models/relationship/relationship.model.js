@@ -7,17 +7,7 @@ const relationshipSchema = new mongoose.Schema({
     secondNationalId: { type: String, required: true, ref: 'user' },
     matchId: { type: String, required: true, },
     matchDate: { type: Date, required: true, default: Date.now() },
-    chat: [{
-        mesageSender: { type: mongoose.Types.ObjectId, required: true },
-        messageType: { type: String, required: true, default: "text" },
-        messageContent: { type: String, },
-        messageQuestion: { type: String, },
-        messageOptions: [{
-            optionNumber: { type: Number, required: true },
-            optionContent: { type: String, required: true },
-            isChoosen: { type: Boolean, default: false },
-        }],
-    }],
+    chat: { type: mongoose.Types.ObjectId, ref: 'chat' },
     progressPoints: { type: Number, required: true, default: 0 },
     matchBadges: [{ type: String, required: true, default: "badge.png" }],
     sessionsHistory: [{

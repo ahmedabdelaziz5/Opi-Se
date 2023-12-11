@@ -1,6 +1,7 @@
 const userModule = require('./modules/user.sockets');
 const matchModule = require('./modules/match.scokets');
 const videoCallModule = require('./modules/videoCall.sockets');
+const chatModule = require('./modules/chat.scokets');
 
 //base socket connection with server
 exports.establishSocketConnections = (io) => {
@@ -24,6 +25,13 @@ exports.establishSocketConnections = (io) => {
         socket.on("callUser", (data, ack) => videoCallModule.callUser(socket, data, ack));
         socket.on("answerCall", (data, ack) => videoCallModule.answerCall(socket, data, ack));
         socket.on("disconnect", (data, ack) => videoCallModule.disconnect(socket, data, ack));
+
+        // chat Module events
+        socket.on("sendMessage", (data, ack) => chatModule.sendMessage(socket, data, ack));
+        socket.on("deleteMessage", (data, ack) => chatModule.deleteMessage(socket, data, ack));
+        socket.on("startChatSession", (data, ack) => chatModule.startChatSession(socket, data, ack));
+        socket.on("endChatSession", (data, ack) => chatModule.endChatSession(socket, data, ack));
+
 
     });
 };
