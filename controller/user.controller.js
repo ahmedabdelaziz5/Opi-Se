@@ -254,7 +254,6 @@ exports.changeProfileImage = async (req, res) => {
         else if (type === "remove") {
             user = await userRepo.updateUser({ _id: req.user.id }, { profileImage: "default.png" });
         }
-
         return res.status(user.statusCode).json({
             message: user.message,
         });

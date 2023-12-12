@@ -3,16 +3,18 @@ const app = require('express').Router();
 // chat module controller functions 
 const {
     getPartnerChat,
-    deletePartnerChat,
+    getChatMedia,
     uploadChatMedia
 } = require('../controller/chat.controller');
 
-// import decodeToken function from Auth folder
-const { decodeToken } = require('../Auth/decodeToken');
+// import upload middleware from mediaUpload folder
+const upload = require('../helpers/mediaUpload');
 
 // chat module routes 
-app.get('/getPartnerChat', decodeToken(), getPartnerChat);
-app.delete('/deletePartnerChat', decodeToken(), deletePartnerChat);
-app.post('/uploadChatMedia', decodeToken(), uploadChatMedia);
+app.get('/getPartnerChat', getPartnerChat);
+app.get('/getChatMedia', getChatMedia);
+app.post('/uploadChatMedia', upload.single('chatMedia'), uploadChatMedia);
+
+
 
 module.exports = app;

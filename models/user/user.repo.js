@@ -90,7 +90,6 @@ exports.updateUser = async (filter, edit, populate, select) => {
         }
 
         let user = await userModel.findOneAndUpdate(filter, edit, { new: true }).populate(populate).select(select).lean();
-        console.log(user);
         if (!user) {
             return {
                 success: false,

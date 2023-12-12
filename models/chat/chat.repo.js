@@ -24,15 +24,33 @@ exports.updateChat = async (filter, query, options) => {
 };
 
 // function to get ( chat / media / links ) from chat
-exports.getChat = async (filter, query) => {
+exports.getChatData = async (filter, select, pagg) => {
     try {
-
+        const skip = (pagg.page - 1) * pagg.limit;
+        const data = await chatModel.findOne(filter).populate('matchId').lean();
+        const paggedData = data[select].slice(skip, skip + pagg.limit);
+        if (!paggedData.length) {
+            return {
+                statusCode: 200,
+                message: `there is no ${select} yet!`,
+            };
+        }
+        return {
+            statusCode: 200,
+            success: true,
+            message: "success",
+            totalNumOfItems: data[select].length,
+            totalPages: Math.ceil(data[select].length / pagg.limit),
+            currentPage: pagg.page,
+            data: paggedData,
+        };
     }
     catch (err) {
         return {
+            statusCode: 500,
             success: false,
-            message: err.message
-        }
+            message: err.message,
+        };
     }
 };
 
