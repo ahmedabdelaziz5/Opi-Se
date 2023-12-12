@@ -1,7 +1,7 @@
 // events related to chat module
 const mongoose = require('mongoose');
 const chatRepo = require('../../models/chat/chat.repo.js');
-const relationshipRepo = require('../../models/relationship/relationship.repo.js');
+const cloudinary = require('cloudinary');
 
 // event to send message in chat 
 exports.sendMessage = async (socket, data, ack) => {
@@ -123,6 +123,26 @@ exports.endChatSession = async (socket, data, ack) => {
         return ack({
             success: false,
             message: `error while ending session !`,
+        })
+    }
+};
+
+// event to media file in chat
+exports.uploadChatMedia = async (socket, data, ack) => {
+    try {
+        const matchId = socket.handshake.query.matchId;
+        socket.broadcast.to(matchId).emit("showMediainChat", data);
+        return ack({
+            success: true,
+            message: `media uploaded successfully !`,
+            data: mediaUrl
+        })
+    }
+    catch (err) {
+        console.log(err.message)
+        return ack({
+            success: false,
+            message: `error while uploading media !`,
         })
     }
 };

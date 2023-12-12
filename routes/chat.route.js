@@ -13,8 +13,6 @@ const upload = require('../helpers/mediaUpload');
 // chat module routes 
 app.get('/getPartnerChat', getPartnerChat);
 app.get('/getChatMedia', getChatMedia);
-app.post('/uploadChatMedia', upload.single('chatMedia'), uploadChatMedia);
-
-
+app.post('/uploadChatMedia', upload.array('chatMedia', 5), uploadChatMedia);
 
 module.exports = app;

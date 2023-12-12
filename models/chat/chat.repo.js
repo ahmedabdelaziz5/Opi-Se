@@ -27,9 +27,9 @@ exports.updateChat = async (filter, query, options) => {
 exports.getChatData = async (filter, select, pagg) => {
     try {
         const skip = (pagg.page - 1) * pagg.limit;
-        const data = await chatModel.findOne(filter).populate('matchId').lean();
-        const paggedData = data[select].slice(skip, skip + pagg.limit);
-        if (!paggedData.length) {
+        const data = await chatModel.findOne(filter).lean();
+        if (data) var paggedData = data[select].slice(skip, skip + pagg.limit);
+        if (!data || !paggedData.length) {
             return {
                 statusCode: 200,
                 message: `there is no ${select} yet!`,
@@ -51,18 +51,5 @@ exports.getChatData = async (filter, select, pagg) => {
             success: false,
             message: err.message,
         };
-    }
-};
-
-// function to upload media in chat
-exports.uploadMedia = async (chatId) => {
-    try {
-
-    }
-    catch (err) {
-        return {
-            success: false,
-            message: err.message
-        }
     }
 };

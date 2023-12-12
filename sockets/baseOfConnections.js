@@ -29,10 +29,10 @@ exports.establishSocketConnections = (io) => {
         // chat Module events
         socket.on("sendMessage", (data, ack) => chatModule.sendMessage(socket, data, ack));
         socket.on("deleteMessage", (data, ack) => chatModule.deleteMessage(socket, data, ack));
-        socket.on("startChatSession", (data, ack) => chatModule.startChatSession(socket, data, ack));
-        socket.on("replyToSessionRequest", (data, ack) => chatModule.replyToSessionRequest(socket, data, ack));
         socket.on("endChatSession", (data, ack) => chatModule.endChatSession(socket, data, ack));
-
+        socket.on("startChatSession", (data, ack) => chatModule.startChatSession(socket, data, ack));
+        socket.on("uploadChatMedia", (data, ack) => chatModule.uploadChatMedia(socket, data, ack));
+        socket.on("replyToSessionRequest", (data, ack) => chatModule.replyToSessionRequest(socket, data, ack));
 
     });
 };

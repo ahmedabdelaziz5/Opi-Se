@@ -1,4 +1,5 @@
 const cloudinary = require('../config/cloud.config');
+const filterMediaFiles = require('../helpers/filterMediaPaths');
 
 // function that uploads/overwrites image to cloudinary
 exports.uploadImageToCloudinary = async (file, publicId, path) => {
@@ -22,6 +23,38 @@ exports.uploadImageToCloudinary = async (file, publicId, path) => {
             statusCode: 201,
             message: "success",
             data: result.url
+        }
+    }
+    catch (err) {
+        return {
+            success: false,
+            statusCode: 500,
+            message: err.message
+        }
+    }
+};
+
+// function to upload serveral media files to cloudinary
+exports.uploadManyMediaToCloudinary = async (files, path) => {
+    try {
+        const promises = [];
+        for (const file of files) {
+            promises.push(cloudinary.v2.uploader.upload(file, { folder: path, }));
+        }
+        let result = await Promise.all(promises);
+        if(!result.length){
+            return {
+                success: false,
+                statusCode: 500,
+                message: "something went wrong !"
+            }
+        } 
+        result = filterMediaFiles(result, 'secure_url')
+        return {
+            success: true,
+            statusCode: 201,
+            message: "success",
+            data: result
         }
     }
     catch (err) {

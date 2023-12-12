@@ -5,7 +5,7 @@ const relationshipSchema = new mongoose.Schema({
     secondPartnerId: { type: mongoose.Types.ObjectId, required: true, ref: 'user' },
     firstNationalId: { type: String, required: true, ref: 'user' },
     secondNationalId: { type: String, required: true, ref: 'user' },
-    matchId: { type: String, required: true, },
+    matchId: { type: mongoose.Types.ObjectId, required: true },
     matchDate: { type: Date, required: true, default: Date.now() },
     chat: { type: mongoose.Types.ObjectId, ref: 'chat' },
     progressPoints: { type: Number, required: true, default: 0 },
@@ -18,7 +18,6 @@ const relationshipSchema = new mongoose.Schema({
         sessionPoints: { type: Number, required: true, default: 0 },
     }]
 });
-
 
 const relationshipModel = mongoose.model('relationship', relationshipSchema);
 

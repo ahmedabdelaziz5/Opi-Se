@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
 
 const chatSchema = new mongoose.Schema({
-    matchId: { type: String, required: true },
+    matchId: { type: mongoose.Types.ObjectId, required: true, ref: 'relationship' },
     chat: [{
         messageSender: { type: String, required: true },
-        messageType: { type: String, required: true, default: "text" }, // text, image, poll
+        messageType: { type: String, required: true, default: "text" }, // text, poll
         messageContent: { type: String, },
         pollQuestion: { type: String, },
         pollAnswers: {
@@ -18,6 +18,7 @@ const chatSchema = new mongoose.Schema({
     }],
     chatMedia: [{
         mediaUrl: { type: String, required: true },
+        sentAt: { type: Date, required: true, default: Date.now },
     }],
     chatLinks: [{
         linkUrl: { type: String, required: true },

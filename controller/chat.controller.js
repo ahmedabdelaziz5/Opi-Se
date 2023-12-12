@@ -1,4 +1,6 @@
 const chatRepo = require('../models/chat/chat.repo');
+const filterMediaFiles = require('../helpers/filterMediaPaths');
+const { uploadManyMediaToCloudinary } = require('../services/uploadImageToCloudinary');
 
 exports.getPartnerChat = async (req, res) => {
     try {
@@ -34,7 +36,19 @@ exports.getChatMedia = async (req, res) => {
 
 exports.uploadChatMedia = async (req, res) => {
     try {
-
+        const matchId = req.query.matchId;
+        const files = filterMediaFiles(req.files, 'path');
+        const result = await uploadManyMediaToCloudinary(files, "chat media")
+        await chatRepo.updateChat({ matchId }, {
+            $push: {
+                chatMedia: {
+                    $each: result.data.map(item => ({
+                        mediaUrl: item,
+                    }))
+                }
+            }
+        });
+        return res.status(result.statusCode).json(result);
     }
     catch (err) {
         return res.status(500).json({
