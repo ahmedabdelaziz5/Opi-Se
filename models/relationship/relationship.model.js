@@ -18,7 +18,7 @@ const relationshipSchema = new mongoose.Schema({
         sessionPoints: { type: Number, required: true, default: 0 },
     }]
 });
-
+ 
 const relationshipModel = mongoose.model('relationship', relationshipSchema);
 
 module.exports = relationshipModel;

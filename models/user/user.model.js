@@ -1,4 +1,3 @@
-const { boolean } = require('joi');
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
@@ -13,7 +12,7 @@ const userSchema = new mongoose.Schema({
     isVerified: { type: Boolean, default: false },
     numOfReports: { type: Number, default: 0 },
     partnerId: { type: String, default: null, ref: 'user' },
-    matchId: { type: String, default: null, ref: 'user' },
+    matchId: { type: mongoose.Types.ObjectId, default: null, ref: 'relationship' },
     isAvailable: { type: Boolean, default: true },
     joinedAt: { type: Date, default: Date.now() },
     getUserPrefers: { type: Boolean, default: true },
@@ -37,10 +36,9 @@ const userSchema = new mongoose.Schema({
         email: { type: String, required: true },
     }],
     history: [{
-        matchId: { type: String, required: true, ref: 'relationship' },
+        matchId: { type: mongoose.Types.ObjectId, required: true, ref: 'relationship' },
     }]
 });
-
 
 const userModel = mongoose.model('user', userSchema);
 
