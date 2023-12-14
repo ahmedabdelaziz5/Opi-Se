@@ -55,7 +55,7 @@ exports.uploadChatMedia = async (req, res) => {
         }
         const files = filterMediaFiles(req.files, 'path');
         const result = await uploadManyMediaToCloudinary(files, "chat media")
-        await chatRepo.updateChat({ matchId }, {
+        const writeMedia = await chatRepo.updateChat({ matchId }, {
             $push: {
                 chatMedia: {
                     $each: result.data.map(item => ({
@@ -64,6 +64,11 @@ exports.uploadChatMedia = async (req, res) => {
                 }
             }
         });
+        if(!writeMedia.success){
+            return res.status(500).json({
+                message: "could not save media !",
+            })
+        }
         return res.status(result.statusCode).json(result);
     }
     catch (err) {

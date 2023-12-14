@@ -1,12 +1,22 @@
 // events related to chat module
 const mongoose = require('mongoose');
 const chatRepo = require('../../models/chat/chat.repo.js');
-const cloudinary = require('cloudinary');
+
+// events validation
+const { validator } = require('../../socket validation/validator');
+const { sendMessageValid, startChatSessionValid, replyToSessionRequestValid, endChatSessionValid, uploadChatMediaValid } = require('../../socket validation/chat.validation');
 
 // event to send message in chat 
 exports.sendMessage = async (socket, data, ack) => {
     try {
         const matchId = socket.handshake.query.matchId;
+        const validationResult = validator(data, sendMessageValid);
+        if (!validationResult.success) {
+            return ack({
+                success: false,
+                message: "validation error !",
+            })
+        }
         const chat = await chatRepo.updateChat({ matchId }, { $push: { chat: data } }, { upsert: true, new: true });
         if (!chat.success) {
             return ack({
@@ -34,10 +44,10 @@ exports.sendMessage = async (socket, data, ack) => {
 exports.deleteMessage = async (socket, data, ack) => {
     try {
         const matchId = socket.handshake.query.matchId;
-        if (!mongoose.isValidObjectId(data.messageId)) {
+        if (!mongoose.isValidObjectId(data.messageId) || !mongoose.isValidObjectId(matchId)) {
             return ack({
                 success: false,
-                message: `invalid message id !`,
+                message: `invalid id !`,
             })
         }
         const chat = await chatRepo.updateChat({ matchId }, { $pull: { chat: { _id: data.messageId } } }, { new: true });
@@ -77,7 +87,7 @@ exports.startChatSession = async (socket, data, ack) => {
         console.log(err.message)
         return ack({
             success: false,
-            message: `error while sending message !`,
+            message: `error while sending session request !`,
         })
     }
 };
@@ -96,7 +106,7 @@ exports.replyToSessionRequest = async (socket, data, ack) => {
         console.log(err.message)
         return ack({
             success: false,
-            message: `error while sending message !`,
+            message: `error while replying on session request !`,
         })
     }
 };

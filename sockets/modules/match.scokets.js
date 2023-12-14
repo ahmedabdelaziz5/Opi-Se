@@ -1,9 +1,22 @@
 // events related to match module
 
+// events validation
+const { validator } = require('../../socket validation/validator');
+const { acceptPartnerRequestValid } = require('../../socket validation/match.validation');
+
+
 // event is used to join the user to match room , emit another event to the partner to join the match room, notify the user and update friends list in the client side
 exports.acceptPartnerRequest = async (socket, data, ack) => {
     try {
         const { notifiedPartner, matchId, partnerUserName, partnerImage } = data;
+        const validationResult = validator(data, acceptPartnerRequestValid);
+        if (!validationResult.success) {
+            console.log(validationResult.message);
+            return ack({
+                success: false,
+                message: `validation error !`,
+            })
+        }
         socket.join(matchId);
         socket.to(notifiedPartner).emit('matchRequestApproved', { matchId, notification: true, partnerUserName, partnerImage });
         ack({

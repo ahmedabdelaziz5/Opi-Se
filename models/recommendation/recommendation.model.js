@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const recommendationSchema = new mongoose.Schema({
-    nationalId: { type: String, required: true, ref: 'user' },
+    nationalId: { type: String, required: true },
     fieldOfStudy: { type: String, required: true },
     specialization: { type: String, required: true },
     partnerRate: [{
@@ -9,7 +9,7 @@ const recommendationSchema = new mongoose.Schema({
         rate: { type: Number, required: true, default: 0 }
     }],
     userRecommendations: [{
-        nationalId: { type: String, required: true, ref: 'user' },
+        nationalId: { type: String, required: true },
         score: { type: Number, required: true, default: 0 }
     }],
     userQuestions: [{

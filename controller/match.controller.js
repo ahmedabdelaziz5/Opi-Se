@@ -166,7 +166,6 @@ exports.acceptMatchRequest = async (req, res) => {
                 message: "Not Authorized !"
             })
         }
-        // const matchId = `M${partner1Id}${partner2Id}`
         const matchId = new mongoose.Types.ObjectId();
         const bulkUpdate = await userRepo.bulkUpdate([
             {
@@ -200,6 +199,7 @@ exports.acceptMatchRequest = async (req, res) => {
             }
         ])
         const createRelationship = relationshipRepo.createRelationship({
+            _id: matchId,
             firstPartnerId: partner1Id,
             secondPartnerId: partner2Id,
             firstNationalId: req.user.nationalId,

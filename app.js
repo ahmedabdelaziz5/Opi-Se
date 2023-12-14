@@ -58,14 +58,3 @@ server.listen(process.env.PORT || 3000, process.env.LOCAL_HOST || "0.0.0.0", () 
 })
 
 module.exports = app;
-
-
-
-// const userModel = require('./models/user/user.model');
-// const chatModel = require('./models/chat/chat.model');
-// const mongoose = require('mongoose');
-// const test = async () => {
-//     const user = await userModel.findOne({ _id: '6578fb625825ed91fb68e4cf' }).populate('matchId');
-//     console.log(user);
-// }
-// test();
