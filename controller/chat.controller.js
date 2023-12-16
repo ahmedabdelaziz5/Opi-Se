@@ -13,7 +13,7 @@ exports.getPartnerChat = async (req, res) => {
         }
         const page = req.query.page || 1;
         const limit = req.query.limit || 10;
-        const result = await chatRepo.getChatData({ matchId }, 'chat', { page, limit });
+        const result = await chatRepo.getChatData({ matchId }, { path: 'matchId', select: 'firstPartnerId secondPartnerId' }, 'chat', { page, limit }, req.user.id);
         return res.status(result.statusCode).json(result);
     }
     catch (err) {
@@ -34,7 +34,7 @@ exports.getChatMedia = async (req, res) => {
         }
         const page = req.query.page || 1;
         const limit = req.query.limit || 10;
-        const result = await chatRepo.getChatData({ matchId }, 'chatMedia', { page, limit });
+        const result = await chatRepo.getChatData({ matchId }, { path: 'matchId', select: 'firstPartnerId secondPartnerId' }, 'chatMedia', { page, limit }, req.user.id);
         return res.status(result.statusCode).json(result);
     }
     catch (err) {
@@ -64,7 +64,7 @@ exports.uploadChatMedia = async (req, res) => {
                 }
             }
         });
-        if(!writeMedia.success){
+        if (!writeMedia.success) {
             return res.status(500).json({
                 message: "could not save media !",
             })

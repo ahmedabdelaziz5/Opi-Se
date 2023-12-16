@@ -1,6 +1,6 @@
 const chatModel = require('./chat.model');
 
-// function to update ( send/delete ) messages in chat
+// function to update ( send / delete ) messages in chat
 exports.updateChat = async (filter, query, options) => {
     try {
         const chat = await chatModel.findOneAndUpdate(filter, query, options);
@@ -24,10 +24,16 @@ exports.updateChat = async (filter, query, options) => {
 };
 
 // function to get ( chat / media / links ) from chat
-exports.getChatData = async (filter, select, pagg) => {
+exports.getChatData = async (filter, populate, select, pagg, user) => {
     try {
         const skip = (pagg.page - 1) * pagg.limit;
-        const data = await chatModel.findOne(filter).lean();
+        const data = await chatModel.findOne(filter).populate(populate).select(select).lean();
+        if (data.matchId.firstPartnerId.toString() !== user && data.matchId.secondPartnerId.toString() !== user) {
+            return {
+                statusCode: 401,
+                message: "Not Authorized !"
+            }
+        }
         if (data) var paggedData = data[select].slice(skip, skip + pagg.limit);
         if (!data || !paggedData.length) {
             return {
