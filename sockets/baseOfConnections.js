@@ -25,7 +25,7 @@ exports.establishSocketConnections = (io) => {
         // videoCall Module events
         socket.on("callUser", (data, ack) => videoCallModule.callUser(socket, data, ack));
         socket.on("answerCall", (data, ack) => videoCallModule.answerCall(socket, data, ack));
-        socket.on("disconnect", (data, ack) => videoCallModule.disconnect(socket, data, ack));
+        socket.on("disconnectCall", (data, ack) => videoCallModule.disconnectCall(socket, data, ack));
 
         // chat Module events
         socket.on("sendMessage", (data, ack) => chatModule.sendMessage(socket, data, ack));

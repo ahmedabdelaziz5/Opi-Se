@@ -39,21 +39,22 @@ exports.answerCall = (socket, callData, ack) => {
 };
 
 // event is used to end video call
-exports.disconnect = (socket, callData, ack) => {
+exports.disconnectCall = (socket, callData, ack) => {
     try {
         const roomId = socket.handshake.query.roomId;
         socket.to(roomId).emit("callEnded", callData);
-        // ack({
-        //     success: true,
-        //     message: `call ended successfully !`,
-        // })
+        ack({
+            success: true,
+            message: `call ended successfully !`,
+        })
     }
     catch (err) {
-        console.log(err.message);
+        console.log("disconnect : " + err.message);
         return ack({
             success: false,
             message: `error while ending video call !`,
         })
     }
 };
+
 
