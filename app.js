@@ -26,8 +26,6 @@ app.use(require("./routes/match.route"));
 app.use(require("./routes/recommendation.route"));
 app.use(require("./routes/chat.route"));
 
-
-
 // cors options 
 const corsOptions = {
     origin: '*',
@@ -44,6 +42,10 @@ const io = socketIo(server, { cors: corsOptions });
 // establish socket connections
 const { establishSocketConnections } = require("./sockets/baseOfConnections");
 establishSocketConnections(io);
+
+// connect to redis server
+const { connectRedis } = require('./config/redis.config');
+connectRedis();
 
 // test origin route 
 const path = require('path');
