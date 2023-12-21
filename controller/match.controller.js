@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { client } = require('../config/redis.config');
 const { setUpMails } = require('../helpers/sendEmail');
 const userRepo = require("../models/user/user.repo");
 const { sendNotification } = require('../services/sendPushNotification');
@@ -207,8 +208,10 @@ exports.acceptMatchRequest = async (req, res) => {
             matchId: matchId,
             matchDate: Date.now()
         });
-        const result = await Promise.all([bulkUpdate, createRelationship]);
-        if (!result[0].success || !result[1].success) {
+        const stringData = JSON.stringify([{ _id: partner1Id }, { _id: partner2Id }]);
+        const cachRelationship = client.set(`${matchId}`, stringData);
+        const result = await Promise.all([bulkUpdate, createRelationship, cachRelationship]);
+        if (!result[0].success || !result[1].success || !result[2]) {
             return res.status(500).json({
                 message: "error",
                 error: "error when accepting partner request"

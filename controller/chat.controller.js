@@ -5,7 +5,7 @@ const { uploadManyMediaToCloudinary } = require('../services/uploadImageToCloudi
 
 exports.getPartnerChat = async (req, res) => {
     try {
-        const { matchId } = req.body;
+        const { matchId } = req.query;
         if (!mongoose.Types.ObjectId.isValid(matchId)) {
             return res.status(401).json({
                 message: "Not Authorized !"
@@ -26,7 +26,7 @@ exports.getPartnerChat = async (req, res) => {
 
 exports.getChatMedia = async (req, res) => {
     try {
-        const { matchId } = req.body;
+        const { matchId } = req.query;
         if (!mongoose.Types.ObjectId.isValid(matchId)) {
             return res.status(401).json({
                 message: "Not Authorized !"

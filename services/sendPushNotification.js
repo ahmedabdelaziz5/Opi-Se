@@ -56,7 +56,6 @@ exports.sendNotification = async (deviceToken, type) => {
 
     }
     catch (err) {
-        console.log(err);
         return {
             success: false,
             statusCode: 500,

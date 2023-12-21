@@ -11,12 +11,17 @@ const client = createClient({
 
 
 const connectRedis = async () => {
-    client.on('error', (err) => {
-        return "Redis Client Error";
-    });
-    await client.connect().then(async () => {
-        console.log('Redis client connected');
-    });
+    try {
+        client.on('error', (err) => {
+            return "Redis Client Error";
+        });
+        await client.connect().then(async () => {
+            console.log('Redis client connected');
+        });
+    }
+    catch (err) {
+        console.log(err);
+    }
 }
 
 module.exports = {

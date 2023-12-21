@@ -28,19 +28,19 @@ exports.getChatData = async (filter, populate, select, pagg, user) => {
     try {
         const skip = (pagg.page - 1) * pagg.limit;
         const data = await chatModel.findOne(filter).populate(populate).select(select).lean();
+        if (data === null || data[select].length === 0) {
+            return {
+                statusCode: 200,
+                message: `there is no ${select} yet!`
+            }
+        }
         if (data.matchId.firstPartnerId.toString() !== user && data.matchId.secondPartnerId.toString() !== user) {
             return {
                 statusCode: 401,
                 message: "Not Authorized !"
             }
         }
-        if (data) var paggedData = data[select].slice(skip, skip + pagg.limit);
-        if (!data || !paggedData.length) {
-            return {
-                statusCode: 200,
-                message: `there is no ${select} yet!`,
-            };
-        }
+        let paggedData = data[select].slice(skip, skip + pagg.limit);
         return {
             statusCode: 200,
             success: true,
