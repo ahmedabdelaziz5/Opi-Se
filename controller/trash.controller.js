@@ -1,4 +1,3 @@
-const mongoose = require('mongoose');
 const trashRepo = require('../models/trash/trash.repo');
 
 exports.getAllTrashNotes = async (req, res) => {
@@ -6,13 +5,13 @@ exports.getAllTrashNotes = async (req, res) => {
         const page = req.query.page || 1;
         const limit = req.query.limit || 10;
         const matchId = req.query.matchId;
-        const result = await noteRepo.getNotes({ matchId: matchId }, { page, limit });
+        const result = await trashRepo.getAllTrash({ matchId: matchId }, { page, limit });
         if (!result.success) {
             return res.status(result.statusCode).json({
                 message: result.message
             })
         }
-        return res.status(result.statusCode).json(result);
+        return res.status(200).json(result);
     }
     catch (err) {
         return res.status(500).json({
@@ -24,18 +23,16 @@ exports.getAllTrashNotes = async (req, res) => {
 
 exports.deleteNoteFromTrash = async (req, res) => {
     try {
-        const noteData = req.body;
-        noteData["userId"] = req.user.id;
-        noteData["matchId"] = req.query.matchId;
-        const result = await noteRepo.createNote(noteData);
+        const matchId = req.query.matchId;
+        const noteId = req.query.noteId;
+        const result = await trashRepo.deleteFromTrash({ matchId: matchId, _id: noteId });
         if (!result.success) {
             return res.status(result.statusCode).json({
                 message: result.message
             })
         }
-        return res.status(201).json({
-            message: "success",
-            data: noteData
+        return res.status(200).json({
+            message: "success"
         })
     }
     catch (err) {
@@ -48,18 +45,15 @@ exports.deleteNoteFromTrash = async (req, res) => {
 
 exports.flushTrash = async (req, res) => {
     try {
-        const noteData = req.body;
-        noteData["userId"] = req.user.id;
-        noteData["matchId"] = req.query.matchId;
-        const result = await noteRepo.createNote(noteData);
+        const matchId = req.query.matchId;
+        const result = await trashRepo.deleteAllTrash({ matchId: matchId });
         if (!result.success) {
             return res.status(result.statusCode).json({
                 message: result.message
             })
         }
-        return res.status(201).json({
-            message: "success",
-            data: noteData
+        return res.status(200).json({
+            message: "success"
         })
     }
     catch (err) {

@@ -3,8 +3,8 @@ const trashModel = require('./trash.model');
 exports.getAllTrash = async (filter, pagg) => {
     try {
         const skip = (pagg.page - 1) * pagg.limit;
-        let notes = noteModel.find(filter).skip(skip).limit(pagg.limit).lean();
-        let itemCount = noteModel.countDocuments(filter);
+        let notes = trashModel.find(filter).skip(skip).limit(pagg.limit).lean();
+        let itemCount = trashModel.countDocuments(filter);
         const [notesPromis, itemCountPromis] = await Promise.all([notes, itemCount]);
         if (!notesPromis.length) {
             return {
@@ -35,7 +35,6 @@ exports.getAllTrash = async (filter, pagg) => {
 exports.moveNoteToTrash = async (data) => {
     try {
         const result = await trashModel.create(data);
-        console.log(result);
         if (!result) {
             return {
                 success: false,
@@ -58,9 +57,21 @@ exports.moveNoteToTrash = async (data) => {
     }
 };
 
-exports.deleteFromTrash = async (data) => {
+exports.deleteFromTrash = async (filter) => {
     try {
-
+        const result = await trashModel.deleteOne(filter);
+        if (!result.deletedCount) {
+            return {
+                success: false,
+                statusCode: 417,
+                message: "there is no note to delete !"
+            }
+        }
+        return {
+            success: true,
+            statusCode: 200,
+            message: "success"
+        }
     }
     catch (err) {
         return {
@@ -71,9 +82,21 @@ exports.deleteFromTrash = async (data) => {
     }
 };
 
-exports.deleteAllTrash = async (filter, edit, option) => {
+exports.deleteAllTrash = async (filter) => {
     try {
-
+        const result = await trashModel.deleteMany(filter);
+        if (!result.deletedCount) {
+            return {
+                success: false,
+                statusCode: 417,
+                message: "there is no notes to delete !"
+            }
+        }
+        return {
+            success: true,
+            statusCode: 200,
+            message: "success"
+        }
     }
     catch (err) {
         return {
