@@ -26,6 +26,7 @@ app.use(require("./routes/match.route"));
 app.use(require("./routes/recommendation.route"));
 app.use(require("./routes/chat.route"));
 app.use(require("./routes/note.route"));
+app.use(require("./routes/trash.route"));
 
 // cors options 
 const corsOptions = {

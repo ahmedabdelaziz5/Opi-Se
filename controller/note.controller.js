@@ -1,5 +1,6 @@
-const noteRepo = require('../models/note/note.repo');
 const mongoose = require('mongoose');
+const noteRepo = require('../models/note/note.repo');
+const trashRepo = require('../models/trash/trash.repo');
 
 exports.getAllNotes = async (req, res) => {
     try {
@@ -119,7 +120,7 @@ exports.deleteNote = async (req, res) => {
                 message: note.message
             })
         }
-        const moveToTrash = await noteRepo.moveToTrash(note.data); 
+        const moveToTrash = await trashRepo.moveNoteToTrash(note.data);
         return res.status(moveToTrash.statusCode).json({
             message: moveToTrash.message
         })
@@ -134,7 +135,24 @@ exports.deleteNote = async (req, res) => {
 
 exports.restoreNote = async (req, res) => {
     try {
-
+        const noteId = req.query.noteId;
+        const matchId = req.query.matchId;
+        const note = await trashRepo.restorFromTrash({ _id: noteId, matchId });
+        if (!note.success) {
+            return res.status(note.statusCode).json({
+                message: note.message
+            })
+        }
+        const restor = await noteRepo.createNote(note.data);
+        if (!restor.success) {
+            return res.status(restor.statusCode).json({
+                message: restor.message
+            })
+        }
+        return res.status(200).json({
+            message: "success",
+            data: note.data
+        })
     }
     catch (err) {
         return res.status(500).json({
