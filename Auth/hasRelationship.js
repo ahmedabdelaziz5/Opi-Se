@@ -1,6 +1,6 @@
 // function to check if the user has a relationship with the other partner 
-const { client } = require('../config/redis.config');
 const mongoose = require('mongoose');
+const { getRelationship } = require('../services/checkCachedRelations');
 
 exports.hasRelationship = () => {
     return async (req, res, next) => {
@@ -12,16 +12,10 @@ exports.hasRelationship = () => {
                     message: "Unauthorized Relationship !"
                 })
             }
-            const result = await client.get(matchId);
-            if (!result) {
-                return res.status(401).json({
-                    message: "Unauthorized Relationship !"
-                })
-            }
-            const match = JSON.parse(result).find((match) => match._id === userId);
-            if (!match) {
-                return res.status(401).json({
-                    message: "Unauthorized Relationship !"
+            const result = await getRelationship(matchId, userId);
+            if (!result.success) {
+                return res.status(result.statusCode).json({
+                    message: result.message
                 })
             }
             next();

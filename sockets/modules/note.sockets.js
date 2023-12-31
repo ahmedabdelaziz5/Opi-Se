@@ -48,7 +48,7 @@ exports.deleteNote = async (req, res) => {
     }
 };
 
-exports.restoreNote = async (req, res) => {
+exports.restorNote = async (req, res) => {
     try {
 
     }

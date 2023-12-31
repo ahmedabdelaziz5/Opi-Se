@@ -35,10 +35,21 @@ module.exports = {
         }),
     },
 
+    deleteMessageValid: {
+        body: joi.object().required().keys({
+
+            messageId: joi.string().required().messages({
+                "string.empty": "messageId can't be empty",
+                "any.required": "messageId can't be empty"
+            }),
+
+        }),
+    },
+
     startChatSessionValid: {
         body: joi.object().required().keys({
 
-            chatSessionRequest: joi.string().required().messages({
+            chatSessionRequest: joi.boolean().required().valid(true).messages({
                 "string.empty": "chat session request can't be empty",
                 "any.required": "chat session request can't be empty"
             }),
@@ -49,9 +60,9 @@ module.exports = {
     replyToSessionRequestValid: {
         body: joi.object().required().keys({
 
-            notifiedPartner: joi.string().required().messages({
-                "string.empty": "notified partner Id can't be empty",
-                "any.required": "notified partner Id can't be empty"
+            accept: joi.boolean().required().messages({
+                "string.empty": "accept can't be empty",
+                "any.required": "accept can't be empty"
             }),
 
         }),
@@ -60,9 +71,29 @@ module.exports = {
     endChatSessionValid: {
         body: joi.object().required().keys({
 
-            notifiedPartner: joi.string().required().messages({
-                "string.empty": "notified partner Id can't be empty",
-                "any.required": "notified partner Id can't be empty"
+            sessionDate: joi.date().required().messages({
+                "string.empty": "sessionDate Id can't be empty",
+                "any.required": "sessionDate Id can't be empty"
+            }),
+
+            sessionStartDate: joi.date().required().messages({
+                "string.empty": "sessionStartDate can't be empty",
+                "any.required": "sessionStartDate can't be empty"
+            }),
+
+            sessionEndDate: joi.date().required().messages({
+                "string.empty": "sessionEndDate can't be empty",
+                "any.required": "sessionEndDate can't be empty"
+            }),
+
+            sessionTopic: joi.string().required().messages({
+                "string.empty": "sessionTopic can't be empty",
+                "any.required": "sessionTopic can't be empty"
+            }),
+
+            sessionPoints: joi.number().required().messages({
+                "string.empty": "sessionPoints can't be empty",
+                "any.required": "sessionPoints can't be empty"
             }),
 
         }),
@@ -71,13 +102,14 @@ module.exports = {
     uploadChatMediaValid: {
         body: joi.object().required().keys({
 
-            notifiedPartner: joi.string().required().messages({
-                "string.empty": "notified partner Id can't be empty",
-                "any.required": "notified partner Id can't be empty"
-            }),
+            media: joi.array().items(
+                joi.string().required().messages({
+                    "any.required": "media can't be empty",
+                    "any.required": "media can't be empty",
+                })
+            )
 
         }),
     },
-
 
 }
