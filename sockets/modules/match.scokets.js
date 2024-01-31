@@ -64,10 +64,10 @@ exports.joinMatchRoom = async (socket, data, ack) => {
     }
     catch (err) {
         console.log(err.message);
-        ack({
-            success: false,
-            message: `error while joining match room !`,
-        })
+        // ack({
+        //     success: false,
+        //     message: `error while joining match room !`,
+        // })
     }
 };
 
