@@ -6,6 +6,7 @@ const noteSchema = new mongoose.Schema({
     noteTitle: { type: String, reqired: true },
     noteContent: { type: String, reqired: true },
     isPinned: { type: Boolean, default: false },
+    noteColor: { type: String, default: '#ffffff' },
     createdAt: { type: Date, default: Date.now() },
 });
 

@@ -15,6 +15,11 @@ module.exports = {
                 "any.required": "note content is required"
             }),
 
+            noteColor: joi.string().required().messages({
+                "string.empty": "note color can't be empty",
+                "any.required": "note color is required"
+            }),
+
         }),
     },
 
