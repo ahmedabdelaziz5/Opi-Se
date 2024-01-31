@@ -33,6 +33,8 @@ exports.sendMessage = async (socket, data, ack) => {
                 message: "validation error !",
             })
         }
+        const messageId = new mongoose.Types.ObjectId();
+        data._id = messageId;
         const chat = await chatRepo.updateChat({ matchId }, { $push: { chat: data } }, { upsert: true, new: true });
         if (!chat.success) {
             return ack({
@@ -48,7 +50,6 @@ exports.sendMessage = async (socket, data, ack) => {
         })
     }
     catch (err) {
-        console.log(err.message)
         return ack({
             success: false,
             message: `error while sending message !`,

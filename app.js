@@ -1,16 +1,20 @@
 const express = require("express");
 const cors = require('cors');
+require("dotenv").config();
 
+// express app
 const app = express();
 app.use(express.json());
 app.use(cors()); // http -> https
+
+// payload size limit
+app.use(express.json({ limit: '100mb' }));
+app.use(express.urlencoded({ extended: false, limit: '100mb' }));
 
 // using params request  
 const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-
-require("dotenv").config();
 
 // database connection 
 const { databaseConnection } = require("./config/db.config");
@@ -49,16 +53,15 @@ establishSocketConnections(io);
 const { connectRedis } = require('./config/redis.config');
 connectRedis();
 
-// test origin route 
-const path = require('path');
-app.get("/", (req, res) => {
-    const photoPath = path.join(__dirname, './jok.jpg');
-    res.sendFile(photoPath);
-});
+// error handler
+const errorManger = require('./helpers/envError');
+app.use(express.static('public'));
+app.use(errorManger.handler);
+app.use(errorManger.notFound);
 
 // server listening
 server.listen(process.env.PORT || 3000, process.env.LOCAL_HOST || "0.0.0.0", () => {
     console.log(`Server is up and runing on port ${process.env.PORT}!`)
-})
+});
 
 module.exports = app;

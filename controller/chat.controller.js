@@ -48,6 +48,7 @@ exports.getChatMedia = async (req, res) => {
 exports.uploadChatMedia = async (req, res) => {
     try {
         const matchId = req.query.matchId;
+        const userId = req.user.id;
         if (!mongoose.Types.ObjectId.isValid(matchId)) {
             return res.status(401).json({
                 message: "Not Authorized !",
@@ -59,6 +60,14 @@ exports.uploadChatMedia = async (req, res) => {
             $push: {
                 chatMedia: {
                     $each: result.data.map(item => ({
+                        messageSender: userId,
+                        mediaUrl: item,
+                    }))
+                },
+                chat: {
+                    $each: result.data.map(item => ({
+                        messageType: "media",
+                        messageSender: userId,
                         mediaUrl: item,
                     }))
                 }

@@ -16,6 +16,6 @@ const { decodeToken } = require('../Auth/decodeToken');
 // chat module routes 
 app.get('/getPartnerChat', decodeToken(), getPartnerChat);
 app.get('/getChatMedia', decodeToken(), getChatMedia);
-app.post('/uploadChatMedia', upload.array('chatMedia', 5), uploadChatMedia);
+app.post('/uploadChatMedia', decodeToken(), upload.array('chatMedia', 5), uploadChatMedia);
 
 module.exports = app;

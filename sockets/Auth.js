@@ -29,4 +29,4 @@ exports.checkSocketAuth = async (token, matchId) => {
             message: `error while authenticating !`,
         }
     }
-}
+};

@@ -9,28 +9,22 @@ const recommendationRepo = require("../models/recommendation/recomendation.repo"
 // function that allows user to get his partner requests 
 exports.getMatchRequest = async (req, res) => {
     try {
-
         const userId = req.user.id;
-
         if (!mongoose.Types.ObjectId.isValid(userId)) {
             return res.status(401).json({
                 message: "Not Authorized !"
             })
         }
-
         const requests = await userRepo.isExist({ _id: userId }, 'partnerRequests');
-
         if (!requests.success) {
             return res.status(requests.statusCode).json({
                 message: requests.message
             })
         }
-
         return res.status(200).json({
             message: 'success',
             data: requests.data
         })
-
     }
     catch (err) {
         return res.status(500).json({
@@ -71,21 +65,18 @@ exports.searchForSpecificPartner = async (req, res) => {
 // function that performs the database and push notification logic for sending partner request
 exports.sendPartnerRequest = async (req, res) => {
     try {
-
         const { userId } = req.query;
-
         if (!mongoose.Types.ObjectId.isValid(userId)) {
             return res.status(401).json({
                 message: "Not Authorized !"
             })
         }
-
         newRequest = {
             partnerId: req.user.id,
             nationalId: req.user.nationalId,
-            partnerUserName: req.user.userName
+            partnerUserName: req.user.userName,
+            email: req.user.email
         };
-
         const updateUserData = await userRepo.updateUser(
             { _id: userId },
             {
@@ -96,15 +87,12 @@ exports.sendPartnerRequest = async (req, res) => {
                 isAvailable: false
             },
         );
-
         if (!updateUserData.success) {
             return res.status(updateUserData.statusCode).json({
                 message: updateUserData.message
             })
         };
-
         const notification = await sendNotification(updateUserData.data.deviceTokens, type = "newPartnerRequest");
-
         return res.status(notification.statusCode).json({
             message: notification.message,
             data: { notifiedPartner: userId }
@@ -198,7 +186,7 @@ exports.acceptMatchRequest = async (req, res) => {
                     }
                 }
             }
-        ])
+        ]);
         const createRelationship = relationshipRepo.createRelationship({
             _id: matchId,
             firstPartnerId: partner1Id,

@@ -1,6 +1,5 @@
 const chai = require('chai');
 const app = require('../app');
-const mocha = require('mocha');
 const data = require('./tmpData');
 const chaiHttp = require('chai-http');
 chai.use(chaiHttp);

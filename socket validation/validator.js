@@ -16,4 +16,4 @@ exports.validator = (data, schema) => {
         success: true,
         message: `data is valid !`,
     };
-}
+};

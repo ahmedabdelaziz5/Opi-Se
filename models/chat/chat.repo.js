@@ -40,15 +40,17 @@ exports.getChatData = async (filter, populate, select, pagg, user) => {
                 message: "Not Authorized !"
             }
         }
-        let paggedData = data[select].slice(skip, skip + pagg.limit);
+        const totalNumOfItems = data[select].length;
+        const start_index = Math.max(0, totalNumOfItems - skip - pagg.limit);
+        const end_index = Math.min(totalNumOfItems - skip, totalNumOfItems);
         return {
             statusCode: 200,
             success: true,
             message: "success",
-            totalNumOfItems: data[select].length,
+            totalNumOfItems: totalNumOfItems,
             totalPages: Math.ceil(data[select].length / pagg.limit),
             currentPage: pagg.page,
-            data: paggedData,
+            data: data[select].slice(start_index, end_index).reverse()
         };
     }
     catch (err) {

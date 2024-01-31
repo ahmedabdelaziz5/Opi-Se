@@ -7,7 +7,7 @@ module.exports = {
 
             messageSender: joi.string().required(),
 
-            messageType: joi.string().valid('poll', 'text').required(),
+            messageType: joi.string().valid('poll', 'text', 'media').required(),
 
             messageContent: joi.string().when('messageType', {
                 is: 'text',
@@ -30,7 +30,7 @@ module.exports = {
                 is: 'poll',
                 then: joi.required(),
                 otherwise: joi.forbidden()
-            })
+            }),
 
         }),
     },
@@ -49,10 +49,12 @@ module.exports = {
     startChatSessionValid: {
         body: joi.object().required().keys({
 
-            chatSessionRequest: joi.boolean().required().valid(true).messages({
+            chatSessionRequest: joi.boolean().required().messages({
                 "string.empty": "chat session request can't be empty",
                 "any.required": "chat session request can't be empty"
             }),
+
+            sessionStartTime: joi.date().optional(),
 
         }),
     },
@@ -103,7 +105,7 @@ module.exports = {
         body: joi.object().required().keys({
 
             media: joi.array().items(
-                joi.string().required().messages({
+                joi.string().uri({ scheme: ['http', 'https'] }).required().messages({
                     "any.required": "media can't be empty",
                     "any.required": "media can't be empty",
                 })
