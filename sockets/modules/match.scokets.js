@@ -11,7 +11,6 @@ exports.acceptPartnerRequest = async (socket, data, ack) => {
         const { notifiedPartner, matchId, partnerUserName, partnerImage } = data;
         const validationResult = validator(data, acceptPartnerRequestValid);
         if (!validationResult.success) {
-            console.log(validationResult.message);
             return ack({
                 success: false,
                 message: `validation error !`,
@@ -58,7 +57,7 @@ exports.joinMatchRoom = async (socket, data, ack) => {
     try {
         const matchId = socket.handshake.query.matchId;
         socket.join(matchId);
-        return ack({
+        ack({
             success: true,
             message: `user has joined match room successfully !`,
         })
