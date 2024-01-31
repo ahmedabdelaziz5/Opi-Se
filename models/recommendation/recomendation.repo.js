@@ -37,6 +37,13 @@ exports.getUserRecommendations = async (nationalId, page, select) => {
         const limit = 5;
         const skip = (page - 1) * limit;
         let recommendation = await recommendationModel.findOne({ nationalId: nationalId }).select('userRecommendations');
+        if (!recommendation) {
+            return {
+                success: false,
+                statusCode: 404,
+                message: "could not found any recommendations for this user !"
+            }
+        }
         recommendation = recommendation.userRecommendations.map(user => user.nationalId);
         const users = await userModel.find({ nationalId: { $in: recommendation }, isAvailable: true }).select(select);
         if (users.length === 0) {
