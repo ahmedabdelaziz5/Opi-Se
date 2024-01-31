@@ -10,7 +10,6 @@ exports.getPartnerRecommendation = async (req, res) => {
         if (!result.success) {
             return res.status(result.statusCode).json({
                 message: result.message,
-                error: result.error.message
             })
         }
         if (!result.hasRecommendation) {
