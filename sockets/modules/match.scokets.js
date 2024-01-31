@@ -64,7 +64,7 @@ exports.joinMatchRoom = async (socket, data, ack) => {
     }
     catch (err) {
         console.log(err.message);
-        return ack({
+        ack({
             success: false,
             message: `error while joining match room !`,
         })
