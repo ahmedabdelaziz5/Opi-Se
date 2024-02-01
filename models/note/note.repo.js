@@ -1,9 +1,10 @@
 const noteModel = require('./note.model');
+const mongoose = require('mongoose');
 
 exports.getNotes = async (filter, pagg) => {
     try {
         const skip = (pagg.page - 1) * pagg.limit;
-        let notes = noteModel.find(filter).skip(skip).limit(pagg.limit).lean();
+        let notes = noteModel.find(filter).sort({ createdAt: -1 }).skip(skip).limit(pagg.limit).lean();
         let itemCount = noteModel.countDocuments(filter);
         const [notesPromis, itemCountPromis] = await Promise.all([notes, itemCount]);
         if (!notesPromis.length) {
@@ -34,6 +35,8 @@ exports.getNotes = async (filter, pagg) => {
 
 exports.createNote = async (data) => {
     try {
+        const noteId = new mongoose.Types.ObjectId();
+        data["_id"] = noteId;
         const note = await noteModel.create(data);
         if (!note) {
             return {
@@ -45,7 +48,8 @@ exports.createNote = async (data) => {
         return {
             success: true,
             statusCode: 201,
-            message: "Note created successfully"
+            message: "Note created successfully",
+            data: note
         }
     }
     catch (err) {
@@ -59,12 +63,13 @@ exports.createNote = async (data) => {
 
 exports.updateNote = async (filter, edit, option) => {
     try {
+        edit["updatedAt"] = Date.now();
         const result = await noteModel.findOneAndUpdate(filter, edit, option);
         if (!result) {
             return {
                 success: false,
-                statusCode: 401,
-                message: "Not Authorized !"
+                statusCode: 400,
+                message: "there is no such note !"
             }
         }
         return {

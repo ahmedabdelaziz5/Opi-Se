@@ -8,6 +8,7 @@ const noteSchema = new mongoose.Schema({
     isPinned: { type: Boolean, default: false },
     noteColor: { type: String, default: '#ffffff' },
     createdAt: { type: Date, default: Date.now() },
+    updatedAt: { type: Date, default: Date.now() },
 });
 
 const noteModel = mongoose.model('note', noteSchema);
