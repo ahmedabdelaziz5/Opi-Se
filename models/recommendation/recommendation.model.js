@@ -10,7 +10,8 @@ const recommendationSchema = new mongoose.Schema({
     }],
     userRecommendations: [{
         nationalId: { type: String, required: true },
-        score: { type: Number, required: true, default: 0 }
+        score: { type: Number, required: true, default: 0 },
+        predScore: { type: Number, required: true, default: 0 },
     }],
     userQuestions: [{
         question: { type: String, required: true },

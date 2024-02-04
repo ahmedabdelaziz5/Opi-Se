@@ -30,6 +30,7 @@ module.exports = {
 
             noteContent: joi.string(),
 
+            noteColor: joi.string(),
         }),
     },
 
