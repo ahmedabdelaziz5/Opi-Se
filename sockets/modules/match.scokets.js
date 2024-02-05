@@ -57,17 +57,17 @@ exports.joinMatchRoom = async (socket, data, ack) => {
     try {
         const matchId = socket.handshake.query.matchId;
         socket.join(matchId);
-        // ack({
-        //     success: true,
-        //     message: `user has joined match room successfully !`,
-        // })
+        ack({
+            success: true,
+            message: `user has joined match room successfully !`,
+        })
     }
     catch (err) {
         console.log(err.message);
-        // ack({
-        //     success: false,
-        //     message: `error while joining match room !`,
-        // })
+        ack({
+            success: false,
+            message: `error while joining match room !`,
+        })
     }
 };
 
