@@ -3,31 +3,35 @@ const userModel = require('../user/user.model');
 const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 
 // when user login for the first time we will get his recommendation array 
-exports.getFirstRecommendation = async (nationalId) => {
+exports.getFirstRecommendation = (nationalId) => {
     try {
-        const recommendation = await fetch(`https://ml-api-x5og.onrender.com/nationalId=${nationalId}`);
-        const data = await recommendation.json();
-        if (recommendation.status !== 200) {
-            return {
-                success: false,
-                statusCode: 400,
-                message: "could not get partner recommendation for you !",
-                error: data.message
-            }
-        }
-        return {
+        let result = {
             success: true,
-            statusCode: 200,
+            statusCode: 201,
             message: "success",
         }
+        nationalId = 69679570648893;
+        return fetch(`https://ml-api-x5og.onrender.com/nationalId=${nationalId}`)
+            .then(recommendation => recommendation.json())
+            .then(async data => {
+                result = {
+                    success: true,
+                    statusCode: 200,
+                    message: "success",
+                    data: data
+                }
+                await recommendationModel.updateOne({ nationalId: nationalId }, { userRecommendations: data });
+                return result;
+            }).catch(err => {
+                return {
+                    success: false,
+                    statusCode: 500,
+                    message: "error",
+                    error: err.message
+                }
+            })
     }
     catch (err) {
-        console.log(err.message);
-        return {
-            statusCode: 500,
-            message: "error",
-            error: err.message
-        }
     }
 };
 
