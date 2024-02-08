@@ -10,7 +10,6 @@ exports.getFirstRecommendation = (nationalId) => {
             statusCode: 201,
             message: "success",
         }
-        nationalId = 69679570648893;
         return fetch(`https://ml-api-x5og.onrender.com/nationalId=${nationalId}`)
             .then(recommendation => recommendation.json())
             .then(async data => {
