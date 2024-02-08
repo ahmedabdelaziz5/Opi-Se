@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt');
 const saltRounds = 7;
 const jwt = require('jsonwebtoken');
 const userRepo = require('../models/user/user.repo');
+const recommendationRepo = require('../models/recommendation/recomendation.repo');
 const { setUpMails } = require('../helpers/sendEmail');
 const { removeImageFromCloudinary, uploadImageToCloudinary } = require('../services/uploadImageToCloudinary');
 
@@ -49,6 +50,7 @@ exports.login = async (req, res) => {
                 message: user.message,
             });
         }
+        let getProfile = await recommendationRepo.getUserDetails({ nationalId: user.data.nationalId }, 'fieldOfStudy specialization userSkills');
         if (!user.data.isVerified) {
             return res.status(400).json({
                 message: "please verify your account first !",
@@ -63,11 +65,11 @@ exports.login = async (req, res) => {
         }
         let token = jwt.sign({ id: user.data._id, userName: user.data.userName, email: user.data.email, nationalId: user.data.nationalId }, process.env.SECRET_JWT);
         delete user.data.password;
-        
         return res.status(200).json({
             message: "success",
             token: token,
             data: user.data,
+            profileDetails: getProfile.data
         });
     }
     catch (err) {

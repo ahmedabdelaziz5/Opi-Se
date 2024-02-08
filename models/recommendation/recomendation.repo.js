@@ -31,6 +31,11 @@ exports.getFirstRecommendation = (nationalId) => {
             })
     }
     catch (err) {
+        return {
+            success: false,
+            statusCode: 500,
+            message: err.message
+        }
     }
 };
 
@@ -48,7 +53,8 @@ exports.getUserRecommendations = async (nationalId, page, select) => {
             }
         }
         recommendation = recommendation.userRecommendations.map(user => user.nationalId);
-        const users = await userModel.find({ nationalId: { $in: recommendation }, isAvailable: true }).select(select);
+        console.log(recommendation);
+        const users = await userModel.find({ nationalId: { $in: recommendation }, isAvailable: true }).populate({ path: 'profileDetails', select: 'fieldOfStudy specialization userSkills' }).select(select);
         if (users.length === 0) {
             return {
                 success: true,
@@ -118,6 +124,33 @@ exports.updateData = async (filter, update) => {
             success: true,
             statusCode: 201,
             message: "success",
+        }
+    }
+    catch (err) {
+        return {
+            success: false,
+            statusCode: 500,
+            message: err.message
+        }
+    }
+};
+
+// get user prefers and skills  
+exports.getUserDetails = async (filter, select) => {
+    try {
+        let data = await recommendationModel.findOne(filter).select(select);
+        if (!data) {
+            return {
+                success: false,
+                statusCode: 404,
+                message: "could not found any details for this user !"
+            }
+        }
+        return {
+            success: true,
+            statusCode: 200,
+            message: "success",
+            data: data
         }
     }
     catch (err) {

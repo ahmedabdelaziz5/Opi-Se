@@ -1,3 +1,4 @@
+const { Types } = require('mongoose');
 const recommendationRepo = require('../models/recommendation/recomendation.repo');
 const userRepo = require('../models/user/user.repo');
 
@@ -6,7 +7,8 @@ exports.getPartnerRecommendation = async (req, res) => {
     try {
         const page = req.query.page || 1;
         const nationalId = req.user.nationalId;
-        const result = await recommendationRepo.getUserRecommendations(nationalId, page, '-history -deviceTokens -partnerRequests -password');
+        const select = '-password -partnerRequests -notifications -isVerified -numOfReports -deviceTokens -history -__v';
+        const result = await recommendationRepo.getUserRecommendations(nationalId, page, select);
         if (!result.success) {
             return res.status(result.statusCode).json({
                 message: result.message,
@@ -39,10 +41,13 @@ exports.submitUserPrefers = async (req, res) => {
         const userData = req.body;
         const nationalId = req.user.nationalId;
         userData['nationalId'] = nationalId;
+        const newId = new Types.ObjectId();
+        userData['_id'] = newId;
         let replicatDataPromis = recommendationRepo.replicateDataForModels(userData);
         let getRecommendationPromis = recommendationRepo.getFirstRecommendation(nationalId);
-        let updateUserPromis = userRepo.updateUser({ nationalId: nationalId }, { getUserPrefers: false });
+        let updateUserPromis = userRepo.updateUser({ nationalId: nationalId }, { getUserPrefers: false, profileDetails: newId });
         const result = await Promise.all([replicatDataPromis, getRecommendationPromis, updateUserPromis]);
+        console.log(result);
         if (!result[0].success || !result[1].success || !result[2].success) {
             return res.status(417).json({
                 message: "error",

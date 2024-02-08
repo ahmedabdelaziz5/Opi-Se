@@ -43,15 +43,18 @@ exports.searchForSpecificPartner = async (req, res) => {
                 message: "Not Authorized !"
             })
         }
-        const result = await userRepo.isExist({ _id: userId }, '-password');
+        const select = '-password -partnerRequests -notifications -isVerified -numOfReports -deviceTokens -history';
+        const result = await userRepo.isExist({ _id: userId }, select);
         if (!result.success) {
             return res.status(result.statusCode).json({
                 message: "partner not found !"
             })
         }
+        let getProfile = await recommendationRepo.getUserDetails({ nationalId: result.data.nationalId }, 'fieldOfStudy specialization userSkills');
         return res.status(200).json({
             message: "success",
-            data: result.data
+            data: result.data,
+            profileDetails: getProfile.data
         })
     }
     catch (err) {
