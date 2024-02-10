@@ -18,6 +18,7 @@ const userSchema = new mongoose.Schema({
     getUserPrefers: { type: Boolean, default: true },
     points: { type: Number, default: 0 },
     profileDetails: { type: mongoose.Types.ObjectId, ref: 'recommendation' },
+    bio: { type: String, default: "blank" },
     notifications: [{
         message: { type: String, required: true },
         date: { type: Date, required: true, default: Date.now() },

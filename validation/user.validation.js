@@ -142,6 +142,8 @@ module.exports = {
 
             email: joi.string().email(),
 
+            bio: joi.string(),
+
             languages: joi.array().items(
                 joi.object({
                     languageName: joi.string().required().messages({
