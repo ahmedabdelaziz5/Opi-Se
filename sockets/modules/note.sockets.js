@@ -101,7 +101,7 @@ exports.deleteNote = async (socket, data, ack) => {
     }
 };
 
-exports.restoreNote = async (socket, data, ack) => {
+exports.restorNote = async (socket, data, ack) => {
     try {
         const { token, matchId } = socket.handshake.query;
         const isAuth = await checkSocketAuth(token, matchId);
