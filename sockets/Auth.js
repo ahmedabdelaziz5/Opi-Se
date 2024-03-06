@@ -21,6 +21,7 @@ exports.checkSocketAuth = async (token, matchId) => {
         return {
             success: true,
             message: "success",
+            userId: tokenData.id
         }
     }
     catch (err) {

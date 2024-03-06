@@ -1,4 +1,4 @@
-// events related to videoCall module
+// events related to voice/video call module
 
 // event is used to call user
 exports.callUser = (socket, callData, ack) => {
@@ -57,4 +57,42 @@ exports.disconnectCall = (socket, callData, ack) => {
     }
 };
 
+// event is used to toggle camera
+exports.toggleCamera = (socket, callData, ack) => {
+    try {
+        const roomId = socket.handshake.query.roomId;
+        socket.to(roomId).emit("cameraToggeled", callData);
+        ack({
+            success: true,
+            message: `user toggeled his camera !`,
+        });
+    }
+    catch (err) {
+        console.log(err.message)
+        return ack({
+            success: false,
+            message: `error while toggling camera !`,
+        })
+    }
 
+};
+
+// event is used to toggle microphone
+exports.toggleMicrophone = (socket, callData, ack) => {
+    try {
+        const roomId = socket.handshake.query.roomId;
+        socket.to(roomId).emit("microphoneToggeled", callData);
+        ack({
+            success: true,
+            message: `user toggeled his microphne !`,
+        });
+    }
+    catch (err) {
+        console.log(err.message)
+        return ack({
+            success: false,
+            message: `error while toggling microphone !`,
+        })
+    }
+
+};

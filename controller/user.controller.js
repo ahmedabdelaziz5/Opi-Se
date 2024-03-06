@@ -258,6 +258,7 @@ exports.changeProfileImage = async (req, res) => {
         }
         return res.status(user.statusCode).json({
             message: user.message,
+            imageUrl: result.data ? result.data : "default.png"
         });
     }
     catch (err) {

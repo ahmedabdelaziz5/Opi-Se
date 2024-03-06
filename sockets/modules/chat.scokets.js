@@ -35,6 +35,7 @@ exports.sendMessage = async (socket, data, ack) => {
         }
         const messageId = new mongoose.Types.ObjectId();
         data._id = messageId;
+        data.messageSender = isAuth.userId;
         const chat = await chatRepo.updateChat({ matchId }, { $push: { chat: data } }, { upsert: true, new: true });
         if (!chat.success) {
             return ack({
@@ -100,6 +101,63 @@ exports.deleteMessage = async (socket, data, ack) => {
         return ack({
             success: false,
             message: `error while deleting message !`,
+        })
+    }
+};
+
+// event to select/vote from poll message
+exports.selectFromPoll = async (socket, data, ack) => {
+    try {
+        const { token, matchId, messageId, optionNumber } = socket.handshake.query;
+        if (!mongoose.isValidObjectId(messageId) || !mongoose.isValidObjectId(matchId)) {
+            return ack({
+                success: false,
+                message: `invalid id !`,
+            })
+        }
+        const isAuth = await checkSocketAuth(token, matchId);
+        if (!isAuth.success) {
+            return ack({
+                success: false,
+                message: "Not Authorized !"
+            })
+        }
+        const pathString = `chat.$.pollAnswers.${optionNumber}.optionVotes`;
+        const pushPathString = `chat.$.pollAnswers.${optionNumber}.optionSelectors`;
+        let updateQuery = {};
+        updateQuery["$inc"] = {};
+        updateQuery["$push"] = {};
+        updateQuery["$inc"][pathString] = 1;
+        updateQuery["$push"][pushPathString] = isAuth.userId;
+        const chat = await chatRepo.updateChat(
+            {
+                matchId,
+                chat: {
+                    $elemMatch: {
+                        _id: messageId,
+                        messageType: "poll",
+                    },
+                },
+            },
+            updateQuery,
+        )
+        if (!chat.success) {
+            return ack({
+                success: false,
+                message: `there is no such chat !`,
+            })
+        }
+        socket.broadcast.to(matchId).emit("pollOptionSelected", messageId);
+        return ack({
+            success: true,
+            message: `message option selected successfully !`,
+        });
+    }
+    catch (err) {
+        console.log(err.message)
+        return ack({
+            success: false,
+            message: `error while selecting from poll message !`,
         })
     }
 };

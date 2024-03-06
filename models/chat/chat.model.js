@@ -7,14 +7,12 @@ const chatSchema = new mongoose.Schema({
         messageType: { type: String, required: true, default: "text" }, // text, poll, mediaLink
         messageContent: { type: String, },
         pollQuestion: { type: String, },
-        pollAnswers: {
-            type: [{
-                optionNumber: { type: Number, required: true },
-                optionContent: { type: String, required: true },
-                isChoosen: { type: Boolean, default: false },
-            }],
-            default: undefined
-        },
+        pollAnswers: [{
+            optionNumber: { type: Number, required: true },
+            optionContent: { type: String, required: true },
+            optionVotes: { type: Number, default: 0 }, // number of people who voted for this option
+            optionSelectors: [{ type: mongoose.Types.ObjectId }], // users who selected this option
+        }],
         mediaUrl: { type: String, },
         sentAt: { type: Date, required: true, default: Date.now },
     }],

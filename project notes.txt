@@ -1,6 +1,6 @@
 1- update socket auth by adding middleware instead of the auth function 
 
-2- add validation via middleware instead of validation function 
+2- add validation function  instead of validation function 
 
 3- review database design for more optimization 
 
@@ -8,4 +8,7 @@
 
 5- add blocking service ( array to each user, APIs, do not show blocked people in recommendations )
 
-6- code review and optimization 
+6- mental health APIs ( write & get ), task module 
+
+
+code review, optimization and unite testing 

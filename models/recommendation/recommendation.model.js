@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const recommendationSchema = new mongoose.Schema({
-    nationalId: { type: String, required: true },
+    nationalId: { type: String, required: true, ref: 'user' },
     fieldOfStudy: { type: String, required: true },
     specialization: { type: String, required: true },
     partnerRate: [{
@@ -26,9 +26,3 @@ const recommendationSchema = new mongoose.Schema({
 const recommendationModel = mongoose.model('recommendation', recommendationSchema);
 
 module.exports = recommendationModel;
-
-
-
-[
-
-]

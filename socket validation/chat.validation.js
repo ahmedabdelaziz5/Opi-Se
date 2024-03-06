@@ -5,8 +5,6 @@ module.exports = {
     sendMessageValid: {
         body: joi.object().required().keys({
 
-            messageSender: joi.string().required(),
-
             messageType: joi.string().valid('poll', 'text', 'media').required(),
 
             messageContent: joi.string().when('messageType', {
