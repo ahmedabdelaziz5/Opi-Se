@@ -1,17 +1,33 @@
 // function to validate Joi validation schema 
-exports.validator = (schema) => {
+exports.validator = (schema, type = 'body') => {
     return (req, res, next) => {
-        var validation = []
-        var validationResult = schema.body.validate(req.body);
-        if (validationResult.error) {
-            validation.push(validationResult.error.details[0].message);
+
+        let validation = []
+        let bodyValidation, paramsValidation;
+
+        // in case we need to validate body
+        if (type === 'body' || type === 'bodyAndParams') {
+            bodyValidation = schema.body.validate(req.body);
+            if (bodyValidation.error) {
+                validation.push(bodyValidation.error.details[0].message)
+            }
         }
+
+        // in case we need to validate params
+        if (type === 'params' || type === 'bodyAndParams') {
+            paramsValidation = schema.params.validate(req.query);
+            if (paramsValidation.error) {
+                validation.push(paramsValidation.error.details[0].message)
+            }
+        }
+
         if (validation.length) {
-            res.status(400).json({
+            return res.status(400).json({
                 message: validation.join(),
             })
-            return;
         }
+
         next();
     }
+
 };

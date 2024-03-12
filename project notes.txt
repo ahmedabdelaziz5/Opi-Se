@@ -1,14 +1,22 @@
+_____________________ Remaining work ________________________ 
+
+optimization -> 
 1- update socket auth by adding middleware instead of the auth function 
+2- add validation middleware instead of validation function ( sockets )
+3- delete relationship from cache when dismatch
+4- save matchId in token
+5- validate matchId in validation middleware not in controller ( twice in relationshipCheck and validator )
 
-2- add validation function  instead of validation function 
+services ->
+1- cron-job to delete all unverified accounts from our system 
+2- add blocking service ( array to each user, APIs, do not show blocked people in recommendations )
+3- user ranking dashboard 
+4- tasks calender 
 
-3- review database design for more optimization 
+_____________________ Week sprint ________________________ 
 
-4- cron-job to delete all unverified accounts from our system 
-
-5- add blocking service ( array to each user, APIs, do not show blocked people in recommendations )
-
-6- mental health APIs ( write & get ), task module 
+1- tasks module ( socket )
+2- edit prefers feature ( get new recommendations when user change his interests ) 
 
 
-code review, optimization and unite testing 
+-> final round *__* -> code review and unite testing 

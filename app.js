@@ -31,6 +31,7 @@ app.use(require("./routes/recommendation.route"));
 app.use(require("./routes/chat.route"));
 app.use(require("./routes/note.route"));
 app.use(require("./routes/trash.route"));
+app.use(require("./routes/task.route"));
 
 // cors options 
 const corsOptions = {
