@@ -4,7 +4,7 @@ const objectId = require('joi-objectid')(joi);
 module.exports = {
 
     getSpecificTasksTypeValid: {
-        body: joi.object().required().keys({
+        params: joi.object().required().keys({
 
             page: joi.number().min(1).default(1).messages({
                 "number.base": "page must be a number",
@@ -83,7 +83,7 @@ module.exports = {
     },
 
     deleteTaskValid: {
-        body: joi.object().required().keys({
+        params: joi.object().required().keys({
 
             taskId: objectId().required().messages({
                 "string.empty": "task id can't be empty",
@@ -101,7 +101,7 @@ module.exports = {
     },
 
     deleteAllTasksTypeValid: {
-        body: joi.object().required().keys({
+        params: joi.object().required().keys({
 
             type: joi.string().valid('toDo', 'inProgress', 'done').messages({
                 "string.any": " task status must be one of [toDo, InProgress, done]",
