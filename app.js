@@ -25,13 +25,8 @@ const { connectToFireBase } = require('./config/fireBase.config');
 connectToFireBase();
 
 // server routes
-app.use(require("./routes/user.route"));
-app.use(require("./routes/match.route"));
-app.use(require("./routes/recommendation.route"));
-app.use(require("./routes/chat.route"));
-app.use(require("./routes/note.route"));
-app.use(require("./routes/trash.route"));
-app.use(require("./routes/task.route"));
+const ApplicationRoutes = require('./routes');
+ApplicationRoutes(app);
 
 // cors options 
 const corsOptions = {

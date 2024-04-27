@@ -12,7 +12,6 @@ exports.decodeToken = () => {
         }
         catch (err) {
             res.status(500).json({
-                err,
                 message: "wrong signture for DB token !"
             })
         }

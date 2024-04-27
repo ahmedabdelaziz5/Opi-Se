@@ -108,7 +108,8 @@ exports.deleteMessage = async (socket, data, ack) => {
 // event to select/vote from poll message
 exports.selectFromPoll = async (socket, data, ack) => {
     try {
-        const { token, matchId, messageId, optionNumber } = socket.handshake.query;
+        const { token, matchId } = socket.handshake.query;
+        const { messageId, optionNumber } = data;
         if (!mongoose.isValidObjectId(messageId) || !mongoose.isValidObjectId(matchId)) {
             return ack({
                 success: false,
@@ -150,6 +151,8 @@ exports.selectFromPoll = async (socket, data, ack) => {
         socket.broadcast.to(matchId).emit("pollOptionSelected", messageId);
         return ack({
             success: true,
+            messageId,
+            optionNumber,
             message: `message option selected successfully !`,
         });
     }

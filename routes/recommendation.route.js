@@ -3,12 +3,14 @@ const app = require('express').Router();
 //  recommendation module controller functions
 const {
     submitUserPrefers,
+    editUserPrefers,
     getPartnerRecommendation,
 } = require('../controller/recommendation.controller');
 
 // validation schema 
 const {
     submitUserPrefersValid,
+    editUserPrefersValid
 } = require('../validation/recommendation.validation');
 
 // function that validates validation schema
@@ -20,6 +22,6 @@ const { decodeToken } = require('../Auth/decodeToken');
 // recommendation module routes 
 app.get('/getPartnerRecommendation', decodeToken(), getPartnerRecommendation);
 app.post('/submitUserPrefers', validator(submitUserPrefersValid), decodeToken(), submitUserPrefers);
-
+app.patch('/editUserPrefers', validator(editUserPrefersValid), decodeToken(), editUserPrefers);
 
 module.exports = app;  

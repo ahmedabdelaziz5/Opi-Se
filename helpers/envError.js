@@ -12,7 +12,6 @@ exports.APIError = class APIError extends Error {
 
 exports.handler = (err, req, res, next) => {
     const statusCode = err.status ? err.status : 500;
-    console.log(err);
     res.status(statusCode);
     res.json({
         success: true,
@@ -24,11 +23,11 @@ exports.handler = (err, req, res, next) => {
 exports.notFound = (req, res, next) => {
     const isApiRequest = req.headers['user-agent'].includes('axios') || req.headers['user-agent'].includes('fetch') || req.headers['postman-token'] || req.headers['user-agent'].includes('insomnia');
     if (isApiRequest) {
-        const err = new APIError({
+        const err = new this.APIError({
             message: 'Route Not found',
             status: 404,
         });
-        return handler(err, req, res);
+        return this.handler(err, req, res);
     }
     else {
         return res.sendFile(path.join(__dirname, '..', 'public', 'notFound.html'));

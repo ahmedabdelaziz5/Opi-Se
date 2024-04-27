@@ -140,18 +140,18 @@ exports.updateManyUsers = async (filter, edit) => {
     }
 };
 
-// updae users data using bulk write
+// update users data using bulk write
 exports.bulkUpdate = async (filter) => {
     try {
         const updatePartners = await userModel.bulkWrite(filter);
-        if(!updatePartners){
+        if (!updatePartners) {
             return {
                 success: false,
                 statusCode: 417,
                 message: "error updating users data after match",
             }
         }
-       return {
+        return {
             success: true,
             statusCode: 201,
             message: "success",
@@ -164,4 +164,36 @@ exports.bulkUpdate = async (filter) => {
             message: err.message
         }
     }
+};
+
+// get userLists (paginated)
+exports.getList = async (filter, select, pagg) => {
+    try {
+        const skip = (pagg.page - 1) * pagg.limit;
+        let notifications = await userModel.find(filter).select(select).lean();
+        const data = notifications.slice(skip, skip + pagg.limit);
+        if (!data.length) {
+            return {
+                success: false,
+                statusCode: 404,
+                message: "There is no notifications yet !"
+            };
+        }
+        return {
+            success: true,
+            statusCode: 200,
+            message: "success",
+            totalNumOfItems: notifications.length,
+            totalPages: Math.ceil(notifications / pagg.limit),
+            currentPage: pagg.page,
+            data: data
+        };
+    }
+    catch (err) {
+        return {
+            success: false,
+            statusCode: 500,
+            message: err.message
+        };
+    };
 };

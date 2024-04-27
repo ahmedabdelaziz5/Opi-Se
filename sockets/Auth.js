@@ -9,25 +9,25 @@ exports.checkSocketAuth = async (token, matchId) => {
             return {
                 success: false,
                 message: "Not Authorized !",
-            }
-        }
+            };
+        };
         const relationship = await getRelationship(matchId, tokenData.id);
         if (!relationship.success) {
             return {
                 success: false,
                 message: "Not Authorized !",
-            }
-        }
+            };
+        };
         return {
             success: true,
             message: "success",
             userId: tokenData.id
-        }
+        };
     }
     catch (err) {
         return {
             success: false,
             message: `error while authenticating !`,
-        }
-    }
+        };
+    };
 };

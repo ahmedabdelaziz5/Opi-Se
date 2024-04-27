@@ -4,6 +4,7 @@ const matchModule = require('./modules/match.scokets');
 const videoCallModule = require('./modules/videoCall.sockets');
 const chatModule = require('./modules/chat.scokets');
 const noteModule = require('./modules/note.sockets');
+const taskModule = require('./modules/task.sockets');
 
 //base socket connection with server
 exports.establishSocketConnections = (io) => {
@@ -46,5 +47,10 @@ exports.establishSocketConnections = (io) => {
         socket.on("pinNote", (data, ack) => noteModule.pinNote(socket, data, ack));
         socket.on("restorNote", (data, ack) => noteModule.restorNote(socket, data, ack));
 
+        // task Module events
+        socket.on("addTask", (data, ack) => taskModule.addTask(socket, data, ack));
+        socket.on("updateTask", (data, ack) => taskModule.updateTask(socket, data, ack));
+        socket.on("deleteTask", (data, ack) => taskModule.deleteTask(socket, data, ack));
+        socket.on("deleteAllTasks", (data, ack) => taskModule.deleteAllTasks(socket, data, ack));
     });
 };

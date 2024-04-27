@@ -3,10 +3,16 @@ const taskRepo = require('../models/task/task.repo');
 // function that allows user to get all tasks 
 exports.getAllTasks = async (req, res) => {
     try {
-        const { matchId } = req.query;
-        const page = parseInt(req.query.page) || 1;
-        const limit = parseInt(req.query.limit) || 10;
-        let data = await taskRepo.getTasks({ matchId }, { page, limit });
+        const { matchId, year, month } = req.query;
+        let data = await taskRepo.getTasks(
+            {
+                matchId,
+                createdAt: {
+                    $gte: new Date(year, month - 1, 1),
+                    $lt: new Date(year, month, 1)
+                }
+            },
+        );
         return res.status(data.statusCode).json(data);
     }
     catch (err) {

@@ -20,8 +20,8 @@ exports.getPartnerChat = async (req, res) => {
         return res.status(500).json({
             message: "error",
             error: err.message
-        })
-    }
+        });
+    };
 };
 
 exports.getChatMedia = async (req, res) => {

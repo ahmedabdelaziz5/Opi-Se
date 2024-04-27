@@ -265,6 +265,22 @@ exports.changeProfileImage = async (req, res) => {
         return res.status(500).json({
             message: "error",
             error: err.message
-        })
+        });
+    };
+};
+
+exports.getNotifications = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const page = req.query.page || 1;
+        const limit = req.query.limit || 10;
+        const result = await userRepo.getList({ _id: userId }, 'notifications', { page, limit });
+        return res.status(result.statusCode).json(result);
     }
+    catch (err) {
+        return res.status(500).json({
+            message: "error",
+            error: err.message
+        });
+    };
 };

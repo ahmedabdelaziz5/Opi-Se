@@ -65,3 +65,29 @@ exports.submitUserPrefers = async (req, res) => {
         })
     }
 };
+
+// submit new data to ML model get online recommendation for new intersts 
+exports.editUserPrefers = async (req, res) => {
+    try {
+        const userData = req.body;
+        const nationalId = req.user.nationalId;
+        userData['nationalId'] = nationalId;
+        let replicatDataPromis = recommendationRepo.replicateDataForModels(userData);
+        let getRecommendationPromis = recommendationRepo.getFirstRecommendation(nationalId);
+        const result = await Promise.all([replicatDataPromis, getRecommendationPromis]);
+        console.log(result);
+        if (!result[0].success || !result[1].success) {
+            return res.status(417).json({
+                message: "error",
+                error: "error updating user prefers"
+            });
+        }
+        return res.status(201).json({ message: "success" });
+    }
+    catch (err) {
+        return res.status(500).json({
+            message: "error",
+            error: err.message
+        });
+    };
+};
