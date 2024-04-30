@@ -269,6 +269,7 @@ exports.changeProfileImage = async (req, res) => {
     };
 };
 
+// function that allows user to see his notifications list 
 exports.getNotifications = async (req, res) => {
     try {
         const userId = req.user.id;

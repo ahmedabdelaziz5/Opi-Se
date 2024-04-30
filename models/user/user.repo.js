@@ -184,7 +184,7 @@ exports.getList = async (filter, select, pagg) => {
             statusCode: 200,
             message: "success",
             totalNumOfItems: notifications.length,
-            totalPages: Math.ceil(notifications / pagg.limit),
+            totalPages: Math.ceil(notifications.length / pagg.limit),
             currentPage: pagg.page,
             data: data
         };
