@@ -40,20 +40,26 @@ exports.getFirstRecommendation = (nationalId) => {
 };
 
 // whenever the user ask for partner recommendation we will get his recommendation array
-exports.getUserRecommendations = async (nationalId, page, select) => {
+exports.getUserRecommendations = async (nationalId, page, select, populate) => {
     try {
         const limit = 5;
         const skip = (page - 1) * limit;
-        let recommendation = await recommendationModel.findOne({ nationalId: nationalId }).select('userRecommendations');
+        let recommendation = await recommendationModel.findOne({ nationalId: nationalId }).populate(populate).select('userRecommendations user');
         if (!recommendation) {
             return {
                 success: false,
                 statusCode: 404,
-                message: "could not found any recommendations for this user !"
+                message: "could not find any recommendations for this user !"
             }
         }
+        if (recommendation.user.partnerId) {
+            return {
+                success: false,
+                statusCode: 401,
+                message: "user already has a partner !"
+            };
+        }
         recommendation = recommendation.userRecommendations.map(user => user.nationalId);
-        console.log(recommendation);
         const users = await userModel.find({ nationalId: { $in: recommendation }, isAvailable: true }).populate({ path: 'profileDetails', select: 'fieldOfStudy specialization userSkills' }).select(select);
         if (users.length === 0) {
             return {

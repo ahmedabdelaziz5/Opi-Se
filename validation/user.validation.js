@@ -37,13 +37,16 @@ module.exports = {
             }),
 
             password: joi.string().required().messages({
-                "string.empty": "password can't be empty",
-                "any.required": "password is required"
+                "string.empty": "Password can't be empty",
+                "any.required": "Password is required",
+                "any.base": "Password must be a string"
             }),
 
-            confirmPassword: joi.string().required().messages({
-                "string.empty": "confirm password can't be empty",
-                "any.required": "confirm password is required"
+            confirmPassword: joi.string().required().valid(joi.ref('password')).messages({
+                "string.empty": "Confirm password can't be empty",
+                "any.required": "Confirm password is required",
+                "any.only": "Confirm password must match the password",
+                "any.base": "Confirm password must be a string"
             }),
 
             languages: joi.array().items(
@@ -100,13 +103,16 @@ module.exports = {
         body: joi.object().required().keys({
 
             password: joi.string().required().messages({
-                "string.empty": "password can't be empty",
-                "any.required": "password is required"
+                "string.empty": "Password can't be empty",
+                "any.required": "Password is required",
+                "any.base": "Password must be a string"
             }),
 
-            confirmPassword: joi.string().required().messages({
-                "string.empty": "confirm password can't be empty",
-                "any.required": "confirm password is required"
+            confirmPassword: joi.string().required().valid(joi.ref('password')).messages({
+                "string.empty": "Confirm password can't be empty",
+                "any.required": "Confirm password is required",
+                "any.only": "Confirm password must match the password",
+                "any.base": "Confirm password must be a string"
             }),
 
         }),
@@ -122,13 +128,16 @@ module.exports = {
             }),
 
             newPassword: joi.string().required().messages({
-                "string.empty": "password can't be empty",
-                "any.required": "password is required"
+                "string.empty": "Password can't be empty",
+                "any.required": "Password is required",
+                "any.base": "Password must be a string"
             }),
 
-            confirmNewPassword: joi.string().required().messages({
-                "string.empty": "confirm password can't be empty",
-                "any.required": "confirm password is required"
+            confirmNewPassword: joi.string().required().valid(joi.ref('newPassword')).messages({
+                "string.empty": "Confirm password can't be empty",
+                "any.required": "Confirm password is required",
+                "any.only": "Confirm password must match the password",
+                "any.base": "Confirm password must be a string"
             }),
 
         }),

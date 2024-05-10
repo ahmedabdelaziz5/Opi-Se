@@ -28,19 +28,6 @@ module.exports = {
                 })
             ),
 
-            userQuestions: joi.array().items(
-                joi.object({
-                    question: joi.string().required().messages({
-                        "string.empty": "question can't be empty",
-                        "any.required": "question is required"
-                    }),
-                    answer: joi.string().required().messages({
-                        "string.empty": "answer can't be empty",
-                        "any.required": "answer is required"
-                    }),
-                })
-            ),
-
         }),
     },
 
@@ -64,19 +51,6 @@ module.exports = {
                     skillRate: joi.number().required().messages({
                         "string.empty": "skill rate can't be empty",
                         "any.required": "skill rate is required"
-                    }),
-                })
-            ),
-
-            userQuestions: joi.array().items(
-                joi.object({
-                    question: joi.string().required().messages({
-                        "string.empty": "question can't be empty",
-                        "any.required": "question is required"
-                    }),
-                    answer: joi.string().required().messages({
-                        "string.empty": "answer can't be empty",
-                        "any.required": "answer is required"
                     }),
                 })
             ),

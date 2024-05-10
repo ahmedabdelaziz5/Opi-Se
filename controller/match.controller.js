@@ -5,6 +5,7 @@ const userRepo = require("../models/user/user.repo");
 const { sendNotification } = require('../services/sendPushNotification');
 const relationshipRepo = require("../models/relationship/relationship.repo");
 const recommendationRepo = require("../models/recommendation/recomendation.repo");
+const { deleteRelationship } = require('../services/checkCachedRelations');
 
 // function that allows user to get his partner requests 
 exports.getMatchRequest = async (req, res) => {
@@ -90,17 +91,12 @@ exports.sendPartnerRequest = async (req, res) => {
                 isAvailable: false
             },
         );
-        if (!updateUserData.success) {
-            return res.status(updateUserData.statusCode).json({
-                message: updateUserData.message
-            })
-        };
-        const notification = await sendNotification(updateUserData.data.deviceTokens, type = "newPartnerRequest");
-        return res.status(notification.statusCode).json({
-            message: notification.message,
-            data: { notifiedPartner: userId }
+        res.status(updateUserData.statusCode).json({
+            success: updateUserData.success,
+            message: updateUserData.message,
+            notifiedPartner: updateUserData.success ? updateUserData.notifiedPartner = userId : null
         });
-
+        await sendNotification(updateUserData.data.deviceTokens, type = "newPartnerRequest");
     }
     catch (err) {
         return res.status(500).json({
@@ -110,7 +106,7 @@ exports.sendPartnerRequest = async (req, res) => {
     };
 };
 
-// function that performs the database and push notification logic for decline partner request
+// function that performs the database logic and push notification when decline partner request
 exports.declineMatchRequest = async (req, res) => {
     try {
         const { id } = req.user;
@@ -134,10 +130,11 @@ exports.declineMatchRequest = async (req, res) => {
                 error: "error when declining partner request"
             })
         }
-        const notifyUser = await sendNotification(result[2].data.deviceTokens, type = "rejectMatchRequest");
-        return res.status(notifyUser.statusCode).json({
-            message: notifyUser.message
+        res.status(200).json({
+            message: "success",
+            success: true
         })
+        await sendNotification(result[2].data.deviceTokens, type = "rejectMatchRequest");
     }
     catch (err) {
         return res.status(500).json({
@@ -147,12 +144,11 @@ exports.declineMatchRequest = async (req, res) => {
     }
 };
 
-// function that performs the database and push notification logic for accepting partner request
+// function that performs the database logic and push notification for accepting partner request
 exports.acceptMatchRequest = async (req, res) => {
     try {
         const { partner2Id, nationalId } = req.query;
         const partner1Id = req.user.id;
-
         if (!mongoose.Types.ObjectId.isValid(partner2Id)) {
             return res.status(401).json({
                 message: "Not Authorized !"
@@ -200,21 +196,22 @@ exports.acceptMatchRequest = async (req, res) => {
             matchDate: Date.now()
         });
         const stringData = JSON.stringify([{ _id: partner1Id }, { _id: partner2Id }]);
-        const cachRelationship = client.set(`${matchId}`, stringData);
-        const result = await Promise.all([bulkUpdate, createRelationship, cachRelationship]);
+        const cacheRelationship = client.set(`${matchId}`, stringData);
+        const result = await Promise.all([bulkUpdate, createRelationship, cacheRelationship]);
         if (!result[0].success || !result[1].success || !result[2]) {
             return res.status(500).json({
                 message: "error",
                 error: "error when accepting partner request"
             })
         }
-        const notifyPartner2 = await sendNotification(result[1].data.deviceTokens, type = "acceptMatchRequest");
-        return res.status(notifyPartner2.statusCode).json({
-            message: notifyPartner2.message,
+        res.status(200).json({
+            message: "success",
+            success: true,
             acceptedPartner: partner1Id,
             notifiedPartner: partner2Id,
             matchId: matchId
-        })
+        });
+        await sendNotification(result[1].data.deviceTokens, type = "acceptMatchRequest");
     }
     catch (err) {
         return res.status(500).json({
@@ -242,9 +239,10 @@ exports.disMatchWithPartner = async (req, res) => {
                 $push: { notifications: { message: "it seems like your partner wasn't your best match, but the chance is not over yet. you can look for a better partner" } }
             }
         )
-        const updateRate = recommendationRepo.updateData({ nationalId: req.user.nationalId }, { $push: { partnerRate: rate } })
-        const result = await Promise.all([updateUsersProgress, updateRate]);
-        if (!result[0].success || !result[1].success) {
+        const updateRate = recommendationRepo.updateData({ nationalId: req.user.nationalId }, { $push: { partnerRate: rate } });
+        const deleteCachedRelationship = deleteRelationship(matchId);
+        const result = await Promise.all([updateUsersProgress, updateRate, deleteCachedRelationship]);
+        if (!result[0].success || !result[1].success, !result[2].success) {
             return res.status(500).json({
                 message: "error",
                 error: "error when dismatch with partner"

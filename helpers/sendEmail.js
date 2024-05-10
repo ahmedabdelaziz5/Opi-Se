@@ -17,9 +17,9 @@ exports.setUpMails = async (emailType, emailCredentials) => {
     mailOptions['html'] = `<b> <a href= https://opi-se-test.onrender.com/verifyAccount?token=${token} target= '_blank'>verify</b>`;
   }
 
-  else if (emailType === "forgetPasswrodEmail") {
+  else if (emailType === "forgetPasswordEmail") {
     let token = jwt.sign({ email: emailCredentials.email }, process.env.SECRET_JWT, { expiresIn: `1d` });
-    mailOptions['subject'] = "forget passowrd access";
+    mailOptions['subject'] = "forget password access";
     mailOptions['text'] = "please click the button to reset your account password";
     mailOptions['html'] = `<b> <a href= https://opi-se.vercel.app/reset-password?token=${token} target= '_blank'>reset password</b>`;
   }
@@ -30,7 +30,7 @@ exports.setUpMails = async (emailType, emailCredentials) => {
 
 we are very sorry to inform you that your partner request has been rejected by the other learner.
 
-your chance doesn't end here, we believe that you will find your best match jsut hit the button and get more recommendations :)
+your chance doesn't end here, we believe that you will find your best match just hit the button and get more recommendations :)
 
 regards ... Opi Se Team
   `;

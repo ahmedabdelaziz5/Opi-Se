@@ -10,15 +10,24 @@ const { removeImageFromCloudinary, uploadImageToCloudinary } = require('../servi
 exports.signUp = async (req, res) => {
     try {
         const userData = req.body;
-        let user = await userRepo.isExist({ $or: [{ userName: userData.userName }, { email: userData.email }, { nationalId: userData.nationalId }] }, '_id');
+        let user = await userRepo.isExist(
+            {
+                $or: [
+                    { userName: userData.userName },
+                    { email: userData.email },
+                    { nationalId: userData.nationalId }
+                ]
+            },
+            '_id'
+        );
         if (user.success) {
             return res.status(user.statusCode).json({
                 message: user.message,
             });
         }
-        let addUserPromis = await userRepo.createUser(userData);
-        let verificationMailPromis = await setUpMails("verificationMail", { email: userData.email });
-        let result = await Promise.all([addUserPromis, verificationMailPromis]);
+        let addUserPromise = await userRepo.createUser(userData);
+        let verificationMailPromise = await setUpMails("verificationMail", { email: userData.email });
+        let result = await Promise.all([addUserPromise, verificationMailPromise]);
 
         if (!result[0].success || !result[1].success) {
             return res.status(417).json({
@@ -44,7 +53,12 @@ exports.login = async (req, res) => {
     try {
         const userData = req.body;
         const select = '-deviceTokens -history'
-        let user = await userRepo.updateUser({ userName: userData.userName }, { $push: { deviceTokens: userData.deviceToken } }, { path: 'partnerId', select: 'userName profileImage' }, select);
+        let user = await userRepo.updateUser(
+            { userName: userData.userName },
+            { $addToSet: { deviceTokens: userData.deviceToken } },
+            { path: 'partnerId', select: 'userName profileImage' },
+            select
+        );
         if (!user.success) {
             return res.status(user.statusCode).json({
                 message: user.message,
@@ -63,7 +77,12 @@ exports.login = async (req, res) => {
                 message: "wrong password !",
             });
         }
-        let token = jwt.sign({ id: user.data._id, userName: user.data.userName, email: user.data.email, nationalId: user.data.nationalId }, process.env.SECRET_JWT);
+        let token = jwt.sign({
+            id: user.data._id,
+            userName: user.data.userName,
+            email: user.data.email,
+            nationalId: user.data.nationalId
+        }, process.env.SECRET_JWT);
         delete user.data.password;
         return res.status(200).json({
             message: "success",
@@ -89,7 +108,6 @@ exports.verifyAccount = async (req, res) => {
         if (!user.success) {
             return res.status(400).send('there is no such email , please register first');
         }
-        console.log(decodedToken.email);
         return res.status(200).send("your account was verified successfully !")
     }
     catch (err) {
@@ -102,7 +120,7 @@ exports.verifyAccount = async (req, res) => {
 
 };
 
-// function that resends a verification email
+// function that re-sends a verification email
 exports.resendVerificationEmail = async (req, res) => {
     try {
         const { email } = req.query;
@@ -129,7 +147,7 @@ exports.forgetPassword = async (req, res) => {
                 message: userMatch.message,
             });
         }
-        const sendEmail = await setUpMails("forgetPasswrodEmail", { email });
+        const sendEmail = await setUpMails("forgetPasswordEmail", { email });
         return res.status(sendEmail.statusCode).json({
             message: sendEmail.message,
         });
@@ -170,16 +188,11 @@ exports.submitNewPassword = async (req, res) => {
 // function that allows user to change his password inside the app
 exports.changePassword = async (req, res) => {
     try {
-        const { oldPassword, newPassword, confirmNewPassword } = req.body;
+        const { oldPassword, newPassword } = req.body;
         if (oldPassword === newPassword) {
             return res.status(400).json({
                 message: "new password must be different from old password"
             })
-        }
-        if (newPassword != confirmNewPassword) {
-            return res.status(400).json({
-                message: "new password and confirm new password not match !"
-            });
         }
         const user = await userRepo.isExist({ _id: req.user.id }, '_id password');
         if (!user.success) {

@@ -46,8 +46,8 @@ exports.addTask = async (req, res) => {
         const taskData = req.body;
         taskData['addedBy'] = req.user.id;
         taskData['matchId'] = req.query.matchId;
-        let addTaskPromis = await taskRepo.createTask(taskData);
-        return res.status(addTaskPromis.statusCode).json(addTaskPromis);
+        let addTaskPromise = await taskRepo.createTask(taskData);
+        return res.status(addTaskPromise.statusCode).json(addTaskPromise);
     }
     catch (err) {
         return res.status(500).json({
@@ -62,8 +62,8 @@ exports.editTask = async (req, res) => {
     try {
         const taskData = req.body;
         const { matchId, taskId } = req.query;
-        let editTaskPromis = await taskRepo.updateTask({ matchId, _id: taskId }, taskData, { new: true });
-        return res.status(editTaskPromis.statusCode).json(editTaskPromis);
+        let editTaskPromise = await taskRepo.updateTask({ matchId, _id: taskId }, taskData, { new: true });
+        return res.status(editTaskPromise.statusCode).json(editTaskPromise);
     }
     catch (err) {
         return res.status(500).json({
@@ -77,8 +77,8 @@ exports.editTask = async (req, res) => {
 exports.deleteTask = async (req, res) => {
     try {
         const { matchId, taskId } = req.query;
-        let deleteTaskPromis = await taskRepo.deleteTask({ matchId, _id: taskId });
-        return res.status(deleteTaskPromis.statusCode).json(deleteTaskPromis);
+        let deleteTaskPromise = await taskRepo.deleteTask({ matchId, _id: taskId });
+        return res.status(deleteTaskPromise.statusCode).json(deleteTaskPromise);
     }
     catch (err) {
         return res.status(500).json({
@@ -88,12 +88,12 @@ exports.deleteTask = async (req, res) => {
     }
 };
 
-// function that allows user to delete all tasks of specfic type 
+// function that allows user to delete all tasks of specific type 
 exports.deleteAllTasksType = async (req, res) => {
     try {
         const { matchId, type } = req.query;
-        let deleteTaskPromis = await taskRepo.deleteAllTasks({ matchId, taskStatus: type });
-        return res.status(deleteTaskPromis.statusCode).json(deleteTaskPromis);
+        let deleteTaskPromise = await taskRepo.deleteAllTasks({ matchId, taskStatus: type });
+        return res.status(deleteTaskPromise.statusCode).json(deleteTaskPromise);
     }
     catch (err) {
         return res.status(500).json({
