@@ -1,6 +1,6 @@
 // function to check Authentication in sockets 
 const { getTokenData } = require('../helpers/getTokenData');
-const { getRelationship } = require('../services/checkCachedRelations');
+const { getFromCache } = require('../services/checkCachedRelations');
 
 exports.checkSocketAuth = async (token, matchId) => {
     try {
@@ -11,7 +11,7 @@ exports.checkSocketAuth = async (token, matchId) => {
                 message: "Not Authorized !",
             };
         };
-        const relationship = await getRelationship(matchId, tokenData.id);
+        const relationship = await getFromCache(matchId, tokenData.id);
         if (!relationship.success) {
             return {
                 success: false,

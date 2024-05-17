@@ -106,8 +106,8 @@ exports.pinNote = async (req, res) => {
         return res.status(500).json({
             message: "error",
             error: err.message
-        })
-    }
+        });
+    };
 };
 
 exports.deleteNote = async (req, res) => {
@@ -137,16 +137,16 @@ exports.restoreNote = async (req, res) => {
     try {
         const noteId = req.query.noteId;
         const matchId = req.query.matchId;
-        const note = await trashRepo.restorFromTrash({ _id: noteId, matchId });
+        const note = await trashRepo.restoreFromTrash({ _id: noteId, matchId });
         if (!note.success) {
             return res.status(note.statusCode).json({
                 message: note.message
             })
         }
-        const restor = await noteRepo.createNote(note.data);
-        if (!restor.success) {
-            return res.status(restor.statusCode).json({
-                message: restor.message
+        const restore = await noteRepo.createNote(note.data);
+        if (!restore.success) {
+            return res.status(restore.statusCode).json({
+                message: restore.message
             })
         }
         return res.status(200).json({

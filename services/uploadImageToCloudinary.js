@@ -14,7 +14,7 @@ exports.uploadImageToCloudinary = async (file, publicId, path) => {
                     return {
                         success: false,
                         statusCode: 500,
-                        message: "something went wrong !"
+                        message: "something went wrong, could not upload media !"
                     }
                 };
             });
@@ -34,7 +34,7 @@ exports.uploadImageToCloudinary = async (file, publicId, path) => {
     }
 };
 
-// function to upload serveral media files to cloudinary
+// function to upload several media files to cloudinary
 exports.uploadManyMediaToCloudinary = async (files, path) => {
     try {
         const promises = [];
@@ -42,13 +42,13 @@ exports.uploadManyMediaToCloudinary = async (files, path) => {
             promises.push(cloudinary.v2.uploader.upload(file, { folder: path, }));
         }
         let result = await Promise.all(promises);
-        if(!result.length){
+        if (!result.length) {
             return {
                 success: false,
                 statusCode: 500,
-                message: "something went wrong !"
+                message: "something went wrong, could not upload media !"
             }
-        } 
+        }
         result = filterMediaFiles(result, 'secure_url')
         return {
             success: true,
@@ -75,8 +75,8 @@ exports.removeImageFromCloudinary = async (publicId) => {
             return {
                 success: false,
                 statusCode: 500,
-                message: "something went wrong !"
-            }
+                message: "something went wrong, could not remove media !"
+            };
         }
         return {
             success: true,

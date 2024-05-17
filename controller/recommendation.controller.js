@@ -1,5 +1,5 @@
 const { Types } = require('mongoose');
-const recommendationRepo = require('../models/recommendation/recomendation.repo');
+const recommendationRepo = require('../models/recommendation/recommendation.repo');
 const userRepo = require('../models/user/user.repo');
 
 // get recommendation array for user ( patch recommendation )
@@ -27,8 +27,8 @@ exports.getPartnerRecommendation = async (req, res) => {
         return res.status(500).json({
             message: "error",
             error: err.message
-        })
-    }
+        });
+    };
 };
 
 // submit ML model data and get online recommendation for new users
@@ -49,18 +49,18 @@ exports.submitUserPrefers = async (req, res) => {
             return res.status(417).json({
                 message: "error",
                 error: "error submitting user prefers"
-            })
+            });
         }
         return res.status(201).json({
             message: "success"
-        })
+        });
     }
     catch (err) {
         return res.status(500).json({
             message: "error",
             error: err.message
-        })
-    }
+        });
+    };
 };
 
 // submit new data to ML model get online recommendation for new interests 

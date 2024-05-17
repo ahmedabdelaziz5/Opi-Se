@@ -1,7 +1,28 @@
 // function to get the relationship from redis
 const { client } = require('../config/redis.config');
 
-exports.getRelationship = async (matchId, userId) => {
+exports.writeInCache = async (key, value) => {
+    try {
+        const result = await client.set(`${key}`, value);
+        if (!result) {
+            return {
+                success: false,
+                statusCode: 400,
+                message: "Could not write in cache !"
+            }
+        }
+        return {
+            success: true,
+            statusCode: 200,
+            message: "success"
+        }
+    }
+    catch (err) {
+        console.log(err.message);
+    }
+};
+
+exports.getFromCache = async (matchId, userId) => {
     try {
         const result = await client.get(matchId);
         if (!result) {
@@ -30,7 +51,7 @@ exports.getRelationship = async (matchId, userId) => {
     }
 };
 
-exports.deleteRelationship = async (matchId) => {
+exports.deleteFromCache = async (matchId) => {
     try {
         const result = await client.del(matchId);
         if (!result) {

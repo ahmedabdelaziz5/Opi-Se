@@ -8,15 +8,14 @@ const connectToFireBase = () => {
             credential: firebaseAdmin.credential.cert(fireBaseObj),
         })
         console.log("Firebase connected");
-    }   
+    }
     catch (err) {
         console.log(err);
     }
 
 };
 
-
 module.exports = {
     connectToFireBase,
     firebaseAdmin
-}
+};

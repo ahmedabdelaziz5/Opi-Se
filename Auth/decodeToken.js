@@ -12,8 +12,9 @@ exports.decodeToken = () => {
         }
         catch (err) {
             res.status(500).json({
-                message: "wrong signture for DB token !"
-            })
+                error: "Authentication error",
+                message: "Invalid token !"
+            });
         }
     }
 };

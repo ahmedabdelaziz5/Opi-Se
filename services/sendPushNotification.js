@@ -1,26 +1,27 @@
 const { firebaseAdmin } = require("../config/fireBase.config");
+const notificationMessages = require('../messages/pushNotifications.messages');
 const messaging = firebaseAdmin.messaging();
 
 // function that checks the type of the notification and return the message of the notification
 const checkType = (type) => {
     if (type === "newPartnerRequest") {
         return {
-            message: "You have a new partner request !"
+            message: notificationMessages.newPartnerRequest
         }
     }
     else if (type === "acceptMatchRequest") {
         return {
-            message: "Congratulations, you have a new partner !"
+            message: notificationMessages.acceptMatchRequest
         }
     }
     else if (type === "rejectMatchRequest") {
         return {
-            message: "unfortunately, your partner request has been rejected !, try another recommendation !"
+            message: notificationMessages.rejectMatchRequest
         }
     }
     else if (type === "disMatchWithPartner") {
         return {
-            message: "unfortunately, your partner ended the connection but it is not the end we can find your best match !"
+            message: notificationMessages.disMatchWithPartner
         }
     }
 
@@ -44,7 +45,7 @@ exports.sendNotification = async (deviceToken, type) => {
                 success: false,
                 statusCode: 417,
                 message: "unable to send notification !",
-            }
+            };
         }
 
         return {
@@ -52,15 +53,15 @@ exports.sendNotification = async (deviceToken, type) => {
             statusCode: 200,
             message: "success",
             data: result
-        }
+        };
 
     }
     catch (err) {
         return {
             success: false,
             statusCode: 500,
-            message: "unexpected error !",
+            message: "Unexpected error, could not sent notification !",
             error: err.message
-        }
-    }
+        };
+    };
 };

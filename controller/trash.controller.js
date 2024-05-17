@@ -9,7 +9,7 @@ exports.getAllTrashNotes = async (req, res) => {
         if (!result.success) {
             return res.status(result.statusCode).json({
                 message: result.message
-            })
+            });
         }
         return res.status(200).json(result);
     }
@@ -17,8 +17,8 @@ exports.getAllTrashNotes = async (req, res) => {
         return res.status(500).json({
             message: "error",
             error: err.message
-        })
-    }
+        });
+    };
 };
 
 exports.deleteNoteFromTrash = async (req, res) => {
@@ -29,18 +29,18 @@ exports.deleteNoteFromTrash = async (req, res) => {
         if (!result.success) {
             return res.status(result.statusCode).json({
                 message: result.message
-            })
+            });
         }
         return res.status(200).json({
             message: "success"
-        })
+        });
     }
     catch (err) {
         return res.status(500).json({
             message: "error",
             error: err.message
-        })
-    }
+        });
+    };
 };
 
 exports.flushTrash = async (req, res) => {
@@ -50,16 +50,16 @@ exports.flushTrash = async (req, res) => {
         if (!result.success) {
             return res.status(result.statusCode).json({
                 message: result.message
-            })
+            });
         }
         return res.status(200).json({
             message: "success"
-        })
+        });
     }
     catch (err) {
         return res.status(500).json({
             message: "error",
             error: err.message
-        })
-    }
+        });
+    };
 };

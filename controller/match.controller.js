@@ -1,11 +1,10 @@
 const mongoose = require('mongoose');
-const { client } = require('../config/redis.config');
 const { setUpMails } = require('../helpers/sendEmail');
 const userRepo = require("../models/user/user.repo");
 const { sendNotification } = require('../services/sendPushNotification');
 const relationshipRepo = require("../models/relationship/relationship.repo");
-const recommendationRepo = require("../models/recommendation/recomendation.repo");
-const { deleteRelationship } = require('../services/checkCachedRelations');
+const recommendationRepo = require("../models/recommendation/recommendation.repo");
+const { writeInCache, deleteFromCache } = require('../services/checkCachedRelations');
 
 // function that allows user to get his partner requests 
 exports.getMatchRequest = async (req, res) => {
@@ -20,18 +19,18 @@ exports.getMatchRequest = async (req, res) => {
         if (!requests.success) {
             return res.status(requests.statusCode).json({
                 message: requests.message
-            })
+            });
         }
         return res.status(200).json({
             message: 'success',
             data: requests.data
-        })
+        });
     }
     catch (err) {
         return res.status(500).json({
             message: "error",
             error: err.message
-        })
+        });
     }
 };
 
@@ -41,8 +40,8 @@ exports.searchForSpecificPartner = async (req, res) => {
         const { userId } = req.query;
         if (!mongoose.Types.ObjectId.isValid(userId)) {
             return res.status(401).json({
-                message: "Not Authorized !"
-            })
+                message: "Invalid ObjectId !"
+            });
         }
         const select = '-password -partnerRequests -notifications -isVerified -numOfReports -deviceTokens -history';
         const result = await userRepo.isExist({ _id: userId }, select);
@@ -196,13 +195,13 @@ exports.acceptMatchRequest = async (req, res) => {
             matchDate: Date.now()
         });
         const stringData = JSON.stringify([{ _id: partner1Id }, { _id: partner2Id }]);
-        const cacheRelationship = client.set(`${matchId}`, stringData);
+        const cacheRelationship = writeInCache(`${matchId}`, stringData);
         const result = await Promise.all([bulkUpdate, createRelationship, cacheRelationship]);
         if (!result[0].success || !result[1].success || !result[2]) {
             return res.status(500).json({
                 message: "error",
                 error: "error when accepting partner request"
-            })
+            });
         }
         res.status(200).json({
             message: "success",
@@ -217,8 +216,8 @@ exports.acceptMatchRequest = async (req, res) => {
         return res.status(500).json({
             message: "error",
             error: err.message
-        })
-    }
+        });
+    };
 };
 
 // function that performs the database logic for dismatch with partner 
@@ -240,7 +239,7 @@ exports.disMatchWithPartner = async (req, res) => {
             }
         )
         const updateRate = recommendationRepo.updateData({ nationalId: req.user.nationalId }, { $push: { partnerRate: rate } });
-        const deleteCachedRelationship = deleteRelationship(matchId);
+        const deleteCachedRelationship = deleteFromCache(matchId);
         const result = await Promise.all([updateUsersProgress, updateRate, deleteCachedRelationship]);
         if (!result[0].success || !result[1].success, !result[2].success) {
             return res.status(500).json({
@@ -250,12 +249,12 @@ exports.disMatchWithPartner = async (req, res) => {
         }
         return res.status(200).json({
             message: "success"
-        })
+        });
     }
     catch (err) {
         return res.status(500).json({
             message: "error",
             error: err.message
-        })
-    }
+        });
+    };
 }; 

@@ -107,7 +107,7 @@ exports.deleteAllTrash = async (filter) => {
     }
 };
 
-exports.restorFromTrash = async (filter) => {
+exports.restoreFromTrash = async (filter) => {
     try {
         const note = await trashModel.findOneAndDelete(filter).lean();
         if (!note) {
@@ -117,7 +117,7 @@ exports.restorFromTrash = async (filter) => {
                 message: "Not Authorized !"
             }
         }
-        return{
+        return {
             success: true,
             statusCode: 200,
             message: "success",

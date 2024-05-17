@@ -9,7 +9,6 @@ const client = createClient({
     }
 });
 
-
 const connectRedis = async () => {
     try {
         client.on('error', (err) => {
@@ -22,7 +21,7 @@ const connectRedis = async () => {
     catch (err) {
         console.log(err);
     }
-}
+};
 
 module.exports = {
     connectRedis,

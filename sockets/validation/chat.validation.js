@@ -57,17 +57,6 @@ module.exports = {
         }),
     },
 
-    replyToSessionRequestValid: {
-        body: joi.object().required().keys({
-
-            accept: joi.boolean().required().messages({
-                "string.empty": "accept can't be empty",
-                "any.required": "accept can't be empty"
-            }),
-
-        }),
-    },
-
     endChatSessionValid: {
         body: joi.object().required().keys({
 
@@ -99,6 +88,17 @@ module.exports = {
         }),
     },
 
+    replyToSessionRequestValid: {
+        body: joi.object().required().keys({
+
+            accept: joi.boolean().required().messages({
+                "string.empty": "accept can't be empty",
+                "any.required": "accept can't be empty"
+            }),
+
+        }),
+    },
+
     uploadChatMediaValid: {
         body: joi.object().required().keys({
 
@@ -112,4 +112,4 @@ module.exports = {
         }),
     },
 
-}
+};

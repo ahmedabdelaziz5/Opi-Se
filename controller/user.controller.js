@@ -2,7 +2,7 @@ const bcrypt = require('bcrypt');
 const saltRounds = 7;
 const jwt = require('jsonwebtoken');
 const userRepo = require('../models/user/user.repo');
-const recommendationRepo = require('../models/recommendation/recomendation.repo');
+const recommendationRepo = require('../models/recommendation/recommendation.repo');
 const { setUpMails } = require('../helpers/sendEmail');
 const { removeImageFromCloudinary, uploadImageToCloudinary } = require('../services/uploadImageToCloudinary');
 
@@ -99,12 +99,34 @@ exports.login = async (req, res) => {
     }
 };
 
+exports.getUserProfile = async (req, res) => {
+    try {
+        const select = '-notifications -deviceTokens -partnerRequests -history'
+        let user = await userRepo.isExist(
+            { _id: req.user.id },
+            select,
+            [
+                { path: 'partnerId', select: 'userName profileImage' },
+                { path: 'matchId', select: 'progressPoints matchBadges' },
+            ]
+        );
+        return res.status(user.statusCode).json(user);
+    }
+    catch (err) {
+        return res.status(500).json({
+            message: "error",
+            error: err.message
+        });
+    }
+};
+
 // blackBox function that allows make user verified
 exports.verifyAccount = async (req, res) => {
     try {
         let { token } = req.query;
         let decodedToken = jwt.verify(token, process.env.SECRET_JWT);
         let user = await userRepo.updateUser({ email: decodedToken.email }, { isVerified: true });
+        console.log(user);
         if (!user.success) {
             return res.status(400).send('there is no such email , please register first');
         }

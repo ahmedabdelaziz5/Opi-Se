@@ -4,17 +4,6 @@ const { checkSocketAuth } = require('../Auth.js');
 const chatRepo = require('../../models/chat/chat.repo.js');
 const relationshipRepo = require('../../models/relationship/relationship.repo.js');
 
-// events validation
-const { validator } = require('../../socket validation/validator');
-const {
-    sendMessageValid,
-    deleteMessageValid,
-    endChatSessionValid,
-    startChatSessionValid,
-    uploadChatMediaValid,
-    replyToSessionRequestValid,
-} = require('../../socket validation/chat.validation');
-
 // event to send message in chat 
 exports.sendMessage = async (socket, data, ack) => {
     try {
@@ -24,14 +13,7 @@ exports.sendMessage = async (socket, data, ack) => {
             return ack({
                 success: false,
                 message: "Not Authorized !"
-            })
-        }
-        const validationResult = validator(data, sendMessageValid);
-        if (!validationResult.success) {
-            return ack({
-                success: false,
-                message: "validation error !",
-            })
+            });
         }
         const messageId = new mongoose.Types.ObjectId();
         data._id = messageId;
@@ -67,13 +49,6 @@ exports.deleteMessage = async (socket, data, ack) => {
             return ack({
                 success: false,
                 message: "Not Authorized !"
-            })
-        }
-        const validationResult = validator(data, deleteMessageValid);
-        if (!validationResult.success) {
-            return ack({
-                success: false,
-                message: "validation error !",
             })
         }
         if (!mongoose.isValidObjectId(data.messageId) || !mongoose.isValidObjectId(matchId)) {
@@ -168,13 +143,6 @@ exports.selectFromPoll = async (socket, data, ack) => {
 // event to start chat session  
 exports.startChatSession = async (socket, data, ack) => {
     try {
-        const validationResult = validator(data, startChatSessionValid);
-        if (!validationResult.success) {
-            return ack({
-                success: false,
-                message: "validation error !",
-            })
-        }
         const matchId = socket.handshake.query.matchId;
         socket.broadcast.to(matchId).emit("newChatSessionRequest", data);
         return ack({
@@ -194,13 +162,6 @@ exports.startChatSession = async (socket, data, ack) => {
 // event to reply on chat session request ( accept / reject )
 exports.replyToSessionRequest = async (socket, data, ack) => {
     try {
-        const validationResult = validator(data, replyToSessionRequestValid);
-        if (!validationResult.success) {
-            return ack({
-                success: false,
-                message: "validation error !",
-            })
-        }
         const matchId = socket.handshake.query.matchId;
         socket.broadcast.to(matchId).emit("replyToRequest", { data });
         return ack({
@@ -221,13 +182,6 @@ exports.replyToSessionRequest = async (socket, data, ack) => {
 exports.endChatSession = async (socket, data, ack) => {
     try {
         const matchId = socket.handshake.query.matchId;
-        const validationResult = validator(data, endChatSessionValid);
-        if (!validationResult.success) {
-            return ack({
-                success: false,
-                message: "validation error !",
-            })
-        }
         socket.broadcast.to(matchId).emit("terminateSession", { message: "session was ended by your partner !" });
         const result = await relationshipRepo.updateRelationship({ matchId: matchId }, { $push: { sessionsHistory: data } });
         if (!result.success) {
@@ -253,15 +207,8 @@ exports.endChatSession = async (socket, data, ack) => {
 // event to media file in chat
 exports.uploadChatMedia = async (socket, data, ack) => {
     try {
-        const validationResult = validator(data, uploadChatMediaValid);
-        if (!validationResult.success) {
-            return ack({
-                success: false,
-                message: "validation error !",
-            })
-        }
         const matchId = socket.handshake.query.matchId;
-        socket.broadcast.to(matchId).emit("showMediainChat", data);
+        socket.broadcast.to(matchId).emit("showMediaInChat", data);
         return ack({
             success: true,
             message: `media uploaded successfully !`,

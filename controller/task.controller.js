@@ -54,7 +54,7 @@ exports.addTask = async (req, res) => {
             message: "error",
             error: err.message
         });
-    }
+    };
 };
 
 // function that allows user to edit a specific task 
@@ -70,7 +70,7 @@ exports.editTask = async (req, res) => {
             message: "error",
             error: err.message
         });
-    }
+    };
 };
 
 // function that allows user to delete a specific task 
@@ -85,7 +85,7 @@ exports.deleteTask = async (req, res) => {
             message: "error",
             error: err.message
         });
-    }
+    };
 };
 
 // function that allows user to delete all tasks of specific type 
@@ -100,5 +100,5 @@ exports.deleteAllTasksType = async (req, res) => {
             message: "error",
             error: err.message
         });
-    }
+    };
 };

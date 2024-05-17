@@ -1,6 +1,6 @@
 // function to check if the user has a relationship with the other partner 
 const mongoose = require('mongoose');
-const { getRelationship } = require('../services/checkCachedRelations');
+const { getFromCache } = require('../services/checkCachedRelations');
 
 exports.hasRelationship = () => {
     return async (req, res, next) => {
@@ -12,7 +12,7 @@ exports.hasRelationship = () => {
                     message: "Unauthorized Relationship !"
                 })
             }
-            const result = await getRelationship(matchId, userId);
+            const result = await getFromCache(matchId, userId);
             if (!result.success) {
                 return res.status(result.statusCode).json({
                     message: result.message

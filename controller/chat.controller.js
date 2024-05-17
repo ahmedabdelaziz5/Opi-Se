@@ -76,7 +76,7 @@ exports.uploadChatMedia = async (req, res) => {
         if (!writeMedia.success) {
             return res.status(500).json({
                 message: "could not save media !",
-            })
+            });
         }
         return res.status(result.statusCode).json(result);
     }
@@ -84,6 +84,6 @@ exports.uploadChatMedia = async (req, res) => {
         return res.status(500).json({
             message: "error",
             error: err.message
-        })
+        });
     }
 };
