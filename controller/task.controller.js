@@ -4,6 +4,8 @@ const taskRepo = require('../models/task/task.repo');
 exports.getAllTasks = async (req, res) => {
     try {
         const { matchId, year, month } = req.query;
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
         let data = await taskRepo.getTasks(
             {
                 matchId,
@@ -12,6 +14,7 @@ exports.getAllTasks = async (req, res) => {
                     $lt: new Date(year, month, 1)
                 }
             },
+            { page, limit }
         );
         return res.status(data.statusCode).json(data);
     }

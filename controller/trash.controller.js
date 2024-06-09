@@ -23,8 +23,7 @@ exports.getAllTrashNotes = async (req, res) => {
 
 exports.deleteNoteFromTrash = async (req, res) => {
     try {
-        const matchId = req.query.matchId;
-        const noteId = req.query.noteId;
+        const { matchId, noteId } = req.query.matchId;
         const result = await trashRepo.deleteFromTrash({ matchId: matchId, _id: noteId });
         if (!result.success) {
             return res.status(result.statusCode).json({
@@ -45,7 +44,7 @@ exports.deleteNoteFromTrash = async (req, res) => {
 
 exports.flushTrash = async (req, res) => {
     try {
-        const matchId = req.query.matchId;
+        const { matchId } = req.query;
         const result = await trashRepo.deleteAllTrash({ matchId: matchId });
         if (!result.success) {
             return res.status(result.statusCode).json({

@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const objectId = mongoose.Schema.Types.ObjectId;
 
 const userSchema = new mongoose.Schema({
     userName: { type: String, required: true, unique: true },
@@ -12,33 +13,32 @@ const userSchema = new mongoose.Schema({
     isVerified: { type: Boolean, default: false },
     numOfReports: { type: Number, default: 0 },
     partnerId: { type: String, default: null, ref: 'user' },
-    matchId: { type: mongoose.Types.ObjectId, default: null, ref: 'relationship' },
+    matchId: { type: objectId, default: null, ref: 'relationship' },
     isAvailable: { type: Boolean, default: true },
     joinedAt: { type: Date, default: Date.now() },
     getUserPrefers: { type: Boolean, default: true },
     points: { type: Number, default: 0 },
-    profileDetails: { type: mongoose.Types.ObjectId, ref: 'recommendation' },
+    profileDetails: { type: objectId, ref: 'recommendation' },
     bio: { type: String, default: "blank" },
     notifications: [{
         message: { type: String, required: true },
         date: { type: Date, required: true, default: Date.now() },
     }],
-    deviceTokens: [{
-        type: String, required: true,
-    }],
+    deviceTokens: [String],
     languages: [{
         languageName: { type: String, required: true },
         level: { type: Number, required: true, default: 3 }
     }],
     partnerRequests: [{
-        partnerId: { type: mongoose.Types.ObjectId, required: true },
+        partnerId: { type: objectId, required: true },
         nationalId: { type: String, required: true },
         partnerUserName: { type: String, required: true },
         requestStatus: { type: String, default: "pending" },
         email: { type: String, required: true },
     }],
+    sentRequests: [String],
     history: [{
-        matchId: { type: mongoose.Types.ObjectId, required: true, ref: 'relationship' },
+        matchId: { type: objectId, required: true, ref: 'relationship' },
     }]
 });
 

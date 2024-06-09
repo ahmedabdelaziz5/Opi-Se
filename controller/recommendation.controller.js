@@ -1,4 +1,3 @@
-const { Types } = require('mongoose');
 const recommendationRepo = require('../models/recommendation/recommendation.repo');
 const userRepo = require('../models/user/user.repo');
 
@@ -39,21 +38,18 @@ exports.submitUserPrefers = async (req, res) => {
         const userId = req.user.id
         userData['nationalId'] = nationalId;
         userData['userId'] = userId;
-        const newId = new Types.ObjectId();
-        userData['_id'] = newId;
         let replicateDataPromise = recommendationRepo.replicateDataForModels(userData);
         let getRecommendationPromise = recommendationRepo.getFirstRecommendation(nationalId);
-        let updateUserPromise = userRepo.updateUser({ nationalId: nationalId }, { getUserPrefers: false, profileDetails: newId });
-        const result = await Promise.all([replicateDataPromise, getRecommendationPromise, updateUserPromise]);
-        if (!result[0].success || !result[1].success || !result[2].success) {
+        const result = await Promise.all([replicateDataPromise, getRecommendationPromise]);
+        if (!result[0].success || !result[1].success) {
             return res.status(417).json({
                 message: "error",
                 error: "error submitting user prefers"
             });
         }
-        return res.status(201).json({
-            message: "success"
-        });
+        let updateUser = await userRepo.updateUser({ nationalId: nationalId }, { getUserPrefers: false, profileDetails: result[0].data._id });
+        delete updateUser.data;
+        return res.status(updateUser.statusCode).json(updateUser);
     }
     catch (err) {
         return res.status(500).json({

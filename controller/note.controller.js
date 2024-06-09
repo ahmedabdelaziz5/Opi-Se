@@ -53,11 +53,6 @@ exports.updateNote = async (req, res) => {
         const noteId = req.query.noteId;
         const matchId = req.query.matchId;
         const userId = req.user.id;
-        if (!mongoose.Types.ObjectId.isValid(noteId)) {
-            return res.status(401).json({
-                message: "Not Authorized !"
-            })
-        }
         const result = await noteRepo.updateNote({ matchId, userId, _id: noteId }, noteData, { new: true });
         if (!result.success) {
             return res.status(result.statusCode).json({
@@ -80,13 +75,7 @@ exports.updateNote = async (req, res) => {
 exports.pinNote = async (req, res) => {
     try {
         const { isPinned } = req.body;
-        const noteId = req.query.noteId;
-        const matchId = req.query.matchId;
-        if (!mongoose.Types.ObjectId.isValid(noteId)) {
-            return res.status(401).json({
-                message: "Not Authorized !"
-            })
-        }
+        const { noteId, matchId } = req.query.noteId;
         const result = await noteRepo.updateNote(
             { matchId, _id: noteId },
             { isPinned: isPinned },
@@ -112,8 +101,7 @@ exports.pinNote = async (req, res) => {
 
 exports.deleteNote = async (req, res) => {
     try {
-        const noteId = req.query.noteId;
-        const matchId = req.query.matchId;
+        const { noteId, matchId } = req.query.noteId;
         const note = await noteRepo.deleteNote({ _id: noteId, matchId });
         if (!note.success) {
             return res.status(note.statusCode).json({
@@ -135,8 +123,7 @@ exports.deleteNote = async (req, res) => {
 
 exports.restoreNote = async (req, res) => {
     try {
-        const noteId = req.query.noteId;
-        const matchId = req.query.matchId;
+        const { noteId, matchId } = req.query.noteId;
         const note = await trashRepo.restoreFromTrash({ _id: noteId, matchId });
         if (!note.success) {
             return res.status(note.statusCode).json({

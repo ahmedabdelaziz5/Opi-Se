@@ -23,8 +23,10 @@ exports.validator = (schema, type = 'body') => {
 
         if (validation.length) {
             return res.status(400).json({
+                success: false,
+                error: "Validation Error !",
                 message: validation.join(),
-            })
+            });
         }
 
         next();

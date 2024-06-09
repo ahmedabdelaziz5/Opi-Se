@@ -12,7 +12,11 @@ const {
 
 // validation schema 
 const {
-    declineMatchRequestValid
+    searchForSpecificPartnerValid,
+    sendPartnerRequestValid,
+    declineMatchRequestValid,
+    acceptMatchRequestValid,
+    disMatchWithPartnerValid
 } = require('../validation/match.validation');
 
 // function that validates validation schema
@@ -23,11 +27,10 @@ const { decodeToken } = require('../Auth/decodeToken');
 
 // match module routes 
 app.get('/getMatchRequest', decodeToken(), getMatchRequest);
-app.get('/searchForSpecificPartner', decodeToken(), searchForSpecificPartner);
-app.post('/sendPartnerRequest', decodeToken(), sendPartnerRequest);
-app.post('/acceptMatchRequest', decodeToken(), acceptMatchRequest);
+app.get('/searchForSpecificPartner', validator(searchForSpecificPartnerValid, 'params'), decodeToken(), searchForSpecificPartner);
+app.post('/sendPartnerRequest', validator(sendPartnerRequestValid, 'params'), decodeToken(), sendPartnerRequest);
+app.post('/acceptMatchRequest', validator(acceptMatchRequestValid, 'params'), decodeToken(), acceptMatchRequest);
 app.post('/declineMatchRequest', validator(declineMatchRequestValid), decodeToken(), declineMatchRequest);
-app.post('/disMatchWithPartner', decodeToken(), disMatchWithPartner);
-
+app.post('/disMatchWithPartner', validator(disMatchWithPartnerValid, 'params'), decodeToken(), disMatchWithPartner);
 
 module.exports = app;

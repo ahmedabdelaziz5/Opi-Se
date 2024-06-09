@@ -52,7 +52,7 @@ exports.signUp = async (req, res) => {
 exports.login = async (req, res) => {
     try {
         const userData = req.body;
-        const select = '-deviceTokens -history'
+        const select = '-deviceTokens -history -notifications -partnerRequests -sentRequests -profileDetails'
         let user = await userRepo.updateUser(
             { userName: userData.userName },
             { $addToSet: { deviceTokens: userData.deviceToken } },
@@ -263,35 +263,26 @@ exports.editProfile = async (req, res) => {
 // function that allows user to change his profile image ( takes the type of operation upload/remove )
 exports.changeProfileImage = async (req, res) => {
     try {
-        const type = req.body.type;
+        const { type } = req.body;
         let result;
-        if (type === "upload") {
-            result = await uploadImageToCloudinary(req.file.path, req.user.id, "users images");
-        }
-        else if (type === "remove") {
-            result = await removeImageFromCloudinary(req.user.id);
-        }
-        else {
+        if (!req.file) {
             return res.status(400).json({
-                message: "Not Authorized !"
-            })
-        }
-        if (!result.success) {
-            return res.status(result.statusCode).json({
-                message: result.message,
+                success: false,
+                statusCode: 400,
+                message: "Can't read media file !"
             });
         }
-
+        if (type === "upload") result = await uploadImageToCloudinary(req.file.path, req.user.id, "users images");
+        else result = await removeImageFromCloudinary(req.user.id);
+        if (!result.success) return res.status(result.statusCode).json(result);
         let user;
-
         if (type === "upload") {
             const url = result.data;
             user = await userRepo.updateUser({ _id: req.user.id }, { profileImage: url });
         }
-        else if (type === "remove") {
-            user = await userRepo.updateUser({ _id: req.user.id }, { profileImage: "default.png" });
-        }
+        else user = await userRepo.updateUser({ _id: req.user.id }, { profileImage: "default.png" });
         return res.status(user.statusCode).json({
+            success: user.success,
             message: user.message,
             imageUrl: result.data ? result.data : "default.png"
         });

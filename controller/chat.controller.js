@@ -1,16 +1,10 @@
 const chatRepo = require('../models/chat/chat.repo');
-const mongoose = require('mongoose');
 const filterMediaFiles = require('../helpers/filterMediaPaths');
 const { uploadManyMediaToCloudinary } = require('../services/uploadImageToCloudinary');
 
 exports.getPartnerChat = async (req, res) => {
     try {
         const { matchId } = req.query;
-        if (!mongoose.Types.ObjectId.isValid(matchId)) {
-            return res.status(401).json({
-                message: "Not Authorized !"
-            })
-        }
         const page = req.query.page || 1;
         const limit = req.query.limit || 10;
         const result = await chatRepo.getChatData({ matchId }, { path: 'matchId', select: 'firstPartnerId secondPartnerId' }, 'chat', { page, limit }, req.user.id);
@@ -27,11 +21,6 @@ exports.getPartnerChat = async (req, res) => {
 exports.getChatMedia = async (req, res) => {
     try {
         const { matchId } = req.query;
-        if (!mongoose.Types.ObjectId.isValid(matchId)) {
-            return res.status(401).json({
-                message: "Not Authorized !"
-            })
-        }
         const page = req.query.page || 1;
         const limit = req.query.limit || 10;
         const result = await chatRepo.getChatData({ matchId }, { path: 'matchId', select: 'firstPartnerId secondPartnerId' }, 'chatMedia', { page, limit }, req.user.id);
@@ -49,13 +38,15 @@ exports.uploadChatMedia = async (req, res) => {
     try {
         const matchId = req.query.matchId;
         const userId = req.user.id;
-        if (!mongoose.Types.ObjectId.isValid(matchId)) {
-            return res.status(401).json({
-                message: "Not Authorized !",
+        if (!req.files.length) {
+            return res.status(400).json({
+                success: false,
+                statusCode: 400,
+                message: "Can't read media files !"
             })
         }
         const files = filterMediaFiles(req.files, 'path');
-        const result = await uploadManyMediaToCloudinary(files, "chat media")
+        const result = await uploadManyMediaToCloudinary(files, "chat media");
         const writeMedia = await chatRepo.updateChat({ matchId }, {
             $push: {
                 chatMedia: {

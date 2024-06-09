@@ -10,6 +10,7 @@ const taskModule = require('./modules/task.sockets');
 const { validateEvent } = require('./validation/validator');
 const chatValidation = require('./validation/chat.validation');
 const matchValidation = require('./validation/match.validation');
+const noteValidation = require('./validation/note.validation');
 
 //base socket connection with server
 exports.establishSocketConnections = (io) => {
@@ -24,8 +25,7 @@ exports.establishSocketConnections = (io) => {
         socket.on('notifyUserRoom', (data, ack) => userModule.notifyUserRoom(socket, data, ack));
 
         // match Module events
-        socket.on(
-            'acceptPartnerRequest',
+        socket.on('acceptPartnerRequest',
             (data, ack) => {
                 validateEvent(matchValidation.acceptPartnerRequestValid)(data, async (validationResult) => {
                     if (validationResult) {
@@ -39,29 +39,35 @@ exports.establishSocketConnections = (io) => {
                 });
             }
         );
-        socket.on(
-            'disMatch',
+        socket.on('disMatch',
             (data, ack) => matchModule.disMatch(io, socket, data, ack)
         );
-        socket.on(
-            'joinMatchRoom',
+        socket.on('joinMatchRoom',
             (data, ack) => matchModule.joinMatchRoom(socket, data, ack)
         );
-        socket.on(
-            'sendDataToMatchRoom',
+        socket.on('sendDataToMatchRoom',
             (data, ack) => matchModule.sendDataToMatchRoom(socket, data, ack)
         );
 
         // videoCall Module events
-        socket.on("callUser", (data, ack) => videoCallModule.callUser(socket, data, ack));
-        socket.on("answerCall", (data, ack) => videoCallModule.answerCall(socket, data, ack));
-        socket.on("disconnectCall", (data, ack) => videoCallModule.disconnectCall(socket, data, ack));
-        socket.on("toggleCamera", (data, ack) => videoCallModule.toggleCamera(socket, data, ack));
-        socket.on("toggleMicrophone", (data, ack) => videoCallModule.toggleMicrophone(socket, data, ack));
+        socket.on("callUser",
+            (data, ack) => videoCallModule.callUser(socket, data, ack)
+        );
+        socket.on("answerCall",
+            (data, ack) => videoCallModule.answerCall(socket, data, ack)
+        );
+        socket.on("disconnectCall",
+            (data, ack) => videoCallModule.disconnectCall(socket, data, ack)
+        );
+        socket.on("toggleCamera",
+            (data, ack) => videoCallModule.toggleCamera(socket, data, ack)
+        );
+        socket.on("toggleMicrophone",
+            (data, ack) => videoCallModule.toggleMicrophone(socket, data, ack)
+        );
 
         // chat Module events
-        socket.on(
-            "sendMessage",
+        socket.on("sendMessage",
             (data, ack) => {
                 validateEvent(chatValidation.sendMessageValid)(data, async (validationResult) => {
                     if (validationResult) {
@@ -75,8 +81,7 @@ exports.establishSocketConnections = (io) => {
                 });
             }
         );
-        socket.on(
-            "deleteMessage",
+        socket.on("deleteMessage",
             validateEvent(chatValidation.deleteMessageValid),
             (data, ack) => {
                 validateEvent(chatValidation.deleteMessageValid)(data, async (validationResult) => {
@@ -91,12 +96,10 @@ exports.establishSocketConnections = (io) => {
                 });
             }
         );
-        socket.on(
-            "selectFromPoll",
+        socket.on("selectFromPoll",
             (data, ack) => chatModule.selectFromPoll(socket, data, ack)
         );
-        socket.on(
-            "endChatSession",
+        socket.on("endChatSession",
             (data, ack) => {
                 validateEvent(chatValidation.endChatSessionValid)(data, async (validationResult) => {
                     if (validationResult) {
@@ -110,8 +113,7 @@ exports.establishSocketConnections = (io) => {
                 });
             }
         );
-        socket.on(
-            "startChatSession",
+        socket.on("startChatSession",
             (data, ack) => {
                 validateEvent(chatValidation.startChatSessionValid)(data, async (validationResult) => {
                     if (validationResult) {
@@ -125,8 +127,7 @@ exports.establishSocketConnections = (io) => {
                 });
             }
         );
-        socket.on(
-            "uploadChatMedia",
+        socket.on("uploadChatMedia",
             (data, ack) => {
                 validateEvent(chatValidation.uploadChatMediaValid)(data, async (validationResult) => {
                     if (validationResult) {
@@ -140,8 +141,7 @@ exports.establishSocketConnections = (io) => {
                 });
             }
         );
-        socket.on(
-            "replyToSessionRequest",
+        socket.on("replyToSessionRequest",
             (data, ack) => {
                 validateEvent(chatValidation.replyToSessionRequestValid)(data, async (validationResult) => {
                     if (validationResult) {
@@ -157,16 +157,35 @@ exports.establishSocketConnections = (io) => {
         );
 
         // note Module events
-        socket.on("addNote", (data, ack) => noteModule.addNote(socket, data, ack));
-        socket.on("deleteNote", (data, ack) => noteModule.deleteNote(socket, data, ack));
-        socket.on("updateNote", (data, ack) => noteModule.updateNote(socket, data, ack));
-        socket.on("pinNote", (data, ack) => noteModule.pinNote(socket, data, ack));
-        socket.on("restoreNote", (data, ack) => noteModule.restoreNote(socket, data, ack));
+        socket.on("addNote",
+            (data, ack) => noteModule.addNote(socket, data, ack)
+        );
+        socket.on("deleteNote",
+            (data, ack) => noteModule.deleteNote(socket, data, ack)
+        );
+        socket.on("updateNote",
+            (data, ack) => noteModule.updateNote(socket, data, ack)
+        );
+        socket.on("pinNote",
+            (data, ack) => noteModule.pinNote(socket, data, ack)
+        );
+        socket.on("restoreNote",
+            (data, ack) => noteModule.restoreNote(socket, data, ack)
+        );
 
         // task Module events
-        socket.on("addTask", (data, ack) => taskModule.addTask(socket, data, ack));
-        socket.on("updateTask", (data, ack) => taskModule.updateTask(socket, data, ack));
-        socket.on("deleteTask", (data, ack) => taskModule.deleteTask(socket, data, ack));
-        socket.on("deleteAllTasks", (data, ack) => taskModule.deleteAllTasks(socket, data, ack));
+        socket.on("addTask",
+            (data, ack) => taskModule.addTask(socket, data, ack)
+        );
+        socket.on("updateTask",
+            (data, ack) => taskModule.updateTask(socket, data, ack)
+        );
+        socket.on("deleteTask",
+            (data, ack) => taskModule.deleteTask(socket, data, ack)
+        );
+        socket.on("deleteAllTasks",
+            (data, ack) => taskModule.deleteAllTasks(socket, data, ack)
+        );
+
     });
 };

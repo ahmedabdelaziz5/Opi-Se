@@ -9,6 +9,7 @@ const {
 
 // validation schema 
 const {
+    getPartnerRecommendationValid,
     submitUserPrefersValid,
     editUserPrefersValid
 } = require('../validation/recommendation.validation');
@@ -20,7 +21,7 @@ const { validator } = require('../validation/validator');
 const { decodeToken } = require('../Auth/decodeToken');
 
 // recommendation module routes 
-app.get('/getPartnerRecommendation', decodeToken(), getPartnerRecommendation);
+app.get('/getPartnerRecommendation', validator(getPartnerRecommendationValid), decodeToken(), getPartnerRecommendation);
 app.post('/submitUserPrefers', validator(submitUserPrefersValid), decodeToken(), submitUserPrefers);
 app.patch('/editUserPrefers', validator(editUserPrefersValid), decodeToken(), editUserPrefers);
 

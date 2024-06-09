@@ -3,6 +3,38 @@ const objectId = require('joi-objectid')(joi);
 
 module.exports = {
 
+    getAllTasksValid: {
+        params: joi.object().required().keys({
+            matchId: objectId().required().messages({
+                "string.empty": "match id can't be empty",
+                "any.required": "match id is required",
+                'objectId.invalid': 'task id must be a valid id'
+            }),
+            year: joi.number().integer().min(2024).required().messages({
+                "number.base": "Year must be a number",
+                "number.integer": "Year must be an integer",
+                "number.min": "Year must be more than or equal 2024",
+                "any.required": "Year is required",
+            }),
+            month: joi.number().integer().min(1).max(12).required().messages({
+                "number.base": "Month must be a number",
+                "number.integer": "Month must be an integer",
+                "number.min": "Month must be between 1 and 12",
+                "number.max": "Month must be between 1 and 12",
+                "any.required": "Month is required",
+            }),
+            page: joi.number().min(1).default(1).messages({
+                "number.base": "page must be a number",
+                "number.min": "page must be a positive number",
+            }),
+            limit: joi.number().min(1).default(10).messages({
+                "number.base": "page must be a number",
+                "number.min": "page must be a positive number",
+            }),
+
+        }),
+    },
+
     getSpecificTasksTypeValid: {
         params: joi.object().required().keys({
 

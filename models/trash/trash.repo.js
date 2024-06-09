@@ -5,8 +5,8 @@ exports.getAllTrash = async (filter, pagg) => {
         const skip = (pagg.page - 1) * pagg.limit;
         let notes = trashModel.find(filter).skip(skip).limit(pagg.limit).lean();
         let itemCount = trashModel.countDocuments(filter);
-        const [notesPromis, itemCountPromis] = await Promise.all([notes, itemCount]);
-        if (!notesPromis.length) {
+        const [notesPromise, itemCountPromise] = await Promise.all([notes, itemCount]);
+        if (!itemCountPromise) {
             return {
                 success: true,
                 statusCode: 200,
@@ -17,10 +17,10 @@ exports.getAllTrash = async (filter, pagg) => {
             success: true,
             statusCode: 200,
             message: "success",
-            totalNumOfItems: itemCountPromis,
-            totalPages: Math.ceil(itemCountPromis / pagg.limit),
+            totalNumOfItems: itemCountPromise,
+            totalPages: Math.ceil(itemCountPromise / pagg.limit),
             currentPage: pagg.page,
-            data: notesPromis,
+            data: notesPromise,
         }
     }
     catch (err) {

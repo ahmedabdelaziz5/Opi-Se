@@ -2,6 +2,16 @@ const joi = require("joi");
 
 module.exports = {
 
+    getPartnerRecommendationValid: {
+        body: joi.object().required().keys({
+            page: joi.number().optional().min(1).messages({
+                "string.empty": "page can't be empty",
+                "any.required": "page is required",
+                "any.base": "page must be a number"
+            }),
+        }),
+    },
+
     submitUserPrefersValid: {
         body: joi.object().required().keys({
 

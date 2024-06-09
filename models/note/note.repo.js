@@ -4,10 +4,10 @@ const mongoose = require('mongoose');
 exports.getNotes = async (filter, pagg) => {
     try {
         const skip = (pagg.page - 1) * pagg.limit;
-        let notes = noteModel.find(filter).sort({ createdAt: -1 }).skip(skip).limit(pagg.limit).lean();
+        let notes = noteModel.find(filter).sort({ isPinned: -1, createdAt: -1, updatedAt: -1 }).skip(skip).limit(pagg.limit).lean();
         let itemCount = noteModel.countDocuments(filter);
-        const [notesPromis, itemCountPromis] = await Promise.all([notes, itemCount]);
-        if (!notesPromis.length) {
+        const [notesPromise, itemCountPromise] = await Promise.all([notes, itemCount]);
+        if (!notesPromise.length) {
             return {
                 success: true,
                 statusCode: 200,
@@ -18,10 +18,10 @@ exports.getNotes = async (filter, pagg) => {
             success: true,
             statusCode: 200,
             message: "success",
-            totalNumOfItems: itemCountPromis,
-            totalPages: Math.ceil(itemCountPromis / pagg.limit),
+            totalNumOfItems: itemCountPromise,
+            totalPages: Math.ceil(itemCountPromise / pagg.limit),
             currentPage: pagg.page,
-            data: notesPromis,
+            data: notesPromise,
         }
     }
     catch (err) {

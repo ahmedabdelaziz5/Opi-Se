@@ -1,12 +1,15 @@
 const taskModel = require('./task.model');
 const mongoose = require('mongoose');
 
-exports.getTasks = async (filter) => {
+exports.getTasks = async (filter, pagg) => {
     try {
-        let tasks = await taskModel.find(filter).lean();
-        if (!tasks.length) {
+        const skip = (pagg.page - 1) * pagg.limit;
+        let tasks = await taskModel.find(filter).skip(skip).limit(pagg.limit).lean();
+        let itemCount = taskModel.countDocuments(filter);
+        const [tasksPromise, itemCountPromise] = await Promise.all([tasks, itemCount]);
+        if (!itemCountPromise) {
             return {
-                success: true,
+                success: false,
                 statusCode: 404,
                 message: "No tasks yet !"
             }
@@ -15,7 +18,10 @@ exports.getTasks = async (filter) => {
             success: true,
             statusCode: 200,
             message: "success",
-            data: tasks,
+            totalNumOfItems: itemCountPromise,
+            totalPages: Math.ceil(itemCountPromise / pagg.limit),
+            currentPage: pagg.page,
+            data: tasksPromise,
         }
     }
     catch (err) {

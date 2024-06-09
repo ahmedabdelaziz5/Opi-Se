@@ -9,7 +9,7 @@ exports.acceptPartnerRequest = async (socket, data, ack) => {
         return ack({
             success: true,
             message: `partner request was accepted successfully !`,
-        })
+        });
     }
     catch (err) {
         console.log(err.message)

@@ -29,6 +29,32 @@ exports.isExist = async (filter, select, populate) => {
     }
 };
 
+exports.getAll = async (filter, select, populate) => {
+    try {
+        const users = await userModel.find(filter).populate(populate).select(select).lean();
+        if (!users.length) {
+            return {
+                success: false,
+                statusCode: 404,
+                message: "There is not users!",
+            }
+        }
+        return {
+            success: true,
+            statusCode: 200,
+            message: "success",
+            data: users
+        }
+    }
+    catch (err) {
+        return {
+            success: false,
+            statusCode: 500,
+            message: err.message
+        }
+    }
+};
+
 // creates the user in the database + password validation logic 
 exports.createUser = async (data) => {
     try {
@@ -99,7 +125,7 @@ exports.updateUser = async (filter, edit, populate, select) => {
         }
         return {
             success: true,
-            statusCode: 201,
+            statusCode: 200,
             message: "success",
             data: user
         }
@@ -140,11 +166,45 @@ exports.updateManyUsers = async (filter, edit) => {
     }
 };
 
+// updates user but gives feedback with modified count and upsertedCount 
+exports.updateOnly = async (filter, data) => {
+    try {
+        let user = await userModel.updateOne(filter, data);
+        if (!user.matchedCount) {
+            return {
+                success: false,
+                statusCode: 400,
+                message: "user not exist , please sign up first !",
+            }
+        }
+        if (!user.modifiedCount) {
+            return {
+                success: false,
+                statusCode: 400,
+                message: "data already exist !",
+            }
+        }
+        return {
+            success: true,
+            statusCode: 200,
+            message: "success",
+            data: user
+        }
+    }
+    catch (err) {
+        return {
+            success: false,
+            statusCode: 500,
+            message: err.message
+        }
+    }
+};
+
 // update users data using bulk write
 exports.bulkUpdate = async (filter) => {
     try {
         const updatePartners = await userModel.bulkWrite(filter);
-        if (!updatePartners) {
+        if (updatePartners.modifiedCount != 2) {
             return {
                 success: false,
                 statusCode: 417,
@@ -170,8 +230,9 @@ exports.bulkUpdate = async (filter) => {
 exports.getList = async (filter, select, pagg) => {
     try {
         const skip = (pagg.page - 1) * pagg.limit;
-        let notifications = await userModel.find(filter).select(select).lean();
-        const data = notifications.slice(skip, skip + pagg.limit);
+        let data = await userModel.find(filter).select(select).lean();
+        data = data[0].notifications;
+        const notifications = data.slice(skip, skip + pagg.limit);
         if (!data.length) {
             return {
                 success: false,
@@ -183,10 +244,10 @@ exports.getList = async (filter, select, pagg) => {
             success: true,
             statusCode: 200,
             message: "success",
-            totalNumOfItems: notifications.length,
-            totalPages: Math.ceil(notifications.length / pagg.limit),
+            totalNumOfItems: data.length,
+            totalPages: Math.ceil(data.length / pagg.limit),
             currentPage: pagg.page,
-            data: data
+            data: notifications
         };
     }
     catch (err) {

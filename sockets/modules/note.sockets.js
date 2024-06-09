@@ -9,7 +9,7 @@ exports.addNote = async (socket, data, ack) => {
             return ack({
                 success: false,
                 message: "Not Authorized !"
-            })
+            });
         }
         socket.broadcast.to(matchId).emit("getNote", { data: data });
         return ack({
@@ -33,8 +33,8 @@ exports.updateNote = async (socket, data, ack) => {
         if (!isAuth.success) {
             return ack({
                 success: false,
-                message: "Not Authorized !"
-            })
+                message: "Invalid Token !"
+            });
         }
         socket.broadcast.to(matchId).emit("getUpdatedNote", { data: data });
         return ack({

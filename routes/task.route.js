@@ -12,6 +12,7 @@ const {
 
 // validation schema 
 const {
+    getAllTasksValid,
     addTaskValid,
     editTaskValid,
     deleteTaskValid,
@@ -29,7 +30,7 @@ const { decodeToken } = require('../Auth/decodeToken');
 const { hasRelationship } = require('../Auth/hasRelationship');
 
 // note module routes 
-app.get('/getAllTasks', decodeToken(), hasRelationship(), getAllTasks);
+app.get('/getAllTasks', decodeToken(), validator(getAllTasksValid, 'params'), hasRelationship(), getAllTasks);
 app.get('/getSpecificTasksType', decodeToken(), validator(getSpecificTasksTypeValid, 'params'), hasRelationship(), getSpecificTasksType);
 app.post('/addTask', decodeToken(), validator(addTaskValid), hasRelationship(), addTask);
 app.patch('/editTask', decodeToken(), validator(editTaskValid, 'bodyAndParams'), hasRelationship(), editTask);

@@ -12,9 +12,12 @@ const {
 
 // validation schema 
 const {
+    getAllNotesValid,
     addNoteValid,
     updateNoteValid,
     pinNoteValid,
+    deleteNoteValid,
+    restoreNoteValid
 } = require('../validation/note.validation');
 
 // function that validates validation schema
@@ -27,11 +30,11 @@ const { decodeToken } = require('../Auth/decodeToken');
 const { hasRelationship } = require('../Auth/hasRelationship');
 
 // note module routes 
-app.get('/getAllNotes', decodeToken(), hasRelationship(), getAllNotes);
-app.post('/addNote', validator(addNoteValid), decodeToken(), hasRelationship(), addNote);
-app.patch('/updateNote', validator(updateNoteValid), decodeToken(), hasRelationship(), updateNote);
-app.patch('/pinNote', validator(pinNoteValid), decodeToken(), hasRelationship(), pinNote);
-app.delete('/deleteNote', decodeToken(), hasRelationship(), deleteNote);
-app.delete('/restoreNote', decodeToken(), hasRelationship(), restoreNote);
+app.get('/getAllNotes', validator(getAllNotesValid, 'params'), decodeToken(), getAllNotes);
+app.post('/addNote', validator(addNoteValid, 'bodyAndParams'), decodeToken(), hasRelationship(), addNote);
+app.patch('/updateNote', validator(updateNoteValid, 'bodyAndParams'), decodeToken(), hasRelationship(), updateNote);
+app.patch('/pinNote', validator(pinNoteValid, 'bodyAndParams'), decodeToken(), hasRelationship(), pinNote);
+app.delete('/deleteNote', validator(deleteNoteValid, 'params'), decodeToken(), hasRelationship(), deleteNote);
+app.delete('/restoreNote', validator(restoreNoteValid, 'params'), decodeToken(), hasRelationship(), restoreNote);
 
 module.exports = app;

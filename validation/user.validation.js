@@ -167,4 +167,31 @@ module.exports = {
         }),
     },
 
+    changeProfileImageValid: {
+        body: joi.object().required().keys({
+
+            type: joi.string().required().valid('upload', 'remove').messages({
+                "string.empty": "Media type can't be empty",
+                "any.required": "Media type is required",
+                "any.base": "Media type must be a string",
+                "any.only": "Media type must be either ['upload' or 'remove'] "
+            }),
+
+        }),
+    },
+
+    getNotificationsValid: {
+        params: joi.object().required().keys({
+            page: joi.number().min(1).default(1).messages({
+                "number.base": "page must be a number",
+                "number.min": "page must be a positive number",
+            }),
+            limit: joi.number().min(1).default(10).messages({
+                "number.base": "page must be a number",
+                "number.min": "page must be a positive number",
+            }),
+
+        }),
+    },
+
 };

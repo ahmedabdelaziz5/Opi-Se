@@ -1,20 +1,16 @@
 const mongoose = require('mongoose');
 const { setUpMails } = require('../helpers/sendEmail');
 const userRepo = require("../models/user/user.repo");
+const myEventEmitter = require('../helpers/eventEmitter');
 const { sendNotification } = require('../services/sendPushNotification');
 const relationshipRepo = require("../models/relationship/relationship.repo");
-const recommendationRepo = require("../models/recommendation/recommendation.repo");
 const { writeInCache, deleteFromCache } = require('../services/checkCachedRelations');
+const recommendationRepo = require("../models/recommendation/recommendation.repo");
 
 // function that allows user to get his partner requests 
 exports.getMatchRequest = async (req, res) => {
     try {
         const userId = req.user.id;
-        if (!mongoose.Types.ObjectId.isValid(userId)) {
-            return res.status(401).json({
-                message: "Not Authorized !"
-            })
-        }
         const requests = await userRepo.isExist({ _id: userId }, 'partnerRequests');
         if (!requests.success) {
             return res.status(requests.statusCode).json({
@@ -38,24 +34,35 @@ exports.getMatchRequest = async (req, res) => {
 exports.searchForSpecificPartner = async (req, res) => {
     try {
         const { userId } = req.query;
-        if (!mongoose.Types.ObjectId.isValid(userId)) {
-            return res.status(401).json({
-                message: "Invalid ObjectId !"
-            });
+        const user = await userRepo.isExist(
+            { _id: req.user.id },
+            'sentRequests partnerRequests'
+        )
+        if (!user.success) return res.status(user.statusCode).json(user);
+        const alreadyRequestedHim = user.data.sentRequests.includes(userId);
+        if (!alreadyRequestedHim) {
+            var alreadyRequestedMe = user.data.partnerRequests.find(ele => toString(ele.partnerId) === toString(userId));
+            alreadyRequestedMe !== undefined ? alreadyRequestedMe = true : alreadyRequestedMe = false;
         }
         const select = '-password -partnerRequests -notifications -isVerified -numOfReports -deviceTokens -history';
-        const result = await userRepo.isExist({ _id: userId }, select);
+        const result = await userRepo.isExist(
+            { _id: userId },
+            select,
+            { path: 'profileDetails' }
+        );
         if (!result.success) {
-            return res.status(result.statusCode).json({
-                message: "partner not found !"
-            })
+            result.message = "partner not found !";
+            return res.status(result.statusCode).json(result);
         }
-        let getProfile = await recommendationRepo.getUserDetails({ nationalId: result.data.nationalId }, 'fieldOfStudy specialization userSkills');
+        const profileDetails = result.data.profileDetails;
+        result.data.alreadyRequestedHim = alreadyRequestedHim;
+        result.data.alreadyRequestedMe = alreadyRequestedMe;
+        delete result.data.profileDetails;
         return res.status(200).json({
             message: "success",
             data: result.data,
-            profileDetails: getProfile.data
-        })
+            profileDetails: profileDetails
+        });
     }
     catch (err) {
         return res.status(500).json({
@@ -69,27 +76,38 @@ exports.searchForSpecificPartner = async (req, res) => {
 exports.sendPartnerRequest = async (req, res) => {
     try {
         const { userId } = req.query;
-        if (!mongoose.Types.ObjectId.isValid(userId)) {
-            return res.status(401).json({
-                message: "Not Authorized !"
-            })
-        }
         newRequest = {
             partnerId: req.user.id,
             nationalId: req.user.nationalId,
             partnerUserName: req.user.userName,
             email: req.user.email
         };
+        const isPartner = await userRepo.updateOnly(
+            { _id: req.user.id },
+            {
+                $addToSet: { sentRequests: userId },
+                isAvailable: false
+            },
+        );
+        if (!isPartner.success) {
+            return res.status(isPartner.statusCode).json(isPartner);
+        }
         const updateUserData = await userRepo.updateUser(
             { _id: userId },
             {
+                isAvailable: false,
                 $push: {
                     notifications: { message: "you have a new partner request check it out !" },
                     partnerRequests: newRequest
                 },
-                isAvailable: false
             },
+            null,
+            'deviceTokens'
         );
+        if (!updateUserData.success) {
+            updateUserData.message = 'There is no such partner !';
+            return res.status(updateUserData.statusCode).json(updateUserData);
+        }
         res.status(updateUserData.statusCode).json({
             success: updateUserData.success,
             message: updateUserData.message,
@@ -115,11 +133,20 @@ exports.declineMatchRequest = async (req, res) => {
                 message: "Not Authorized !"
             })
         }
-        const user = userRepo.updateUser({ _id: id }, { $pull: { partnerRequests: { _id: requestId } } });
+        const user = userRepo.updateUser(
+            { _id: id },
+            {
+                isAvailable: true,
+                $pull: { partnerRequests: { _id: requestId } }
+            }
+        );
         const deliverEmail = setUpMails("rejectionEmail", { email: email });
         const updateUserData = userRepo.updateUser(
             { _id: rejectedUserId },
-            { $push: { notifications: { message: "unfortunately, your partner request was rejected, but it's not the end you still can find your another partner :) " } } },
+            {
+                isAvailable: true,
+                $push: { notifications: { message: "unfortunately, your partner request was rejected, but it's not the end you still can find your another partner :) " } }
+            },
             'deviceTokens'
         )
         const result = await Promise.all([deliverEmail, user, updateUserData]);
@@ -127,7 +154,7 @@ exports.declineMatchRequest = async (req, res) => {
             return res.status(500).json({
                 message: "error",
                 error: "error when declining partner request"
-            })
+            });
         }
         res.status(200).json({
             message: "success",
@@ -148,13 +175,16 @@ exports.acceptMatchRequest = async (req, res) => {
     try {
         const { partner2Id, nationalId } = req.query;
         const partner1Id = req.user.id;
-        if (!mongoose.Types.ObjectId.isValid(partner2Id)) {
-            return res.status(401).json({
-                message: "Not Authorized !"
+        const matchId = new mongoose.Types.ObjectId();
+        const dependantData = await userRepo.getAll({ _id: { $in: [partner1Id, partner2Id] } }, 'deviceTokens partnerRequests');
+        if (dependantData.data.length !== 2) {
+            return res.status(404).json({
+                success: false,
+                statusCode: 404,
+                message: "Account not found !",
             })
         }
-        const matchId = new mongoose.Types.ObjectId();
-        const bulkUpdate = await userRepo.bulkUpdate([
+        const bulkUpdate = userRepo.bulkUpdate([
             {
                 updateOne: {
                     filter: { _id: partner1Id },
@@ -163,7 +193,8 @@ exports.acceptMatchRequest = async (req, res) => {
                             matchId: matchId,
                             partnerId: partner2Id,
                             isAvailable: false,
-                            partnerRequests: []
+                            partnerRequests: [],
+                            sentRequests: []
                         }
                     }
                 }
@@ -176,7 +207,8 @@ exports.acceptMatchRequest = async (req, res) => {
                             matchId: matchId,
                             partnerId: partner1Id,
                             isAvailable: false,
-                            partnerRequests: []
+                            partnerRequests: [],
+                            sentRequests: []
                         },
                         $push: {
                             notifications: { message: "you have a new partner with a new chance don't miss this !" }
@@ -197,7 +229,7 @@ exports.acceptMatchRequest = async (req, res) => {
         const stringData = JSON.stringify([{ _id: partner1Id }, { _id: partner2Id }]);
         const cacheRelationship = writeInCache(`${matchId}`, stringData);
         const result = await Promise.all([bulkUpdate, createRelationship, cacheRelationship]);
-        if (!result[0].success || !result[1].success || !result[2]) {
+        if (!result[0].success || !result[1].success || !result[2].success) {
             return res.status(500).json({
                 message: "error",
                 error: "error when accepting partner request"
@@ -210,7 +242,9 @@ exports.acceptMatchRequest = async (req, res) => {
             notifiedPartner: partner2Id,
             matchId: matchId
         });
-        await sendNotification(result[1].data.deviceTokens, type = "acceptMatchRequest");
+        const receiver = dependantData.data.find(ele => toString(ele._id) === toString(partner2Id));
+        sendNotification(receiver.deviceTokens, type = "acceptMatchRequest");
+        myEventEmitter.emit('processDeclinedRequests', [...dependantData.data[0].partnerRequests, ...dependantData.data[0].partnerRequests]);
     }
     catch (err) {
         return res.status(500).json({
@@ -257,4 +291,4 @@ exports.disMatchWithPartner = async (req, res) => {
             error: err.message
         });
     };
-}; 
+};

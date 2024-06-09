@@ -7,7 +7,7 @@ const noteRoutes = require("../routes/note.route");
 const taskRoutes = require("../routes/task.route");
 const trashRoutes = require("../routes/trash.route");
 
-module.exports = (app) => {
+module.exports = (app, io) => {
     app.get('/', (req, res) => {
         res.send({
             message: 'OK - Server is up and running',
@@ -15,8 +15,8 @@ module.exports = (app) => {
             version: '1.0.0'
         })
     });
-    app.get('/faliare', (req, res) => {
-        return res.sendFile(path.join(__dirname, '..', 'public', 'faliare.html'));
+    app.get('/failure', (req, res) => {
+        return res.sendFile(path.join(__dirname, '..', 'public', 'failure.html'));
     });
 
     app.use('/user', userRoutes);
