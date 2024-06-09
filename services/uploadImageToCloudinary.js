@@ -26,6 +26,7 @@ exports.uploadImageToCloudinary = async (file, publicId, path) => {
         }
     }
     catch (err) {
+        console.log(err);
         return {
             success: false,
             statusCode: 500,
@@ -49,7 +50,7 @@ exports.uploadManyMediaToCloudinary = async (files, path) => {
                 message: "something went wrong, could not upload media !"
             }
         }
-        result = filterMediaFiles(result, 'secure_url')
+        result = filterMediaFiles(result, 'secure_url');
         return {
             success: true,
             statusCode: 201,

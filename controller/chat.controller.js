@@ -38,7 +38,7 @@ exports.uploadChatMedia = async (req, res) => {
     try {
         const matchId = req.query.matchId;
         const userId = req.user.id;
-        if (!req.files.length) {
+        if (!req.files) {
             return res.status(400).json({
                 success: false,
                 statusCode: 400,

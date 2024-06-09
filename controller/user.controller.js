@@ -288,6 +288,7 @@ exports.changeProfileImage = async (req, res) => {
         });
     }
     catch (err) {
+        console.log("error: ", err);
         return res.status(500).json({
             message: "error",
             error: err.message
