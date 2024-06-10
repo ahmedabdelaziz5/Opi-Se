@@ -24,8 +24,9 @@ exports.getPartnerRecommendation = async (req, res) => {
     }
     catch (err) {
         return res.status(500).json({
-            message: "error",
-            error: err.message
+            success: false,
+            message: "Could't get your partner recommendations !",
+            error: "Unexpected Error !"
         });
     };
 };
@@ -53,8 +54,9 @@ exports.submitUserPrefers = async (req, res) => {
     }
     catch (err) {
         return res.status(500).json({
-            message: "error",
-            error: err.message
+            success: false,
+            message: "Could't add your preferences !",
+            error: "Unexpected Error !"
         });
     };
 };
@@ -78,8 +80,9 @@ exports.editUserPrefers = async (req, res) => {
     }
     catch (err) {
         return res.status(500).json({
-            message: "error",
-            error: err.message
+            success: false,
+            message: "Could't edit your preferences !",
+            error: "Unexpected Error !"
         });
     };
 };

@@ -24,8 +24,9 @@ exports.getMatchRequest = async (req, res) => {
     }
     catch (err) {
         return res.status(500).json({
-            message: "error",
-            error: err.message
+            success: false,
+            message: "Could't get partner requests !",
+            error: "Unexpected Error !"
         });
     }
 };
@@ -66,9 +67,10 @@ exports.searchForSpecificPartner = async (req, res) => {
     }
     catch (err) {
         return res.status(500).json({
-            message: "error",
-            error: err.message
-        })
+            success: false,
+            message: "Could't search for partner !",
+            error: "Unexpected Error !"
+        });
     }
 };
 
@@ -117,8 +119,9 @@ exports.sendPartnerRequest = async (req, res) => {
     }
     catch (err) {
         return res.status(500).json({
-            message: "error",
-            error: err.message
+            success: false,
+            message: "Could't send partner request !",
+            error: "Unexpected Error !"
         });
     };
 };
@@ -164,9 +167,10 @@ exports.declineMatchRequest = async (req, res) => {
     }
     catch (err) {
         return res.status(500).json({
-            message: "error",
-            error: err.message
-        })
+            success: false,
+            message: "Could't decline match request !",
+            error: "Unexpected Error !"
+        });
     }
 };
 
@@ -248,8 +252,9 @@ exports.acceptMatchRequest = async (req, res) => {
     }
     catch (err) {
         return res.status(500).json({
-            message: "error",
-            error: err.message
+            success: false,
+            message: "Could't accept partner request !",
+            error: "Unexpected Error !"
         });
     };
 };
@@ -287,8 +292,9 @@ exports.disMatchWithPartner = async (req, res) => {
     }
     catch (err) {
         return res.status(500).json({
-            message: "error",
-            error: err.message
+            success: false,
+            message: "Could't dismatch with partner !",
+            error: "Unexpected Error !"
         });
     };
 };

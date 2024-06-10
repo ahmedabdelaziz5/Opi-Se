@@ -15,8 +15,9 @@ exports.getAllTrashNotes = async (req, res) => {
     }
     catch (err) {
         return res.status(500).json({
-            message: "error",
-            error: err.message
+            success: false,
+            message: "Could't get all notes from trash !",
+            error: "Unexpected Error !"
         });
     };
 };
@@ -36,8 +37,9 @@ exports.deleteNoteFromTrash = async (req, res) => {
     }
     catch (err) {
         return res.status(500).json({
-            message: "error",
-            error: err.message
+            success: false,
+            message: "Could't delete note from trash !",
+            error: "Unexpected Error !"
         });
     };
 };
@@ -57,8 +59,9 @@ exports.flushTrash = async (req, res) => {
     }
     catch (err) {
         return res.status(500).json({
-            message: "error",
-            error: err.message
+            success: false,
+            message: "Could't delete trash list !",
+            error: "Unexpected Error !"
         });
     };
 };

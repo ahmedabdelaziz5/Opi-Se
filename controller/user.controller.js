@@ -42,8 +42,9 @@ exports.signUp = async (req, res) => {
     }
     catch (err) {
         return res.status(500).json({
-            message: "error",
-            error: err.message
+            success: false,
+            message: "Could't add your account, please try again later !",
+            error: "Unexpected Error !"
         });
     }
 };
@@ -93,8 +94,9 @@ exports.login = async (req, res) => {
     }
     catch (err) {
         return res.status(500).json({
-            message: "error",
-            error: err.message
+            success: false,
+            message: "Could't login, please try again later !",
+            error: "Unexpected Error !"
         });
     }
 };
@@ -114,8 +116,9 @@ exports.getUserProfile = async (req, res) => {
     }
     catch (err) {
         return res.status(500).json({
-            message: "error",
-            error: err.message
+            success: false,
+            message: "Could't get your profile !",
+            error: "Unexpected Error !"
         });
     }
 };
@@ -133,10 +136,10 @@ exports.verifyAccount = async (req, res) => {
         return res.status(200).send("your account was verified successfully !")
     }
     catch (err) {
-        console.log(err.message);
         return res.status(500).json({
-            message: "error",
-            error: err.message
+            success: false,
+            message: "Could't verify your account !",
+            error: "Unexpected Error !"
         });
     }
 
@@ -153,9 +156,10 @@ exports.resendVerificationEmail = async (req, res) => {
     }
     catch (err) {
         return res.status(500).json({
-            message: "error",
-            error: err.message
-        })
+            success: false,
+            message: "Could't resend verification email, please try again later !",
+            error: "Unexpected Error !"
+        });
     }
 };
 
@@ -176,8 +180,9 @@ exports.forgetPassword = async (req, res) => {
     }
     catch (err) {
         return res.status(500).json({
-            message: "error",
-            error: err.message
+            success: false,
+            message: "Could't reset your password, please try again later !",
+            error: "Unexpected Error !"
         });
     }
 };
@@ -201,8 +206,9 @@ exports.submitNewPassword = async (req, res) => {
     }
     catch (err) {
         return res.status(500).json({
-            message: "error",
-            error: err.message
+            success: false,
+            message: "Could't updating you password, please try again later !",
+            error: "Unexpected Error !"
         });
     }
 };
@@ -236,8 +242,9 @@ exports.changePassword = async (req, res) => {
     }
     catch (err) {
         return res.status(500).json({
-            message: "error",
-            error: err.message
+            success: false,
+            message: "Could't change your password, please try again later !",
+            error: "Unexpected Error !"
         });
     }
 };
@@ -254,9 +261,10 @@ exports.editProfile = async (req, res) => {
     }
     catch (err) {
         return res.status(500).json({
-            message: "error",
-            error: err.message
-        })
+            success: false,
+            message: "Could't edit your profile, please try again later !",
+            error: "Unexpected Error !"
+        });
     }
 };
 
@@ -288,10 +296,10 @@ exports.changeProfileImage = async (req, res) => {
         });
     }
     catch (err) {
-        console.log("error: ", err);
         return res.status(500).json({
-            message: "error",
-            error: err.message
+            success: false,
+            message: "Could't change your profile image, please try again later !",
+            error: "Unexpected Error !"
         });
     };
 };
@@ -307,8 +315,9 @@ exports.getNotifications = async (req, res) => {
     }
     catch (err) {
         return res.status(500).json({
-            message: "error",
-            error: err.message
+            success: false,
+            message: "Could't get your notification list !",
+            error: "Unexpected Error !"
         });
     };
 };

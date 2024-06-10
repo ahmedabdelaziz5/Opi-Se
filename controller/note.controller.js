@@ -1,4 +1,3 @@
-const mongoose = require('mongoose');
 const noteRepo = require('../models/note/note.repo');
 const trashRepo = require('../models/trash/trash.repo');
 
@@ -17,9 +16,10 @@ exports.getAllNotes = async (req, res) => {
     }
     catch (err) {
         return res.status(500).json({
-            message: "error",
-            error: err.message
-        })
+            success: false,
+            message: "Could't get your notes !",
+            error: "Unexpected Error !"
+        });
     }
 };
 
@@ -41,9 +41,10 @@ exports.addNote = async (req, res) => {
     }
     catch (err) {
         return res.status(500).json({
-            message: "error",
-            error: err.message
-        })
+            success: false,
+            message: "Could't add this note !",
+            error: "Unexpected Error !"
+        });
     }
 };
 
@@ -66,9 +67,10 @@ exports.updateNote = async (req, res) => {
     }
     catch (err) {
         return res.status(500).json({
-            message: "error",
-            error: err.message
-        })
+            success: false,
+            message: "Could't update this note !",
+            error: "Unexpected Error !"
+        });
     }
 };
 
@@ -93,8 +95,9 @@ exports.pinNote = async (req, res) => {
     }
     catch (err) {
         return res.status(500).json({
-            message: "error",
-            error: err.message
+            success: false,
+            message: "Could't pin this note !",
+            error: "Unexpected Error !"
         });
     };
 };
@@ -115,9 +118,10 @@ exports.deleteNote = async (req, res) => {
     }
     catch (err) {
         return res.status(500).json({
-            message: "error",
-            error: err.message
-        })
+            success: false,
+            message: "Could't delete this note !",
+            error: "Unexpected Error !"
+        });
     }
 };
 
@@ -143,8 +147,9 @@ exports.restoreNote = async (req, res) => {
     }
     catch (err) {
         return res.status(500).json({
-            message: "error",
-            error: err.message
-        })
+            success: false,
+            message: "Could't restore this note !",
+            error: "Unexpected Error !"
+        });
     }
 };

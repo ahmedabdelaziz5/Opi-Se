@@ -12,8 +12,9 @@ exports.getPartnerChat = async (req, res) => {
     }
     catch (err) {
         return res.status(500).json({
-            message: "error",
-            error: err.message
+            success: false,
+            message: "Could't get chat !",
+            error: "Unexpected Error !"
         });
     };
 };
@@ -28,9 +29,10 @@ exports.getChatMedia = async (req, res) => {
     }
     catch (err) {
         return res.status(500).json({
-            message: "error",
-            error: err.message
-        })
+            success: false,
+            message: "Could't get chat media !",
+            error: "Unexpected Error !"
+        });
     }
 };
 
@@ -73,8 +75,9 @@ exports.uploadChatMedia = async (req, res) => {
     }
     catch (err) {
         return res.status(500).json({
-            message: "error",
-            error: err.message
+            success: false,
+            message: "Could't upload chat media !",
+            error: "Unexpected Error !"
         });
     }
 };

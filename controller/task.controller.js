@@ -20,8 +20,9 @@ exports.getAllTasks = async (req, res) => {
     }
     catch (err) {
         return res.status(500).json({
-            message: "error",
-            error: err.message
+            success: false,
+            message: "Could't get your tasks !",
+            error: "Unexpected Error !"
         });
     }
 };
@@ -37,8 +38,9 @@ exports.getSpecificTasksType = async (req, res) => {
     }
     catch (err) {
         return res.status(500).json({
-            message: "error",
-            error: err.message
+            success: false,
+            message: "Could't get your tasks !",
+            error: "Unexpected Error !"
         });
     }
 };
@@ -54,8 +56,9 @@ exports.addTask = async (req, res) => {
     }
     catch (err) {
         return res.status(500).json({
-            message: "error",
-            error: err.message
+            success: false,
+            message: "Could't add this task !",
+            error: "Unexpected Error !"
         });
     };
 };
@@ -70,8 +73,9 @@ exports.editTask = async (req, res) => {
     }
     catch (err) {
         return res.status(500).json({
-            message: "error",
-            error: err.message
+            success: false,
+            message: "Could't edit this task !",
+            error: "Unexpected Error !"
         });
     };
 };
@@ -85,8 +89,9 @@ exports.deleteTask = async (req, res) => {
     }
     catch (err) {
         return res.status(500).json({
-            message: "error",
-            error: err.message
+            success: false,
+            message: "Could't delete this task !",
+            error: "Unexpected Error !"
         });
     };
 };
@@ -100,8 +105,9 @@ exports.deleteAllTasksType = async (req, res) => {
     }
     catch (err) {
         return res.status(500).json({
-            message: "error",
-            error: err.message
+            success: false,
+            message: "Could't delete all tasks !",
+            error: "Unexpected Error !"
         });
     };
 };
