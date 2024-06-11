@@ -30,9 +30,10 @@ module.exports = {
     declineMatchRequestValid: {
         body: joi.object().required().keys({
 
-            rejectedUserId: joi.string().required().messages({
-                "string.empty": "user Id can't be empty",
-                "any.required": "user Id is required"
+            rejectedUserId: objectId().required().messages({
+                "string.empty": "user id can't be empty",
+                "any.required": "user id is required",
+                "string.pattern.name": "user id must be a valid id",
             }),
 
             email: joi.string().email().required().messages({
@@ -51,7 +52,7 @@ module.exports = {
     acceptMatchRequestValid: {
 
         params: joi.object().required().keys({
-            nationalId: joi.string().required().length(12).pattern(/^[0-9]+$/).messages({
+            nationalId: joi.string().required().length(14).pattern(/^[0-9]+$/).messages({
                 "string.empty": "National ID can't be empty",
                 "any.required": "National ID is required",
                 "string.length": "National ID must be 12 characters long",

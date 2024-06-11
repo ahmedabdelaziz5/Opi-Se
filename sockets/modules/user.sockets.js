@@ -8,14 +8,14 @@ exports.joinUserRoom = async (socket, data, ack) => {
         ack({
             success: true,
             message: `user has joined his room successfully !`,
-        })
+        });
     }
     catch (err) {
         console.log(err.message)
         return ack({
             success: false,
             message: `error while joining user room !`,
-        })
+        });
     }
 };
 

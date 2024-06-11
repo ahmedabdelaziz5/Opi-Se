@@ -3,14 +3,7 @@ const { checkSocketAuth } = require('../Auth.js');
 
 exports.addTask = async (socket, data, ack) => {
     try {
-        const { token, matchId } = socket.handshake.query;
-        const isAuth = await checkSocketAuth(token, matchId);
-        if (!isAuth.success) {
-            return ack({
-                success: false,
-                message: "Not Authorized !"
-            });
-        };
+        const { matchId } = socket.handshake.query;
         socket.broadcast.to(matchId).emit("getTask", { data: data });
         return ack({
             success: true,
@@ -28,14 +21,7 @@ exports.addTask = async (socket, data, ack) => {
 
 exports.updateTask = async (socket, data, ack) => {
     try {
-        const { token, matchId } = socket.handshake.query;
-        const isAuth = await checkSocketAuth(token, matchId);
-        if (!isAuth.success) {
-            return ack({
-                success: false,
-                message: "Not Authorized !"
-            });
-        };
+        const { matchId } = socket.handshake.query;
         socket.broadcast.to(matchId).emit("getUpdatedTask", { data: data });
         return ack({
             success: true,
@@ -53,14 +39,7 @@ exports.updateTask = async (socket, data, ack) => {
 
 exports.deleteTask = async (socket, data, ack) => {
     try {
-        const { token, matchId } = socket.handshake.query;
-        const isAuth = await checkSocketAuth(token, matchId);
-        if (!isAuth.success) {
-            return ack({
-                success: false,
-                message: "Not Authorized !"
-            });
-        }
+        const { matchId } = socket.handshake.query;
         socket.broadcast.to(matchId).emit("taskDeleted", { data: data });
         return ack({
             success: true,
@@ -78,14 +57,7 @@ exports.deleteTask = async (socket, data, ack) => {
 
 exports.deleteAllTasks = async (socket, data, ack) => {
     try {
-        const { token, matchId } = socket.handshake.query;
-        const isAuth = await checkSocketAuth(token, matchId);
-        if (!isAuth.success) {
-            return ack({
-                success: false,
-                message: "Not Authorized !"
-            });
-        }
+        const { matchId } = socket.handshake.query;
         socket.broadcast.to(matchId).emit("allTasksDeleted", { data: data });
         return ack({
             success: true,

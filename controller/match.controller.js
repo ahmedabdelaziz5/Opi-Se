@@ -131,11 +131,6 @@ exports.declineMatchRequest = async (req, res) => {
     try {
         const { id } = req.user;
         const { rejectedUserId, email, requestId } = req.body;
-        if (!mongoose.Types.ObjectId.isValid(rejectedUserId)) {
-            return res.status(401).json({
-                message: "Not Authorized !"
-            })
-        }
         const user = userRepo.updateUser(
             { _id: id },
             {
@@ -268,7 +263,7 @@ exports.disMatchWithPartner = async (req, res) => {
         if (!relationship.success) {
             return res.status(relationship.statusCode).json({
                 message: relationship.error
-            })
+            });
         }
         const updateUsersProgress = userRepo.updateManyUsers(
             { _id: { $in: [relationship.data.firstPartnerId, relationship.data.secondPartnerId] } },

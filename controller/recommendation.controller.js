@@ -38,7 +38,7 @@ exports.submitUserPrefers = async (req, res) => {
         const nationalId = req.user.nationalId;
         const userId = req.user.id
         userData['nationalId'] = nationalId;
-        userData['userId'] = userId;
+        userData['user'] = userId;
         let replicateDataPromise = recommendationRepo.replicateDataForModels(userData);
         let getRecommendationPromise = recommendationRepo.getFirstRecommendation(nationalId);
         const result = await Promise.all([replicateDataPromise, getRecommendationPromise]);
