@@ -33,7 +33,7 @@ const { hasRelationship } = require('../Auth/hasRelationship');
 app.get('/getAllNotes', validator(getAllNotesValid, 'params'), decodeToken(), getAllNotes);
 app.post('/addNote', validator(addNoteValid, 'bodyAndParams'), decodeToken(), hasRelationship(), addNote);
 app.patch('/updateNote', validator(updateNoteValid, 'bodyAndParams'), decodeToken(), hasRelationship(), updateNote);
-app.patch('/pinNote', validator(pinNoteValid, 'bodyAndParams'), decodeToken(), hasRelationship(), pinNote);
+app.patch('/pinNote', validator(pinNoteValid, 'bodyAndParams'), decodeToken(), pinNote);
 app.delete('/deleteNote', validator(deleteNoteValid, 'params'), decodeToken(), hasRelationship(), deleteNote);
 app.delete('/restoreNote', validator(restoreNoteValid, 'params'), decodeToken(), hasRelationship(), restoreNote);
 

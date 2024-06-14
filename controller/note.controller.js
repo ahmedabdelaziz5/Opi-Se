@@ -51,8 +51,7 @@ exports.addNote = async (req, res) => {
 exports.updateNote = async (req, res) => {
     try {
         const noteData = req.body;
-        const noteId = req.query.noteId;
-        const matchId = req.query.matchId;
+        const { noteId, matchId } = req.query;
         const userId = req.user.id;
         const result = await noteRepo.updateNote({ matchId, userId, _id: noteId }, noteData, { new: true });
         if (!result.success) {
@@ -77,9 +76,9 @@ exports.updateNote = async (req, res) => {
 exports.pinNote = async (req, res) => {
     try {
         const { isPinned } = req.body;
-        const { noteId, matchId } = req.query.noteId;
+        const { noteId, matchId } = req.query;
         const result = await noteRepo.updateNote(
-            { matchId, _id: noteId },
+            { _id: noteId, matchId },
             { isPinned: isPinned },
             { new: true }
         );
@@ -104,7 +103,7 @@ exports.pinNote = async (req, res) => {
 
 exports.deleteNote = async (req, res) => {
     try {
-        const { noteId, matchId } = req.query.noteId;
+        const { noteId, matchId } = req.query;
         const note = await noteRepo.deleteNote({ _id: noteId, matchId });
         if (!note.success) {
             return res.status(note.statusCode).json({
@@ -127,7 +126,7 @@ exports.deleteNote = async (req, res) => {
 
 exports.restoreNote = async (req, res) => {
     try {
-        const { noteId, matchId } = req.query.noteId;
+        const { noteId, matchId } = req.query;
         const note = await trashRepo.restoreFromTrash({ _id: noteId, matchId });
         if (!note.success) {
             return res.status(note.statusCode).json({

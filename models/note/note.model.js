@@ -10,7 +10,6 @@ const noteSchema = new mongoose.Schema({
     noteColor: { type: String, default: '#ffffff' },
     createdAt: { type: Date, default: Date.now() },
     updatedAt: { type: Date, default: Date.now() },
-    addedBy: { type: ObjectId, required: true, ref: 'user' },
 });
 
 const noteModel = mongoose.model('note', noteSchema);

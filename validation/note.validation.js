@@ -59,6 +59,11 @@ module.exports = {
                 "any.required": "note id is required",
                 "string.pattern.name": "note id must be a valid id",
             }),
+            matchId: objectId().required().messages({
+                "string.empty": "match id can't be empty",
+                "any.required": "match id is required",
+                "string.pattern.name": "matchId must be a valid id",
+            }),
         }),
     },
 
