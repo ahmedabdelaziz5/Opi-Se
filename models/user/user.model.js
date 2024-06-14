@@ -39,7 +39,9 @@ const userSchema = new mongoose.Schema({
     sentRequests: [String],
     history: [{
         matchId: { type: objectId, required: true, ref: 'relationship' },
-    }]
+    }],
+    mentors: [{ objectId, ref: 'mentor' }],
+    role: { type: String, default: "user" },
 });
 
 const userModel = mongoose.model('user', userSchema);

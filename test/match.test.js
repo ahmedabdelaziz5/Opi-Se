@@ -198,7 +198,7 @@ describe('___________declineMatchRequest___________', () => {
             })
     });
 
-    it('it should return 500 if there any error in performing logic in quries', (done) => {
+    it('it should return 500 if there any error in performing logic in queries', (done) => {
         chai.
             request(app)
             .post('/declineMatchRequest')
@@ -258,7 +258,7 @@ describe('___________acceptMatchRequest___________', () => {
             })
     });
 
-    it('should return 500 if there is any error in performing logic in quries', (done) => {
+    it('should return 500 if there is any error in performing logic in queries', (done) => {
         chai.
             request(app)
             .post('/acceptMatchRequest')
@@ -276,13 +276,13 @@ describe('___________acceptMatchRequest___________', () => {
 
 describe('___________disMatchWithPartner___________', () => {
 
-    it('should return 200 if update users data and update rate for user who dismatched', (done) => {
+    it('should return 200 if update users data and update rate for user who attempt the dismatch', (done) => {
         chai.
             request(app)
             .post('/disMatchWithPartner')
             .set('Authorization', `Bearer ${data.token}`)
             .send(data.disMatchWithPartnerObj)
-            .query({ matchId : data.matchId })
+            .query({ matchId: data.matchId })
             .end((err, res) => {
                 chai.expect(err).to.equal(null);
                 chai.expect(200);
@@ -291,29 +291,29 @@ describe('___________disMatchWithPartner___________', () => {
             })
     });
 
-    it('should return 404 if cannot find the relaatoinship', (done) => {
+    it('should return 404 if cannot find the relationship', (done) => {
         chai.
             request(app)
             .post('/disMatchWithPartner')
             .set('Authorization', `Bearer ${data.token}`)
             .send(data.disMatchWithPartnerObj)
-            .query({ matchId : data.matchId })
+            .query({ matchId: data.matchId })
             .end((err, res) => {
                 chai.expect(err).to.equal(null);
                 chai.expect(404);
                 chai.expect(res.body.message).to.equal(`can't find relationship !`);
                 done();
             })
-            
+
     });
 
-    it('should return 500 if there is error in performing logic in quries', (done) => {
+    it('should return 500 if there is error in performing logic in queries', (done) => {
         chai.
             request(app)
             .post('/disMatchWithPartner')
             .set('Authorization', `Bearer ${data.token}`)
             .send(data.disMatchWithPartnerObj)
-            .query({ matchId : data.matchId })
+            .query({ matchId: data.matchId })
             .end((err, res) => {
                 chai.expect(err).to.equal(null);
                 chai.expect(500);

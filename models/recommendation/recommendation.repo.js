@@ -28,15 +28,15 @@ exports.getFirstRecommendation = (nationalId) => {
                     message: "error",
                     error: err.message
                 }
-            })
+            });
     }
     catch (err) {
         return {
             success: false,
             statusCode: 500,
             message: err.message
-        }
-    }
+        };
+    };
 };
 
 // whenever the user ask for partner recommendation we will get his recommendation array

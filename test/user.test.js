@@ -63,7 +63,7 @@ describe('__________signUp__________', () => {
             });
     });
 
-    it('should return status 400 if did not send verifyication email', (done) => {
+    it('should return status 400 if did not send verification email', (done) => {
         chai
             .request(app)
             .post('/signUp')
@@ -177,7 +177,7 @@ describe('__________forgetPassword__________', () => {
             });
     });
 
-    it('should return status 500 if unexpected error happend', (done) => {
+    it('should return status 500 if unexpected error happened', (done) => {
         chai
             .request(app)
             .post('/forgetPassword')

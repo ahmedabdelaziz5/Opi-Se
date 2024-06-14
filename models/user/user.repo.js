@@ -135,8 +135,8 @@ exports.updateUser = async (filter, edit, populate, select) => {
             success: false,
             statusCode: 500,
             message: err.message
-        }
-    }
+        };
+    };
 };
 
 // when the users dismatch it update the users data in one query 
@@ -196,8 +196,8 @@ exports.updateOnly = async (filter, data) => {
             success: false,
             statusCode: 500,
             message: err.message
-        }
-    }
+        };
+    };
 };
 
 // update users data using bulk write

@@ -19,7 +19,6 @@ describe('___________getPartnerRecommendation___________', () => {
                 done();
             })
     });
-
     it('should return status 200 no recommendations message', (done) => {
         chai
             .request(app)
@@ -52,7 +51,7 @@ describe('___________submitUserPrefers___________', () => {
             })
     });
 
-    it('should return status 400 if cannot get onlone recommendation ', (done) => {
+    it('should return status 400 if cannot get online recommendation ', (done) => {
         chai
             .request(app)
             .post('/submitUserPrefers')
@@ -79,5 +78,6 @@ describe('___________submitUserPrefers___________', () => {
                 done();
             })
     });
+
 
 });
