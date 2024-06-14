@@ -194,4 +194,15 @@ module.exports = {
         }),
     },
 
+    resendVerificationEmailValid: {
+        params: joi.object().required().keys({
+            email: joi.string().email().required().messages({
+                "string.empty": "email can't be empty",
+                "any.required": "email is required",
+                "string.email": "email must be a valid email address",
+                "any.base": "email must be a string"
+            }),
+        }),
+    },
+
 };

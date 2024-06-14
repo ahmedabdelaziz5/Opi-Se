@@ -110,8 +110,13 @@ exports.getUserProfile = async (req, res) => {
             [
                 { path: 'partnerId', select: 'userName profileImage' },
                 { path: 'matchId', select: 'progressPoints matchBadges' },
+                { path: 'profileDetails', select: 'fieldOfStudy specialization userSkills' }
             ]
         );
+        if (user.success) {
+            user.statusCode = 200;
+            user.message = "success";
+        }
         return res.status(user.statusCode).json(user);
     }
     catch (err) {
@@ -149,10 +154,17 @@ exports.verifyAccount = async (req, res) => {
 exports.resendVerificationEmail = async (req, res) => {
     try {
         const { email } = req.query;
+        const user = await userRepo.isExist({ email }, 'email isVerified');
+        if (!user.success) return res.status(user.statusCode).json(user);
+        if (user.data.isVerified) {
+            return res.status(400).json({
+                success: false,
+                statusCode: 400,
+                message: "your account is already verified !"
+            });
+        }
         let emailUser = await setUpMails("verificationMail", { email: email });
-        return res.status(emailUser.statusCode).json({
-            message: emailUser.message
-        })
+        return res.status(emailUser.statusCode).json(emailUser);
     }
     catch (err) {
         return res.status(500).json({
@@ -273,7 +285,7 @@ exports.changeProfileImage = async (req, res) => {
     try {
         const { type } = req.body;
         let result;
-        if (!req.file) {
+        if (type === "upload" && !req.file) {
             return res.status(400).json({
                 success: false,
                 statusCode: 400,

@@ -24,7 +24,8 @@ const {
     changePasswordValid,
     editProfileValid,
     changeProfileImageValid,
-    getNotificationsValid
+    getNotificationsValid,
+    resendVerificationEmailValid
 } = require('../validation/user.validation');
 
 // function that validates validation schema
@@ -39,7 +40,7 @@ const upload = require('../helpers/mediaUpload');
 // user module routes
 app.get('/verifyAccount', verifyAccount);
 app.get('/getUserProfile', decodeToken(), getUserProfile);
-app.get('/resendVerificationEmail', resendVerificationEmail);
+app.get('/resendVerificationEmail', validator(resendVerificationEmailValid, 'params'), resendVerificationEmail);
 app.get('/getNotifications', validator(getNotificationsValid, 'params'), decodeToken(), getNotifications);
 app.post('/signUp', validator(signUpValid), signUp);
 app.post('/login', validator(loginValid), login);
