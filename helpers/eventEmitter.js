@@ -2,7 +2,9 @@ const EventEmitter = require('events');
 const myEventEmitter = new EventEmitter();
 const userRepo = require('../models/user/user.repo');
 
-/*
+myEventEmitter.on('processDeclinedRequests', async (data) => {
+
+  /*
 [
   {
     partnerId: new ObjectId("6578fb625825ed91fb68e4cf"),
@@ -23,17 +25,15 @@ const userRepo = require('../models/user/user.repo');
 ]
 
 */
-
-myEventEmitter.on('processDeclinedRequests', async (data) => {
-    try {
-        console.log(data);
-    }
-    catch (err) {
-        console.log({
-            from: "eventEmitter: processDeclinedRequests",
-            message: err.message
-        });
-    }
+  try {
+    // no logic was specified 
+  }
+  catch (err) {
+    console.log({
+      from: "eventEmitter: processDeclinedRequests",
+      message: err.message
+    });
+  }
 });
 
 module.exports = myEventEmitter;

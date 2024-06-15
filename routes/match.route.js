@@ -22,15 +22,23 @@ const {
 // function that validates validation schema
 const { validator } = require('../validation/validator');
 
-// import decodeToken function from Auth folder
-const { decodeToken } = require('../Auth/decodeToken');
+// authentication middleware
+const isAuth = require('../Auth/isAuth');
+const {
+    GET_MATCH_REQUEST,
+    SEARCH_FOR_SPECIFIC_PARTNER,
+    SEND_PARTNER_REQUEST,
+    ACCEPT_MATCH_REQUEST,
+    DECLINE_MATCH_REQUEST,
+    DISMATCH_WITH_PARTNER,
+} = require('../endpoints/match.endpoints');
 
 // match module routes 
-app.get('/getMatchRequest', decodeToken(), getMatchRequest);
-app.get('/searchForSpecificPartner', validator(searchForSpecificPartnerValid, 'params'), decodeToken(), searchForSpecificPartner);
-app.post('/sendPartnerRequest', validator(sendPartnerRequestValid, 'params'), decodeToken(), sendPartnerRequest);
-app.post('/acceptMatchRequest', validator(acceptMatchRequestValid, 'params'), decodeToken(), acceptMatchRequest);
-app.post('/declineMatchRequest', validator(declineMatchRequestValid), decodeToken(), declineMatchRequest);
-app.post('/disMatchWithPartner', validator(disMatchWithPartnerValid, 'params'), decodeToken(), disMatchWithPartner);
+app.get('/getMatchRequest', isAuth(GET_MATCH_REQUEST), getMatchRequest);
+app.get('/searchForSpecificPartner', isAuth(SEARCH_FOR_SPECIFIC_PARTNER), validator(searchForSpecificPartnerValid, 'params'), searchForSpecificPartner);
+app.post('/sendPartnerRequest', isAuth(SEND_PARTNER_REQUEST), validator(sendPartnerRequestValid, 'params'), sendPartnerRequest);
+app.post('/acceptMatchRequest', isAuth(ACCEPT_MATCH_REQUEST), validator(acceptMatchRequestValid, 'params'), acceptMatchRequest);
+app.post('/declineMatchRequest', isAuth(DECLINE_MATCH_REQUEST), validator(declineMatchRequestValid), declineMatchRequest);
+app.post('/disMatchWithPartner', isAuth(DISMATCH_WITH_PARTNER), validator(disMatchWithPartnerValid, 'params'), disMatchWithPartner);
 
 module.exports = app;

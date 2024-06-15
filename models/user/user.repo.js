@@ -258,3 +258,21 @@ exports.getList = async (filter, select, pagg) => {
         };
     };
 };
+
+exports.deleteManyUsers = async (filter) => {
+    try {
+        await User.deleteMany(filter);
+        return {
+            success: true,
+            statusCode: 200,
+            message: "success",
+        };
+    }
+    catch (err) {
+        return {
+            success: false,
+            statusCode: 500,
+            message: err.message
+        };
+    }
+};

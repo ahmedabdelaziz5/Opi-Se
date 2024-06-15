@@ -21,12 +21,17 @@ const { validator } = require('../validation/validator');
 const upload = require('../helpers/mediaUpload');
 const maxMediaCount = 5;
 
-// import decodeToken function from Auth folder
-const { decodeToken } = require('../Auth/decodeToken');
+// authentication middleware
+const isAuth = require('../Auth/isAuth');
+const {
+    GET_PARTNER_CHAT,
+    GET_CHAT_MEDIA,
+    UPLOAD_CHAT_MEDIA,
+} = require('../endpoints/chat.endpoints');
 
 // chat module routes 
-app.get('/getPartnerChat', validator(getPartnerChatValid, 'params'), decodeToken(), getPartnerChat);
-app.get('/getChatMedia', validator(getChatMediaValid, 'params'), decodeToken(), getChatMedia);
-app.post('/uploadChatMedia', decodeToken(), upload.array('chatMedia', maxMediaCount), validator(uploadChatMediaValid, 'params'), uploadChatMedia);
+app.get('/getPartnerChat', isAuth(GET_PARTNER_CHAT), validator(getPartnerChatValid, 'params'), getPartnerChat);
+app.get('/getChatMedia', isAuth(GET_CHAT_MEDIA), validator(getChatMediaValid, 'params'), getChatMedia);
+app.post('/uploadChatMedia', isAuth(UPLOAD_CHAT_MEDIA), upload.array('chatMedia', maxMediaCount), validator(uploadChatMediaValid, 'params'), uploadChatMedia);
 
 module.exports = app;

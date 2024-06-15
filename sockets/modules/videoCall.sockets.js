@@ -61,10 +61,10 @@ exports.disconnectCall = (socket, callData, ack) => {
 exports.toggleCamera = (socket, callData, ack) => {
     try {
         const roomId = socket.handshake.query.roomId;
-        socket.to(roomId).emit("cameraToggeled", callData);
+        socket.to(roomId).emit("cameraToggled", callData);
         ack({
             success: true,
-            message: `user toggeled his camera !`,
+            message: `user toggled his camera !`,
         });
     }
     catch (err) {
@@ -81,10 +81,10 @@ exports.toggleCamera = (socket, callData, ack) => {
 exports.toggleMicrophone = (socket, callData, ack) => {
     try {
         const roomId = socket.handshake.query.roomId;
-        socket.to(roomId).emit("microphoneToggeled", callData);
+        socket.to(roomId).emit("microphoneToggled", callData);
         ack({
             success: true,
-            message: `user toggeled his microphne !`,
+            message: `user toggled his microphone !`,
         });
     }
     catch (err) {

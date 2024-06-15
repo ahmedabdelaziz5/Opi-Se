@@ -15,17 +15,17 @@ const chatSchema = new mongoose.Schema({
             optionSelectors: [{ type: ObjectId }], // users who selected this option
         }],
         mediaUrl: { type: String, },
-        sentAt: { type: Date, required: true, default: Date.now },
+        sentAt: { type: Date, required: true, default: Date.now() },
     }],
     chatMedia: [{
         messageSender: { type: ObjectId, required: true },
         mediaUrl: { type: String, required: true },
-        sentAt: { type: Date, required: true, default: Date.now },
+        sentAt: { type: Date, required: true, default: Date.now() },
     }],
     chatLinks: [{
         messageSender: { type: ObjectId, required: true },
         linkUrl: { type: String, required: true },
-        sentAt: { type: Date, required: true, default: Date.now },
+        sentAt: { type: Date, required: true, default: Date.now() },
     }],
 });
 

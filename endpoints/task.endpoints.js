@@ -1,0 +1,15 @@
+const GET_ALL_TASKS = 'user:GET_ALL_TASKS';
+const GET_SPECIFIC_TASKS_TYPE = 'user:GET_SPECIFIC_TASKS_TYPE';
+const ADD_TASK = 'user:ADD_TASK';
+const EDIT_TASK = 'user:EDIT_TASK';
+const DELETE_TASK = 'user:DELETE_TASK';
+const DELETE_ALL_TASKS_TYPE = 'user:DELETE_ALL_TASKS_TYPE';
+
+module.exports = {
+    GET_ALL_TASKS,
+    GET_SPECIFIC_TASKS_TYPE,
+    ADD_TASK,
+    EDIT_TASK,
+    DELETE_TASK,
+    DELETE_ALL_TASKS_TYPE,
+};

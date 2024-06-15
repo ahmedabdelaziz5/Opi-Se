@@ -17,15 +17,20 @@ const {
 // function that validates validation schema
 const { validator } = require('../validation/validator');
 
-// import decodeToken function from Auth folder
-const { decodeToken } = require('../Auth/decodeToken');
+// authentication middleware
+const isAuth = require('../Auth/isAuth');
+const {
+    GET_ALL_TRASH_NOTES,
+    DELETE_NOTE_FROM_TRASH,
+    FLUSH_TRASH,
+} = require('../endpoints/trash.endpoints');
 
 // caching layer to check relationship 
 const { hasRelationship } = require('../Auth/hasRelationship');
 
 // note module routes 
-app.get('/getAllTrashNotes', validator(getAllTrashNotesValid, 'params'), decodeToken(), hasRelationship(), getAllTrashNotes);
-app.delete('/deleteNoteFromTrash', validator(deleteNoteFromTrashValid, 'params'), decodeToken(), hasRelationship(), deleteNoteFromTrash);
-app.delete('/flushTrash', validator(flushTrashValid, 'params'), decodeToken(), hasRelationship(), flushTrash);
+app.get('/getAllTrashNotes', isAuth(GET_ALL_TRASH_NOTES), hasRelationship(), validator(getAllTrashNotesValid, 'params'), getAllTrashNotes);
+app.delete('/deleteNoteFromTrash', isAuth(DELETE_NOTE_FROM_TRASH), hasRelationship(), validator(deleteNoteFromTrashValid, 'params'), deleteNoteFromTrash)
+app.delete('/flushTrash', isAuth(FLUSH_TRASH), hasRelationship(), validator(flushTrashValid, 'params'), flushTrash);
 
 module.exports = app;

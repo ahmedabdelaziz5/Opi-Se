@@ -1,0 +1,9 @@
+const GET_PARTNER_CHAT = 'user:GET_PARTNER_CHAT';
+const GET_CHAT_MEDIA = 'user:GET_CHAT_MEDIA';
+const UPLOAD_CHAT_MEDIA = 'admin:UPLOAD_CHAT_MEDIA';
+
+module.exports = {
+    GET_PARTNER_CHAT,
+    GET_CHAT_MEDIA,
+    UPLOAD_CHAT_MEDIA,
+};

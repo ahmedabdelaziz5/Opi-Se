@@ -23,18 +23,26 @@ const {
 // function that validates validation schema
 const { validator } = require('../validation/validator');
 
-// import decodeToken function from Auth folder
-const { decodeToken } = require('../Auth/decodeToken');
+// authentication middleware
+const isAuth = require('../Auth/isAuth');
+const {
+    GET_ALL_NOTES,
+    ADD_NOTE,
+    UPDATE_NOTE,
+    PIN_NOTE,
+    DELETE_NOTE,
+    RESTORE_NOTE,
+} = require('../endpoints/note.endpoints');
 
 // caching layer to check relationship 
 const { hasRelationship } = require('../Auth/hasRelationship');
 
 // note module routes 
-app.get('/getAllNotes', validator(getAllNotesValid, 'params'), decodeToken(), getAllNotes);
-app.post('/addNote', validator(addNoteValid, 'bodyAndParams'), decodeToken(), hasRelationship(), addNote);
-app.patch('/updateNote', validator(updateNoteValid, 'bodyAndParams'), decodeToken(), hasRelationship(), updateNote);
-app.patch('/pinNote', validator(pinNoteValid, 'bodyAndParams'), decodeToken(), pinNote);
-app.delete('/deleteNote', validator(deleteNoteValid, 'params'), decodeToken(), hasRelationship(), deleteNote);
-app.delete('/restoreNote', validator(restoreNoteValid, 'params'), decodeToken(), hasRelationship(), restoreNote);
+app.get('/getAllNotes', isAuth(GET_ALL_NOTES), validator(getAllNotesValid, 'params'), getAllNotes);
+app.post('/addNote', isAuth(ADD_NOTE), hasRelationship(), validator(addNoteValid, 'bodyAndParams'), addNote);
+app.patch('/updateNote', isAuth(UPDATE_NOTE), hasRelationship(), validator(updateNoteValid, 'bodyAndParams'), updateNote);
+app.patch('/pinNote', isAuth(PIN_NOTE), hasRelationship(), validator(pinNoteValid, 'bodyAndParams'), pinNote);
+app.delete('/deleteNote', isAuth(DELETE_NOTE), hasRelationship(), validator(deleteNoteValid, 'params'), deleteNote);
+app.delete('/restoreNote', isAuth(RESTORE_NOTE), hasRelationship(), validator(restoreNoteValid, 'params'), restoreNote);
 
 module.exports = app;

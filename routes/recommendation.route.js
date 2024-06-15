@@ -17,12 +17,17 @@ const {
 // function that validates validation schema
 const { validator } = require('../validation/validator');
 
-// import decodeToken function from Auth folder
-const { decodeToken } = require('../Auth/decodeToken');
+// authentication middleware
+const isAuth = require('../Auth/isAuth');
+const {
+    GET_PARTNER_RECOMMENDATION,
+    SUBMIT_USER_PREFERS,
+    EDIT_USER_PREFERS,
+} = require('../endpoints/recommendation.endpoints');
 
 // recommendation module routes 
-app.get('/getPartnerRecommendation', validator(getPartnerRecommendationValid), decodeToken(), getPartnerRecommendation);
-app.post('/submitUserPrefers', validator(submitUserPrefersValid), decodeToken(), submitUserPrefers);
-app.patch('/editUserPrefers', validator(editUserPrefersValid), decodeToken(), editUserPrefers);
+app.get('/getPartnerRecommendation', isAuth(GET_PARTNER_RECOMMENDATION), validator(getPartnerRecommendationValid), getPartnerRecommendation);
+app.post('/submitUserPrefers', isAuth(SUBMIT_USER_PREFERS), validator(submitUserPrefersValid), submitUserPrefers);
+app.patch('/editUserPrefers', isAuth(EDIT_USER_PREFERS), validator(editUserPrefersValid), editUserPrefers);
 
 module.exports = app;  
