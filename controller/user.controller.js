@@ -82,7 +82,8 @@ exports.login = async (req, res) => {
             id: user.data._id,
             userName: user.data.userName,
             email: user.data.email,
-            nationalId: user.data.nationalId
+            nationalId: user.data.nationalId,
+            role: 'user'
         }, process.env.SECRET_JWT);
         delete user.data.password;
         return res.status(200).json({
