@@ -55,7 +55,7 @@ exports.deleteMessage = async (socket, data, ack) => {
             return ack({
                 success: false,
                 message: `invalid id !`,
-            })
+            });
         }
         const chat = await chatRepo.updateChat({ matchId }, { $pull: { chat: { _id: data.messageId } } }, { new: true });
         if (!chat.success) {
@@ -69,7 +69,7 @@ exports.deleteMessage = async (socket, data, ack) => {
             success: true,
             message: `message deleted successfully !`,
             data: data
-        })
+        });
     }
     catch (err) {
         console.log(err.message)
@@ -123,7 +123,7 @@ exports.selectFromPoll = async (socket, data, ack) => {
                 message: `there is no such chat !`,
             })
         }
-        socket.broadcast.to(matchId).emit("pollOptionSelected", messageId);
+        socket.broadcast.to(matchId).emit("pollOptionSelected", data);
         return ack({
             success: true,
             messageId,

@@ -1,5 +1,4 @@
 // events related to task module 
-const { checkSocketAuth } = require('../Auth.js');
 
 exports.addTask = async (socket, data, ack) => {
     try {

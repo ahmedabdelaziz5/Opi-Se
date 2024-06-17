@@ -29,13 +29,7 @@ const userSchema = new mongoose.Schema({
         languageName: { type: String, required: true },
         level: { type: Number, required: true, default: 3 }
     }],
-    partnerRequests: [{
-        partnerId: { type: objectId, required: true },
-        nationalId: { type: String, required: true },
-        partnerUserName: { type: String, required: true },
-        requestStatus: { type: String, default: "pending" },
-        email: { type: String, required: true },
-    }],
+    partnerRequests: [{ type: objectId, ref: 'user' }],
     sentRequests: [String],
     history: [{
         matchId: { type: objectId, required: true, ref: 'relationship' },

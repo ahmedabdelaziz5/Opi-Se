@@ -26,19 +26,19 @@ exports.establishSocketConnections = (io) => {
 
         // match Module events
         socket.on('acceptPartnerRequest',
-            (data, ack) => {
-                validateEvent(matchValidation.acceptPartnerRequestValid)(data, async (validationResult) => {
-                    if (validationResult) {
-                        return ack({
-                            success: false,
-                            error: "validation error",
-                            message: validationResult.message,
-                        });
-                    }
-                    await matchModule.acceptPartnerRequest(socket, data, ack);
-                });
+            async (data, ack) => {
+                const validationResult = validateEvent(matchValidation.acceptPartnerRequestValid, data);
+                if (!validationResult.success) {
+                    return ack({
+                        success: false,
+                        error: "validation error",
+                        message: validationResult.message,
+                    });
+                }
+                await matchModule.acceptPartnerRequest(socket, data, ack);
             }
         );
+
         socket.on('disMatch',
             (data, ack) => matchModule.disMatch(io, socket, data, ack)
         );
@@ -68,91 +68,84 @@ exports.establishSocketConnections = (io) => {
 
         // chat Module events
         socket.on("sendMessage",
-            (data, ack) => {
-                validateEvent(chatValidation.sendMessageValid)(data, async (validationResult) => {
-                    if (validationResult) {
-                        return ack({
-                            success: false,
-                            error: "validation error",
-                            message: validationResult.message,
-                        });
-                    }
-                    await chatModule.sendMessage(socket, data, ack);
-                });
+            async (data, ack) => {
+                const validationResult = validateEvent(chatValidation.sendMessageValid, data);
+                if (!validationResult.success) {
+                    return ack({
+                        success: false,
+                        error: "validation error",
+                        message: validationResult.message,
+                    });
+                }
+                await chatModule.sendMessage(socket, data, ack);
             }
         );
         socket.on("deleteMessage",
-            validateEvent(chatValidation.deleteMessageValid),
-            (data, ack) => {
-                validateEvent(chatValidation.deleteMessageValid)(data, async (validationResult) => {
-                    if (validationResult) {
-                        return ack({
-                            success: false,
-                            error: "validation error",
-                            message: validationResult.message,
-                        });
-                    }
-                    await chatModule.deleteMessage(socket, data, ack);
-                });
+            async (data, ack) => {
+                const validationResult = validateEvent(chatValidation.deleteMessageValid, data);
+                if (!validationResult.success) {
+                    return ack({
+                        success: false,
+                        error: "validation error",
+                        message: validationResult,
+                    });
+                }
+                await chatModule.deleteMessage(socket, data, ack);
             }
         );
         socket.on("selectFromPoll",
             (data, ack) => chatModule.selectFromPoll(socket, data, ack)
         );
         socket.on("endChatSession",
-            (data, ack) => {
-                validateEvent(chatValidation.endChatSessionValid)(data, async (validationResult) => {
-                    if (validationResult) {
-                        return ack({
-                            success: false,
-                            error: "validation error",
-                            message: validationResult.message,
-                        });
-                    }
-                    await chatModule.endChatSession(socket, data, ack);
-                });
+            async (data, ack) => {
+                const validationResult = validateEvent(chatValidation.endChatSessionValid, data)
+                if (!validationResult.success) {
+                    return ack({
+                        success: false,
+                        error: "validation error",
+                        message: validationResult.message,
+                    });
+                }
+                await chatModule.endChatSession(socket, data, ack);
             }
         );
         socket.on("startChatSession",
-            (data, ack) => {
-                validateEvent(chatValidation.startChatSessionValid)(data, async (validationResult) => {
-                    if (validationResult) {
-                        return ack({
-                            success: false,
-                            error: "validation error",
-                            message: validationResult.message,
-                        });
-                    }
-                    await chatModule.startChatSession(socket, data, ack);
-                });
+            async (data, ack) => {
+                const validationResult = validateEvent(chatValidation.startChatSessionValid, data);
+                if (!validationResult.success) {
+                    return ack({
+                        success: false,
+                        error: "validation error",
+                        message: validationResult.message,
+                    });
+                }
+                await chatModule.startChatSession(socket, data, ack);
             }
         );
         socket.on("uploadChatMedia",
-            (data, ack) => {
-                validateEvent(chatValidation.uploadChatMediaValid)(data, async (validationResult) => {
-                    if (validationResult) {
-                        return ack({
-                            success: false,
-                            error: "validation error",
-                            message: validationResult.message,
-                        });
-                    }
-                    await chatModule.uploadChatMedia(socket, data, ack);
-                });
+            async (data, ack) => {
+                const validationResult = validateEvent(chatValidation.uploadChatMediaValid, data);
+                if (!validationResult.success) {
+                    return ack({
+                        success: false,
+                        error: "validation error",
+                        message: validationResult.message,
+                    });
+                }
+                await chatModule.uploadChatMedia(socket, data, ack);
             }
         );
         socket.on("replyToSessionRequest",
-            (data, ack) => {
-                validateEvent(chatValidation.replyToSessionRequestValid)(data, async (validationResult) => {
-                    if (validationResult) {
-                        return ack({
-                            success: false,
-                            error: "validation error",
-                            message: validationResult.message,
-                        });
-                    }
-                    await chatModule.replyToSessionRequest(socket, data, ack);
-                });
+            async (data, ack) => {
+                const validationResult = validateEvent(chatValidation.replyToSessionRequestValid, data)
+                if (!validationResult.success) {
+                    return ack({
+                        success: false,
+                        error: "validation error",
+                        message: validationResult.message,
+                    });
+                }
+                await chatModule.replyToSessionRequest(socket, data, ack);
             }
         );
 

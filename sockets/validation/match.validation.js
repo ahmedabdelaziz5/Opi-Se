@@ -1,4 +1,5 @@
 const joi = require("joi");
+const objectId = require('joi-objectid')(joi);
 
 module.exports = {
 
@@ -10,9 +11,16 @@ module.exports = {
                 "any.required": "notified partner Id can't be empty"
             }),
 
-            matchId: joi.string().required().messages({
+            matchId: objectId().required().messages({
                 "string.empty": "match id can't be empty",
-                "any.required": "match id is required"
+                "any.required": "match id is required",
+                "string.pattern.name": "matchId must be a valid id",
+            }),
+
+            partnerId: objectId().required().messages({
+                "string.empty": "partner id can't be empty",
+                "any.required": "partner id is required",
+                "string.pattern.name": "partner id must be a valid id",
             }),
 
             partnerUserName: joi.string().required().messages({

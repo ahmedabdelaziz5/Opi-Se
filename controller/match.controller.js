@@ -11,16 +11,16 @@ const recommendationRepo = require("../models/recommendation/recommendation.repo
 exports.getMatchRequest = async (req, res) => {
     try {
         const userId = req.user.id;
-        const requests = await userRepo.isExist({ _id: userId }, 'partnerRequests');
-        if (!requests.success) {
-            return res.status(requests.statusCode).json({
-                message: requests.message
-            });
+        const requests = await userRepo.isExist(
+            { _id: userId },
+            'partnerRequests',
+            { path: 'partnerRequests', select: '_id userName email gender profileImage' },
+        );
+        if (requests.success) {
+            requests.statusCode = 200;
+            requests.message = "success";
         }
-        return res.status(200).json({
-            message: 'success',
-            data: requests.data
-        });
+        return res.status(requests.statusCode).json(requests);
     }
     catch (err) {
         return res.status(500).json({
@@ -37,12 +37,13 @@ exports.searchForSpecificPartner = async (req, res) => {
         const { userId } = req.query;
         const user = await userRepo.isExist(
             { _id: req.user.id },
-            'sentRequests partnerRequests'
+            'sentRequests partnerRequests',
+            { path: 'partnerRequests', select: '_id' },
         )
         if (!user.success) return res.status(user.statusCode).json(user);
         const alreadyRequestedHim = user.data.sentRequests.includes(userId);
         if (!alreadyRequestedHim) {
-            var alreadyRequestedMe = user.data.partnerRequests.find(ele => toString(ele.partnerId) === toString(userId));
+            var alreadyRequestedMe = user.data.partnerRequests.find(ele => toString(ele._id) === toString(userId));
             alreadyRequestedMe !== undefined ? alreadyRequestedMe = true : alreadyRequestedMe = false;
         }
         const select = '-password -partnerRequests -notifications -isVerified -numOfReports -deviceTokens -history';
@@ -78,12 +79,6 @@ exports.searchForSpecificPartner = async (req, res) => {
 exports.sendPartnerRequest = async (req, res) => {
     try {
         const { userId } = req.query;
-        newRequest = {
-            partnerId: req.user.id,
-            nationalId: req.user.nationalId,
-            partnerUserName: req.user.userName,
-            email: req.user.email
-        };
         const isPartner = await userRepo.updateOnly(
             { _id: req.user.id },
             {
@@ -100,7 +95,7 @@ exports.sendPartnerRequest = async (req, res) => {
                 isAvailable: false,
                 $push: {
                     notifications: { message: "you have a new partner request check it out !" },
-                    partnerRequests: newRequest
+                    partnerRequests: userId
                 },
             },
             null,
@@ -181,7 +176,7 @@ exports.acceptMatchRequest = async (req, res) => {
                 success: false,
                 statusCode: 404,
                 message: "Account not found !",
-            })
+            });
         }
         const bulkUpdate = userRepo.bulkUpdate([
             {

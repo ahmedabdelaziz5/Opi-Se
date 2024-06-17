@@ -135,7 +135,6 @@ exports.verifyAccount = async (req, res) => {
         let { token } = req.query;
         let decodedToken = jwt.verify(token, process.env.SECRET_JWT);
         let user = await userRepo.updateUser({ email: decodedToken.email }, { isVerified: true });
-        console.log(user);
         if (!user.success) {
             return res.status(400).send('there is no such email , please register first');
         }
