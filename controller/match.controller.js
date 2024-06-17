@@ -79,7 +79,7 @@ exports.searchForSpecificPartner = async (req, res) => {
 exports.sendPartnerRequest = async (req, res) => {
     try {
         const { userId } = req.query;
-        if (toString(req.user.id) === toString(userId)) {
+        if (req.user.id === userId) {
             return res.status(400).json({
                 success: false,
                 message: "You can't send request to yourself !",

@@ -38,7 +38,7 @@ exports.sendNotification = async (deviceToken, type) => {
             data: body,
             tokens: deviceToken
         };
-        const result = await messaging.sendMulticast(message);
+        const result = await messaging.sendEachForMulticast(message);
 
         if (result.successCount != 1) {
             return {
