@@ -41,11 +41,6 @@ module.exports = {
                 "any.required": "email is required"
             }),
 
-            requestId: joi.string().required().messages({
-                "string.empty": "request Id can't be empty",
-                "any.required": "request Id is required"
-            }),
-
         }),
     },
 

@@ -79,6 +79,12 @@ exports.searchForSpecificPartner = async (req, res) => {
 exports.sendPartnerRequest = async (req, res) => {
     try {
         const { userId } = req.query;
+        if (toString(req.user.id) === toString(userId)) {
+            return res.status(400).json({
+                success: false,
+                message: "You can't send request to yourself !",
+            });
+        }
         const isPartner = await userRepo.updateOnly(
             { _id: req.user.id },
             {
@@ -125,12 +131,12 @@ exports.sendPartnerRequest = async (req, res) => {
 exports.declineMatchRequest = async (req, res) => {
     try {
         const { id } = req.user;
-        const { rejectedUserId, email, requestId } = req.body;
+        const { rejectedUserId, email } = req.body;
         const user = userRepo.updateUser(
             { _id: id },
             {
                 isAvailable: true,
-                $pull: { partnerRequests: { _id: requestId } }
+                $pull: { partnerRequests: { _id: rejectedUserId } }
             }
         );
         const deliverEmail = setUpMails("rejectionEmail", { email: email });
