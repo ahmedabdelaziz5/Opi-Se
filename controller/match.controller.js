@@ -101,7 +101,7 @@ exports.sendPartnerRequest = async (req, res) => {
                 isAvailable: false,
                 $push: {
                     notifications: { message: "you have a new partner request check it out !" },
-                    partnerRequests: userId
+                    partnerRequests: req.user.id
                 },
             },
             null,
