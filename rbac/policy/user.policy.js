@@ -51,6 +51,10 @@ const {
     FLUSH_TRASH,
 } = require('../../endpoints/trash.endpoints');
 
+const {
+    GET_ALL_MENTORS,
+} = require('../../endpoints/mentor.endpoints');
+
 
 module.exports = [
 
@@ -99,4 +103,9 @@ module.exports = [
     GET_ALL_TRASH_NOTES,
     DELETE_NOTE_FROM_TRASH,
     FLUSH_TRASH,
+
+    // mentor policies
+    GET_ALL_MENTORS
+
+
 ];

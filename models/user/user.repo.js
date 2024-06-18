@@ -58,13 +58,6 @@ exports.getAll = async (filter, select, populate) => {
 // creates the user in the database + password validation logic 
 exports.createUser = async (data) => {
     try {
-        if (data.password != data.confirmPassword) {
-            return {
-                success: false,
-                statusCode: 400,
-                message: "password and confirm password not match !"
-            }
-        }
         const newPassword = await bcrypt.hash(data.password, saltRounds);
         data.password = newPassword;
         let user = new userModel(data);
@@ -229,14 +222,14 @@ exports.bulkUpdate = async (filter) => {
 exports.getList = async (filter, select, pagg) => {
     try {
         const skip = (pagg.page - 1) * pagg.limit;
-        let data = await userModel.find(filter).select(select).lean();
-        data = data[0].notifications;
-        const notifications = data.slice(skip, skip + pagg.limit);
+        let data = await userModel.findOne(filter).select(select).lean();
+        data = data[`${select}`];
+        const result = data.slice(skip, skip + pagg.limit);
         if (!data.length) {
             return {
                 success: false,
                 statusCode: 404,
-                message: "There is no notifications yet !"
+                message: `There is no ${select} yet !`
             };
         }
         return {
@@ -246,7 +239,7 @@ exports.getList = async (filter, select, pagg) => {
             totalNumOfItems: data.length,
             totalPages: Math.ceil(data.length / pagg.limit),
             currentPage: pagg.page,
-            data: notifications
+            data: result
         };
     }
     catch (err) {

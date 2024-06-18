@@ -30,6 +30,16 @@ exports.setUpMails = async (emailType, emailCredentials) => {
     mailOptions['text'] = emailTemplate.rejectionEmail.text;
   }
 
+  else if (emailType === "OTPMail") {
+    mailOptions['subject'] = emailTemplate.OTPVerificationMail.subject;
+    mailOptions['text'] = emailTemplate.OTPVerificationMail.text;
+    mailOptions['html'] = `
+      <div style="text-align: center;">
+        <h2>Your OTP code is: ${emailCredentials.otpCode}</h2>
+      </div>
+    `;
+  }
+
   let result = await sendEmails(mailOptions);
   return result;
 

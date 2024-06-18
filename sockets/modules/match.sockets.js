@@ -5,7 +5,7 @@ exports.acceptPartnerRequest = async (socket, data, ack) => {
     try {
         const { notifiedPartner, matchId, partnerUserName, partnerImage } = data;
         socket.join(matchId);
-        socket.to(notifiedPartner).emit('matchRequestApproved', { matchId, notification: true, partnerUserName, partnerImage });
+        socket.to(notifiedPartner).emit('matchRequestApproved', { matchId, notification: true, partnerUserName, partnerImage, partnerId: notifiedPartner });
         return ack({
             success: true,
             message: `partner request was accepted successfully !`,

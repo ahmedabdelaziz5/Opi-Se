@@ -6,6 +6,7 @@ const chatRoutes = require("../routes/chat.route");
 const noteRoutes = require("../routes/note.route");
 const taskRoutes = require("../routes/task.route");
 const trashRoutes = require("../routes/trash.route");
+const mentorRouts = require("../routes/mentor.route");
 
 module.exports = (app, io) => {
     app.get('/', (req, res) => {
@@ -26,5 +27,6 @@ module.exports = (app, io) => {
     app.use('/note', noteRoutes);
     app.use('/task', taskRoutes);
     app.use('/trash', trashRoutes);
+    app.use('/mentor', mentorRouts);
 
 };

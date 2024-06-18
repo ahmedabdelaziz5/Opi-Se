@@ -6,6 +6,10 @@ const emailTemplate = {
         subject: "Verify your account",
         text: "Please click the verify button to verify your account",
     },
+    OTPVerificationMail: {
+        subject: "Verify your account",
+        text: "This is your private OTP code use it to verify your account:",
+    },
     forgetPasswordEmail: {
         subject: "Forget password access",
         text: "Please click the button to reset your account password",

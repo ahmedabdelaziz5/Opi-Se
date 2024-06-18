@@ -18,7 +18,7 @@ const {
 const { validator } = require('../validation/validator');
 
 // import upload middleware from mediaUpload folder
-const upload = require('../helpers/mediaUpload');
+const { upload } = require('../helpers/mediaUpload');
 const maxMediaCount = 5;
 
 // authentication middleware

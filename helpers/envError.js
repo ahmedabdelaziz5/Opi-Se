@@ -14,7 +14,7 @@ exports.handler = (err, req, res, next) => {
     const statusCode = err.status ? err.status : 500;
     res.status(statusCode);
     res.json({
-        success: true,
+        success: false,
         statusCode: statusCode,
         message: err.message,
     });

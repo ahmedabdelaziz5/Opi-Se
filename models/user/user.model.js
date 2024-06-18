@@ -34,7 +34,7 @@ const userSchema = new mongoose.Schema({
     history: [{
         matchId: { type: objectId, required: true, ref: 'relationship' },
     }],
-    // mentors: [{ objectId, ref: 'mentor' }],
+    mentors: [{ type: objectId, ref: 'mentor' }],
     role: { type: String, default: "user" },
 });
 
