@@ -136,7 +136,7 @@ exports.declineMatchRequest = async (req, res) => {
             { _id: id },
             {
                 isAvailable: true,
-                $pull: { partnerRequests: { _id: rejectedUserId } }
+                $pull: { partnerRequests: rejectedUserId }
             }
         );
         const deliverEmail = setUpMails("rejectionEmail", { email: email });
