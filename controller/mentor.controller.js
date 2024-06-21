@@ -6,7 +6,7 @@ const { setUpMails } = require('../helpers/sendEmail');
 const { generateOtp } = require('../helpers/generateOTP');
 const { removeImageFromCloudinary, uploadImageToCloudinary } = require('../services/uploadImageToCloudinary');
 
-// function that allows user to sign up
+// function that allows mentor to sign up
 exports.signUp = async (req, res) => {
     try {
         const mentorData = req.body;
@@ -47,7 +47,7 @@ exports.signUp = async (req, res) => {
     }
 };
 
-// function that allows user to login
+// function that allows mentor to login
 exports.login = async (req, res) => {
     try {
         const mentorData = req.body;
@@ -118,7 +118,7 @@ exports.getMentorProfile = async (req, res) => {
     }
 };
 
-// blackBox function that allows make user verified
+// blackBox function that allows make mentor verified
 exports.verifyAccount = async (req, res) => {
     try {
         let { email, otpCode } = req.body;
@@ -170,6 +170,12 @@ exports.resendOTP = async (req, res) => {
             });
         }
         const otpCode = generateOtp();
+        await mentorRepo.updateMentor(
+            { email },
+            { otpCode },
+            '',
+            'userName email isVerified'
+        );
         let result = await setUpMails("OTPMail", { email: email, otpCode });
         return res.status(result.statusCode).json(result);
     }
@@ -182,12 +188,15 @@ exports.resendOTP = async (req, res) => {
     }
 };
 
-// function that allows user to reset his password
+// function that allows mentor to reset his password
 exports.forgetPassword = async (req, res) => {
     try {
         const { email } = req.body;
-        let userMatch = await userRepo.isExist({ email });
-        if (!userMatch.success) return res.status(userMatch.statusCode).json(userMatch)
+        let mentor = await mentorRepo.isExist(
+            { email },
+            '_id'
+        );
+        if (!mentor.success) return res.status(mentor.statusCode).json(mentor)
         const sendEmail = await setUpMails("forgetPasswordEmail", { email });
         return res.status(sendEmail.statusCode).json(sendEmail);
     }
@@ -200,7 +209,7 @@ exports.forgetPassword = async (req, res) => {
     }
 };
 
-// function that allows user to submit his new password from forget password email
+// function that allows mentor to submit his new password from forget password email
 exports.submitNewPassword = async (req, res) => {
     try {
         const { password } = req.body;
@@ -222,7 +231,7 @@ exports.submitNewPassword = async (req, res) => {
     }
 };
 
-// function that allows user to change his password inside the app
+// function that allows mentor to change his password inside the app
 exports.changePassword = async (req, res) => {
     try {
         const { oldPassword, newPassword } = req.body;
@@ -253,7 +262,7 @@ exports.changePassword = async (req, res) => {
     }
 };
 
-// function that allows user to edit his profile data 
+// function that allows mentor to edit his profile data 
 exports.editProfile = async (req, res) => {
     try {
         const mentorData = req.body;
@@ -275,7 +284,7 @@ exports.editProfile = async (req, res) => {
     }
 };
 
-// function that allows user to change his profile image ( takes the type of operation upload/remove )
+// function that allows mentor to change his profile image ( takes the type of operation upload/remove )
 exports.changeProfileImage = async (req, res) => {
     try {
         const { type } = req.body;
@@ -317,7 +326,7 @@ exports.changeProfileImage = async (req, res) => {
     };
 };
 
-// function that allows user to see his notifications list 
+// function that allows mentor to see his notifications list 
 exports.getNotifications = async (req, res) => {
     try {
         const mentorId = req.user.id;
@@ -339,6 +348,7 @@ exports.getNotifications = async (req, res) => {
     };
 };
 
+// function that allows mentor to see all mentors list
 exports.getAllMentors = async (req, res) => {
     try {
         const { fieldOfStudy, specialization } = req.body;

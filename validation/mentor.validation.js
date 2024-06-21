@@ -119,6 +119,10 @@ module.exports = {
                         "any.required": "End date is required",
                         "any.base": "End date must be a string",
                     }),
+                    tillNow: joi.boolean().messages({
+                        "string.empty": "Till now can't be empty",
+                        "any.base": "Till now must be a string",
+                    }),
                 })
             ),
 
@@ -231,11 +235,13 @@ module.exports = {
 
         body: joi.object().required().keys({
 
-            userName: joi.string(),
+            userName: joi.string().optional().messages({
+                "string.empty": "user name can't be empty",
+            }),
 
-            email: joi.string().email(),
-
-            bio: joi.string(),
+            email: joi.string().email().optional().messages({
+                "string.empty": "email can't be empty",
+            }),
 
             languages: joi.array().items(
                 joi.object({
@@ -244,6 +250,69 @@ module.exports = {
                     }),
                     level: joi.number().required().messages({
                         "string.empty": "level is required",
+                    }),
+                })
+            ),
+
+            bio: joi.string().optional().messages({
+                "string.empty": "Bio can't be empty",
+                "any.base": "Bio must be a string"
+            }),
+
+            fieldOfStudy: joi.string().optional().messages({
+                "string.empty": "Field of study can't be empty",
+                "any.base": "Field of study must be a string"
+            }),
+
+            specialization: joi.string().optional().messages({
+                "string.empty": "Specialization can't be empty",
+                "any.base": "Specialization must be a string"
+            }),
+
+            skills: joi.array().items(
+                joi.object({
+                    skillName: joi.string().required().messages({
+                        "string.empty": "skill name can't be empty",
+                        "any.required": "skill name is required"
+                    }),
+                    skillRate: joi.number().required().messages({
+                        "string.empty": "skill rate can't be empty",
+                        "any.required": "skill rate is required"
+                    }),
+                })
+            ),
+
+            experience: joi.array().items(
+                joi.object({
+                    title: joi.string().required().messages({
+                        "string.empty": "title can't be empty",
+                        "any.required": "title is required",
+                        "any.base": "title must be a string",
+                    }),
+                    employmentType: joi.string().required().valid("full-time", "part-time", "freelance", "internship").messages({
+                        "string.empty": "Employment type can't be empty",
+                        "any.required": "Employment type is required",
+                        "any.base": "Employment type must be a string",
+                        "any.only": "Employment type must be one of ['full-time', 'part-time', 'freelance', 'internship']"
+                    }),
+                    companyName: joi.string().required().messages({
+                        "string.empty": "Company name can't be empty",
+                        "any.required": "Company name is required",
+                        "any.base": "Company name must be a string",
+                    }),
+                    startDate: joi.date().required().messages({
+                        "string.empty": "Start date can't be empty",
+                        "any.required": "Start date is required",
+                        "any.base": "Start date must be a date",
+                    }),
+                    endDate: joi.date().required().messages({
+                        "string.empty": "End date can't be empty",
+                        "any.required": "End date is required",
+                        "any.base": "End date must be a string",
+                    }),
+                    tillNow: joi.boolean().messages({
+                        "string.empty": "Till now can't be empty",
+                        "any.base": "Till now must be a string",
                     }),
                 })
             ),

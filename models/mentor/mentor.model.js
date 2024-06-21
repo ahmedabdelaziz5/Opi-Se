@@ -32,6 +32,7 @@ const mentorSchema = new mongoose.Schema({
         companyName: { type: String, required: true },
         startDate: { type: Date, required: true },
         endDate: { type: Date, default: Date.now() },
+        tillNow: { type: Boolean, default: false },
     }],
     mentorRequests: [{
         studentId: { type: objectId, required: true, ref: 'user' },
