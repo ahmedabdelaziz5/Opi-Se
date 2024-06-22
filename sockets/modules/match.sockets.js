@@ -3,9 +3,9 @@
 // event is used to join the user to match room , emit another event to the partner to join the match room, notify the user and update friends list in the client side
 exports.acceptPartnerRequest = async (socket, data, ack) => {
     try {
-        const { notifiedPartner, matchId, partnerUserName, partnerImage } = data;
+        const { notifiedPartner, matchId } = data;
         socket.join(matchId);
-        socket.to(notifiedPartner).emit('matchRequestApproved', { matchId, notification: true, partnerUserName, partnerImage, partnerId: notifiedPartner });
+        socket.to(notifiedPartner).emit('matchRequestApproved', data);
         return ack({
             success: true,
             message: `partner request was accepted successfully !`,
