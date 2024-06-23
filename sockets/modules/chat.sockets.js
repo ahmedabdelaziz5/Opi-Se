@@ -18,6 +18,7 @@ exports.sendMessage = async (socket, data, ack) => {
         const messageId = new mongoose.Types.ObjectId();
         data._id = messageId;
         data.messageSender = isAuth.userId;
+        data.sentAt = Date.now(); 
         const chat = await chatRepo.updateChat({ matchId }, { $push: { chat: data } }, { upsert: true, new: true });
         if (!chat.success) {
             return ack({
